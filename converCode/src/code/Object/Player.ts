@@ -1,9 +1,6 @@
 // 玩家针对每一关卡的数据 实体类
 class Player {
 
-	public constructor() {
-	}
-
 	public Level: number;
 	public Name: string;
 	public Locked: boolean;

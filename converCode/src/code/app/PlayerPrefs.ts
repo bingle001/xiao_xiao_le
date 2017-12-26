@@ -42,7 +42,7 @@ class PlayerPrefs {
 	}
 
 	/** 读取浮点型数据 */
-	public static GetFlost(key: string): number{
+	public static GetFloat(key: string, defaultValue: number = 0): number{
 		if (this.m_pData[key]) {
 			return this.m_pData[key];
 		}

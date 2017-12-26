@@ -35,8 +35,6 @@ class DataLoader {
 
     public fade:GameObject;
 
-	public MapSprite: egret.Sprite[];//Sprite[];
-
 	private hold: boolean;
 
     private holdobj:GameObject;
@@ -175,7 +173,7 @@ class DataLoader {
         // Vector3 newpos = listmap[CameraMovement.StarPointMoveIndex].transform.position + new Vector3(0, 0, -0.3];
 		let oldX: number = this.listmap[CameraMovement.StarPointMoveIndex].x;
 		let oldY: number = this.listmap[CameraMovement.StarPointMoveIndex].y;
-		let oldZ: number = this.listmap[CameraMovement.StarPointMoveIndex].z;
+        let oldZ: number = 1;// this.listmap[CameraMovement.StarPointMoveIndex].z;
 		let newpos: Vector3 = new Vector3(oldX, oldY, oldZ - 0.3);
         Ulti.MoveTo(CameraMovement.mcamera.StarPoint, newpos, this.STARMOVE_TIME, newpos.z);
 		TimerUtils.setTimeOut(this.STARMOVE_TIME, this.stopanimation, this);// StartCoroutine(stopanimation());

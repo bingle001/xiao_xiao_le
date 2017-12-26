@@ -1,6 +1,7 @@
 //镜头移动？？
-class CameraMovement {
-	public constructor() {
+class CameraMovement extends egret.DisplayObjectContainer{
+    public constructor() {
+        super();
 	}
 
 	public static mcamera: CameraMovement;       // camera movement
@@ -48,108 +49,105 @@ class CameraMovement {
         CameraMovement.mcamera = new CameraMovement();
     }
 
-    void Start()
-    {
-        setLastpos();
-        SetPoint();
-        GoogleMobileAdsScript.advertise.HideBanner();
+    public Start(): void {
+        this.setLastpos();
+        this.SetPoint();
+        // GoogleMobileAdsScript.advertise.HideBanner();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) && isPopup)
-        {
-            UnfreezeMap();
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ButtonActionController.Click.HomeScene();
-        }
+    public Update(): void {
+        // if (Input.GetKeyDown(KeyCode.Escape) && isPopup)
+        // {
+        //     UnfreezeMap();
+        // }
+        // else if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     ButtonActionController.Click.HomeScene();
+        // }
     }
 
-    /// <summary>
-    /// set last position of container
-    /// </summary>
-    void setLastpos()
-    {
-        float lastp = PlayerPrefs.GetFloat("LASTPOS", 0);
+    // set last position of container
+    private setLastpos():void {
+        let lastp = PlayerPrefs.GetFloat("LASTPOS", 0);
         if (lastp < 0) lastp = 0;
-        else if (lastp > 90.8000f) lastp = 90.8f;
-        transform.position += new Vector3(0, lastp);
-        container.anchoredPosition = new Vector2(container.anchoredPosition.x, -lastp / distance + 4740f);
+        else if (lastp > 90.8000) lastp = 90.8;
+        // transform.position += new Vector3(0, lastp);
+        // container.anchoredPosition = new Vector2(container.anchoredPosition.x, -lastp / distance + 4740f);
+        //TODO
+        this.x = 0;
+        this.y = lastp;
+        // this.anchorOffsetX = 0;
+        // this.anchorOffsetY = -lastp / distance + 4740f
     }
 
-    void SetPoint()
-    {
-        float x = PlayerPrefs.GetFloat("LASTPOSX", -0.0045f);
-        float y = PlayerPrefs.GetFloat("LASTPOS", -3.587f);
-        StarPoint.transform.position = new Vector3(x, y, StarPoint.transform.position.z);
-
+    private SetPoint():void{
+        let x = PlayerPrefs.GetFloat("LASTPOSX", -0.0045);
+        let y = PlayerPrefs.GetFloat("LASTPOS", -3.587);
+        // StarPoint.transform.position = new Vector3(x, y, StarPoint.transform.position.z);
+        this.StarPoint.x = x;
+        this.StarPoint.y = y;
     }
 
-    /// <summary>
-    /// Update positio camera when scroller
-    /// </summary>
-    public void CameraPosUpdate()
+    // Update positio camera when scroller
+    public CameraPosUpdate():void
     {
-        transform.position = new Vector3(transform.position.x, -(container.anchoredPosition.y - 4740f) * distance, transform.position.z);
-        if (setstate)
-            movement = true;
+        // transform.position = new Vector3(transform.position.x, -(container.anchoredPosition.y - 4740f) * distance, transform.position.z);
+        // if (setstate)
+        //     movement = true;
     }
 
 
-    /// <summary>
-    /// show infomation of level player
-    /// </summary>
-    /// <param name="_map"></param>
-    public void PopUpShow(Player _map)
-    {
-        isPopup = true;
+    // show infomation of level player
+    public PopUpShow(_map: Player): void {
+        this.isPopup = true;
         CameraMovement.mcamera.FreezeMap();
-        map = _map;
+        this.map = _map;
 
-        Image[] stars = new Image[3];
+        let stars: eui.Image[] = [];// new Image[3];
 
+        //TODO 星星素材
         //直接访问PopUp中的三个星星组件
-        stars[0] = PopUp.transform.GetChild(1).GetComponent<Image>();
-        stars[1] = PopUp.transform.GetChild(2).GetComponent<Image>();
-        stars[2] = PopUp.transform.GetChild(3).GetComponent<Image>();
+        // stars[0] = PopUp.transform.GetChild(1).GetComponent<Image>();
+        // stars[1] = PopUp.transform.GetChild(2).GetComponent<Image>();
+        // stars[2] = PopUp.transform.GetChild(3).GetComponent<Image>();
 
         //设置星星状态
-        for (int i = 0; i < 3; i++)
-        {
-            if (i < _map.Stars)
-                stars[i].sprite = star[0];
-            else
-                stars[i].sprite = star[1];
-        }
+        // for (let i = 0; i < 3; i++)
+        // {
+        //     if (i < _map.Stars)
+        //         stars[i].sprite = star[0];
+        //     else
+        //         stars[i].sprite = star[1];
+        // }
 
 
-        PopUp.transform.GetChild(4).GetComponent<Text>().text = _map.HightScore.ToString();
-        PopUp.transform.GetChild(6).GetComponent<Text>().text = _map.Level.ToString("00");
-        Animation am = PopUp.GetComponent<Animation>();
-        am.enabled = true;
-        PopUp.SetActive(true);
+        // PopUp.transform.GetChild(4).GetComponent<Text>().text = _map.HightScore.ToString();
+        // PopUp.transform.GetChild(6).GetComponent<Text>().text = _map.Level.ToString("00");
+        // Animation am = PopUp.GetComponent<Animation>();
+        // am.enabled = true;
+        // PopUp.SetActive(true);
     }
 
-    public void ArcadeScene()
+    public ArcadeScene():void
     {
-        ButtonActionController.Click.ArcadeScene(map);
+        ButtonActionController.Click.ArcadeScene(this.map);
     }
 
-    public void FreezeMap()
+    public FreezeMap():void
     {
         DataLoader.enableclick = false;
-        fade.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        // fade.GetComponent<CanvasGroup>().blocksRaycasts = true;
+        //TODO
     }
 
-    public void UnfreezeMap()
+    public UnfreezeMap():void
     {
+        //TODO
         SoundController.Sound.Click();
-        PopUp.SetActive(false);
-        isPopup = false;
+        // this.PopUp.SetActive(false);
+        this.isPopup = false;
         DataLoader.enableclick = true;
-        fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        // fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
 
     }
 

@@ -9,129 +9,125 @@ class GribManager {
 
 	public GribCell:GameObject[];
 
-    public CellObj[,] GribCellObj;
+    public GribCellObj:CellObj[][];
 
-    public GameObject GribParent;
+    public GribParent:GameObject;
 
-    public GameObject CellPrefab;
+    public CellPrefab:GameObject;
 
-    public Sprite[] CellSprite;
+    public CellSprite:string[]; //Sprite[]
 
-    public GameObject[] border;
+    public border:GameObject[];
 
-    public GameObject[] corner;
+    public corner:GameObject[];
 
-    public GameObject BorderParent;
+    public BorderParent:GameObject;
 
-    public int[,] Map;
+    public Map:number[][];
 
-    private GameObject ObjTmp;
+    private ObjTmp:GameObject;
 
-    private CellObj cellscript;
+    private cellscript:CellObj;
 
-    private const string path = "Assets/Resources/Maps/";
+    private  path:string = "resources/assets/map/";
 
-    void Awake()
+    public static Awake():void
     {
-        cell = this;
+        GribManager.cell = new GribManager();
     }
 
-    /// <summary>
-    /// Create Grid map
-    /// </summary>
-    /// <param name="MapName">name of map</param>
-    /// <returns></returns>
-    public IEnumerator GribMapCreate(string MapName)
-    {
-        GribCell = new GameObject[7, 9];
-        Map = MapReader(MapName);
-        yield return new WaitForEndOfFrame();        //这样写的好处是为了能跟上帧频,即每帧执行一块
-        GribCreate(Map);
-        yield return new WaitForEndOfFrame();
-        BorderCreate(Map);
-        yield return new WaitForEndOfFrame();
-        EffectCrash(Map);
-        yield return new WaitForSeconds(1);
-        JewelSpawner.spawn.JewelMapCreate(Map);
-        yield return new WaitForEndOfFrame();
+    // Create Grid map
+    public GribMapCreate(MapName: string): void{  //IEnumerator
+        this.GribCell = Utils.initVector2(GameObject, 7, 9);// new GameObject[7, 9];
+        this.Map = this.MapReader(MapName);
+        // yield return new WaitForEndOfFrame();        //这样写的好处是为了能跟上帧频,即每帧执行一块
+        this.GribCreate(this.Map);
+        // yield return new WaitForEndOfFrame();
+        this.BorderCreate(this.Map);
+        // yield return new WaitForEndOfFrame();
+        this.EffectCrash(this.Map);
+        // yield return new WaitForSeconds(1);
+        JewelSpawner.spawn.JewelMapCreate(this.Map);
+        // yield return new WaitForEndOfFrame();
         JewelSpawner.spawn.EnableAllJewel();
     }
 
-    void GribCreate(int[,] map)
+    private GribCreate(map:number[][]):void
     {
         GameController.action.CellNotEmpty = 0;
-        GribCellObj = new CellObj[7, 9];
-        for (int x = 0; x < 7; x++)
+        this.GribCellObj = Utils.initVector2(CellObj, 7, 9);// new CellObj[7, 9];
+        for (let x = 0; x < 7; x++)
         {
-            for (int y = 0 ; y< 9; y++)
+            for (let y = 0 ; y< 9; y++)
             {
-                if (map[x, y] > 1)
+                if (map[x][y] > 1)
                     GameController.action.CellNotEmpty++;
-                if (map[x, y] > 0)
-                    CellInstantiate(x, y, map[x, y]);
+                if (map[x][y] > 0)
+                    this.CellInstantiate(x, y, map[x][y]);
                 //！！！！下面这行代码多余的，会导制重复创建 JewelCash 缓存
                 //EffectSpawner.effect.JewelCrashArray[x, y] = EffectSpawner.effect.JewelCash(new Vector3(x,y));
             }
         }
     }
 
-    /// <summary>
     /// 根据地图批量创建销毁动画显示对象，并缓存到JewelCrashArray
-    /// </summary>
-    /// <param name="map"></param>
-    void EffectCrash(int[,] map)
+    private EffectCrash(map:number[][]):void
     {
-        for (int x = 0; x < 7; x++)
+        for (let x = 0; x < 7; x++)
         {
-            for (int y = 0; y < 9; y++)
+            for (let y = 0; y < 9; y++)
             {
-                if (map[x, y] > 0)
-                EffectSpawner.effect.JewelCrashArray[x, y] = EffectSpawner.effect.JewelCash(new Vector3(x, y));
+                if (map[x][y] > 0)
+                EffectSpawner.effect.JewelCrashArray[x][y] = EffectSpawner.effect.JewelCash(new Vector3(x, y));
             }
         }
     }
 
-    void CellInstantiate(int x, int y, int type)
+    private CellInstantiate(x:number, y:number, type:number):void
     {
-        ObjTmp = (GameObject)Instantiate(CellPrefab);
-        ObjTmp.transform.SetParent(GribParent.transform, false);
-        ObjTmp.transform.localPosition = new Vector3(x, y);
-        cellscript = ObjTmp.GetComponent<CellObj>();
-        cellscript.CellCode = type;
-        cellscript.cell = SetCell(type, x, y);
-        cellscript.SetSprite(cellscript.cell.CellType-1);
-        GribCell[x, y] = ObjTmp;
-        GribCellObj[x, y] = cellscript;
+        // ObjTmp = (GameObject)Instantiate(CellPrefab);
+        // ObjTmp.transform.SetParent(GribParent.transform, false);
+        // ObjTmp.transform.localPosition = new Vector3(x, y);
+        // cellscript = ObjTmp.GetComponent<CellObj>();
+        // cellscript.CellCode = type;
+        // cellscript.cell = SetCell(type, x, y);
+        // cellscript.SetSprite(cellscript.cell.CellType-1);
+        // GribCell[x, y] = ObjTmp;
+        // GribCellObj[x, y] = cellscript;
 
+        let tmp = new CellObj();
+        this.GribParent.addChild(tmp);
+        tmp.x = x;
+        tmp.y = y;
+        tmp.CellCode = type;
+        tmp.cell = this.SetCell(type, x, y);
+        tmp.SetSprite(tmp.cell.CellType - 1);
+        this.GribCell[x][y] = tmp.cell;
+        this.GribCellObj[x][y] = tmp;
     }
 
-    int[,] MapReader(string mapName)
+    private MapReader(mapName: string): number[][]//int[,]
     {
-        int[,] tmp = new int[7, 9];
-        string mapStringdata = "";
-        //read string from text file
-#if UNITY_EDITOR
-        mapStringdata = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(@path + mapName + ".txt").ToString();
-#else
-	    TextAsset txtass = (TextAsset)Resources.Load ("Maps/" + mapName, typeof(TextAsset));
-	    mapStringdata = txtass.ToString ();
-#endif
-        string[] stringresult = mapStringdata.Split(new char[] { '	', '\n' });
-        int dem = 0;
-        for (int y = 8; y >= 0; y--)
-            for (int x = 0; x < 7; x++)
-            {
-                tmp[x, y] = int.Parse(stringresult[dem]);
+        let tmp: number[][] = Utils.initVector2(Number, 7, 9); new int[7, 9];
+        let mapStringdata: string = RES.getRes(mapName + "_txt");
+        debug("读取文件：", mapStringdata);
+        let pattern = new RegExp("\\t|\\n|\\t\\n");
+        let stringresult: string[] = mapStringdata.split(pattern);// Split(new char[] { '	', '\n' });
+        debug("解析文件结果：", stringresult);
+        let dem = 0;
+        for (let y = 8; y >= 0; y--) {
+            for (let x = 0; x < 7; x++) {
+                tmp[x][y] = Number(stringresult[dem]);
                 dem++;
             }
+        }
+        debug("最终地图数据：", tmp);
         return tmp;
-
     }
 
-    Cell SetCell(int type,int x,int y)
+    private SetCell(type:number,x:number,y:number):Cell
     {
-        Cell script = new Cell();
-
+        let script: Cell = new Cell();
         if (type > 10)
         {
             script.CellType = type / 10;
@@ -145,149 +141,150 @@ class GribManager {
         script.CellPosition = new Vector2(x, y);
         return script;
     }
-    #region boder create
-    void BorderCreate(int[,] map)
+
+    private BorderCreate(map:number[][]):void
     {
-        for (int x = 0; x < 7; x++)
+        for (let x = 0; x < 7; x++)
         {
-            for (int y = 0; y < 9; y++)
+            for (let y = 0; y < 9; y++)
             {
-                int i = map[x, y];
+                let i = map[x][y];
                 if (i >0)
                 {
-                    borderins(GribCell[x, y], left(x, y), right(x, y), top(x, y), bot(x, y));
-                    CornerOutChecker(GribCell[x, y], topleft(x, y), topright(x, y), botleft(x, y), botright(x, y),x,y);
+                    this.borderins(this.GribCell[x][y], this.left(x, y), this.right(x, y), this.top(x, y), this.bot(x, y));
+                    this.CornerOutChecker(this.GribCell[x][y], this.topleft(x, y), this.topright(x, y), this.botleft(x, y), this.botright(x, y), x, y);
                 } else
                 {
-                    boderInChecker(map, x, y);
+                   this.boderInChecker(map, x, y);
                 }
             }
         }
     }
 
-    bool left(int x, int y)
+    private left(x: number, y: number): boolean
     {
         if (x == 0)
             return true;
-        else if (x - 1 >= 0 && Map[x-1, y] == 0)
+        else if (x - 1 >= 0 && this.Map[x-1][y] == 0)
             return true;
             
         return false;
     }
 
-    bool right(int x, int y)
+    private right(x:number, y:number):boolean
     {
         if (x == 6)
             return true;
-        else if (x + 1 <= 6 && Map[x+1, y] == 0)
+        else if (x + 1 <= 6 && this.Map[x+1][y] == 0)
             return true;
 
         return false;
     }
 
-    bool bot(int x, int y)
+    private bot(x:number, y:number):boolean
     {
             if (y == 0)
                 return true;
-            else if (x < 7 && y - 1 >= 0 && Map[x, y - 1] == 0)
+            else if (x < 7 && y - 1 >= 0 && this.Map[x][y - 1] == 0)
                 return true;
 
         return false;
     }
 
-    bool top(int x, int y)
+    private top(x: number, y: number): boolean
     {
         if (y == 8)
             return true;
-        else if (y + 1 <= 8 && Map[x, y+1] == 0)
+        else if (y + 1 <= 8 && this.Map[x][y+1] == 0)
             return true;
 
         return false;
     }
 
-    bool topleft(int x, int y)
+    private topleft(x:number, y:number):boolean
     {
         if (x - 1 < 0 || y + 1 > 8)
             return true;
-        else if (x - 1 >= 0 && y + 1 <= 8 &&  Map[x - 1, y + 1] == 0)
+        else if (x - 1 >= 0 && y + 1 <= 8 &&  this.Map[x - 1][y + 1] == 0)
             return true;
 
         return false;
     }
 
-    bool topright(int x, int y)
+    private topright(x:number, y:number):boolean
     {
-
             if (x + 1 > 6 || y + 1 > 8)
                 return true;
-            else if (x + 1 <= 6 && y + 1 <= 8 && Map[x + 1, y + 1] == 0)
+            else if (x + 1 <= 6 && y + 1 <= 8 && this.Map[x + 1][y + 1] == 0)
                 return true;
 
         return false;
     }
 
-    bool botleft(int x, int y)
+    private botleft(x:number, y:number):boolean
     {
         if (x - 1 < 0 || y - 1 < 0)
             return true;
-        else if (x - 1 >= 0 && y - 1 >= 0 && Map[x - 1, y - 1] == 0)
+        else if (x - 1 >= 0 && y - 1 >= 0 && this.Map[x - 1][y - 1] == 0)
             return true;
 
         return false;
     }
 
-    bool botright(int x, int y)
+    private botright(x:number, y:number):boolean
     {
         if (x + 1 > 6 || y - 1 < 0)
             return true;
-        else if (x + 1 <=6 && y - 1 >= 0 && Map[x + 1, y - 1] == 0)
+        else if (x + 1 <=6 && y - 1 >= 0 && this.Map[x + 1][y - 1] == 0)
             return true;
 
         return false;
     }
 
-    void borderins(GameObject parent,bool left,bool right,bool top, bool bot)
+    //应该是创建边缘
+    private borderins(parent:GameObject,left:boolean,right:boolean,top:boolean, bot:boolean):void
     {
-       // Debug.Log(parent.GetComponent<CellObj>().cell.CellPosition);
+        // if (left)
+        // {
+        //         ObjTmp = (GameObject)Instantiate(this.border[2]);
+        //         ObjTmp.transform.SetParent(this.BorderParent.transform, false);
+        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
+        //      //   boderInChecker(parent);
+        // }
+        // if (right)
+        // {
 
-        if (left)
-        {
+        //         ObjTmp = (GameObject)Instantiate(border[3]);
+        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
+        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
+        //         //boderInChecker(parent);
+        // }
+        // if (top)
+        // {
 
-                ObjTmp = (GameObject)Instantiate(border[2]);
-                ObjTmp.transform.SetParent(BorderParent.transform, false);
-                ObjTmp.transform.localPosition += parent.transform.localPosition;
-             //   boderInChecker(parent);
+        //         ObjTmp = (GameObject)Instantiate(border[1]);
+        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
+        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
+        // }
+        // if (bot)
+        // {
+
+        //         ObjTmp = (GameObject)Instantiate(border[0]);
+        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
+        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
+        // }
+
+        let res: string = "";
+        let scaleX: number = 1;
+        let scaleY: number = 1;
+        if (left) {
+            res = "goc-a_png";
         }
-
-                    
-        if (right)
-        {
-
-                ObjTmp = (GameObject)Instantiate(border[3]);
-                ObjTmp.transform.SetParent(BorderParent.transform, false);
-                ObjTmp.transform.localPosition += parent.transform.localPosition;
-                //boderInChecker(parent);
-        }
-        if (top)
-        {
-
-                ObjTmp = (GameObject)Instantiate(border[1]);
-                ObjTmp.transform.SetParent(BorderParent.transform, false);
-                ObjTmp.transform.localPosition += parent.transform.localPosition;
-        }
-        if (bot)
-        {
-
-                ObjTmp = (GameObject)Instantiate(border[0]);
-                ObjTmp.transform.SetParent(BorderParent.transform, false);
-                ObjTmp.transform.localPosition += parent.transform.localPosition;
-        }
-
        
     }
 
 
-    void CornerOutChecker(GameObject parent, bool topleft, bool topright, bool botleft, bool botright,int x, int y)
+    void CornerOutChecker(GameObject parent, bool topleft, bool topright, bool botleft, bool botright,x:number, y:number)
     {
         bool _top = top(x,y);
         bool _bot = bot(x,y);
@@ -321,7 +318,7 @@ class GribManager {
      
     }
 
-    void boderInChecker(int[,] map ,int x,int y)
+    void boderInChecker(int[,] map ,x:number,y:number)
     {
         if (x - 1 >= 0 && y - 1 >= 0 && map[ x - 1, y] > 0  && map[x ,y - 1] > 0 )
         {
@@ -358,8 +355,8 @@ class GribManager {
     bool CornerOutCheckTop(GameObject parent)
     {
         CellObj obj = parent.GetComponent<CellObj>();
-        int x =(int) obj.cell.CellPosition.x;
-        int y = (int)obj.cell.CellPosition.y;
+        let x:number =(int) obj.cell.CellPosition.x;
+        let y:number = (int)obj.cell.CellPosition.y;
         for (int i = y+1; i < 9; i++)
         {
             if (GribCellObj[x, i] != null)
@@ -370,8 +367,8 @@ class GribManager {
     bool CornerOutCheckBot(GameObject parent)
     {
         CellObj obj = parent.GetComponent<CellObj>();
-        int x = (int)obj.cell.CellPosition.x;
-        int y = (int)obj.cell.CellPosition.y;
+        let x:number = (int)obj.cell.CellPosition.x;
+        let y:number = (int)obj.cell.CellPosition.y;
         for (int i = y - 1 ; i >=0; i--)
         {
             if (GribCellObj[x, i] != null)
@@ -382,8 +379,8 @@ class GribManager {
     bool CornerOutCheckRight(GameObject parent)
     {
         CellObj obj = parent.GetComponent<CellObj>();
-        int x = (int)obj.cell.CellPosition.x;
-        int y = (int)obj.cell.CellPosition.y;
+        let x:number = (int)obj.cell.CellPosition.x;
+        let y:number = (int)obj.cell.CellPosition.y;
         for (int i = x + 1; i < 7; i++)
         {
             if (GribCellObj[i, y] != null)
@@ -394,8 +391,8 @@ class GribManager {
     bool CornerOutCheckLeft(GameObject parent)
     {
         CellObj obj = parent.GetComponent<CellObj>();
-        int x = (int)obj.cell.CellPosition.x;
-        int y = (int)obj.cell.CellPosition.y;
+        let x:number = (int)obj.cell.CellPosition.x;
+        let y:number = (int)obj.cell.CellPosition.y;
         for (int i = x-1; i >= 0; i--)
         {
             if (GribCellObj[i, y] != null)

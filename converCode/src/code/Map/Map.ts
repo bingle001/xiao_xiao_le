@@ -1,91 +1,83 @@
-class Map extends egret.DisplayObject{
-	public map:Player;
+class Map extends eui.Component {
 
-	public constructor() {
-		super();
+    public group_star: eui.Group;
+    public star0: eui.Image;
+    public star1: eui.Image;
+    public star2: eui.Image;
+    public img_icon: eui.Image;
+    public lbl_num: eui.BitmapLabel;
 
-		this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.OnMouseDown, this);
-		this.addEventListener(egret.TouchEvent.TOUCH_END, this.OnMouseUp, this);
-	}
+    public map: Player;
+
+    public constructor() {
+        super();
+        this.skinName = "MapPointSkin";
+
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.OnMouseDown, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END, this.OnMouseUp, this);
+    }
 
 
-    private OnMouseDown()
-    {
+    private OnMouseDown() {
         CameraMovement.setstate = true;
         CameraMovement.movement = false;
-		if (DataLoader.enableclick) {
+        if (DataLoader.enableclick) {
             // transform.GetChild(0).transform.localScale = new Vector3(0.8f, 0.75f, 1);
-			//TODO
-			this.scaleX = 0.8;
-			this.scaleY = 0.75;
-		}
+            //TODO
+            this.scaleX = 0.8;
+            this.scaleY = 0.75;
+        }
     }
-    private OnMouseUp()
-    {
+    private OnMouseUp() {
 
         CameraMovement.setstate = false;
-        if (DataLoader.enableclick && !CameraMovement.movement)
-        {
+        if (DataLoader.enableclick && !CameraMovement.movement) {
             SoundController.Sound.Click();
             // transform.GetChild(0).transform.localScale = new Vector3(0.8f, 0.8f, 1);
-			//TODO
-			this.scaleX = 0.8;
-			this.scaleY = 0.8;
+            //TODO
+            this.scaleX = 0.8;
+            this.scaleY = 0.8;
 
             PlayerPrefs.DeleteKey("LASTPOS");
             PlayerPrefs.DeleteKey("LASTPOSX");
-			PlayerPrefs.SetFloat("LASTPOS", this.y);// transform.position.y);
-			PlayerPrefs.SetFloat("LASTPOSX", this.x);// transform.position.x);
+            PlayerPrefs.SetFloat("LASTPOS", this.y);// transform.position.y);
+            PlayerPrefs.SetFloat("LASTPOSX", this.x);// transform.position.x);
 
-			//TODO
+            //TODO
             // CameraMovement.mcamera.StarPoint.transform.position = transform.position + new Vector3(0, 0, -0.2f);
-			this.scaleX = this.scaleY = 0.2;
+            this.scaleX = this.scaleY = 0.2;
 
             CameraMovement.mcamera.PopUpShow(this.map);
         }
         CameraMovement.movement = false;
     }
-    /// <summary>
-    /// set map info
-    /// </summary>
-    public void SetMapInfo()
-    {
-        SpriteRenderer render = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        SpriteRenderer[] star = new SpriteRenderer[3];
-        star[0] = transform.GetChild(2).GetComponent<SpriteRenderer>();
-        star[1] = transform.GetChild(3).GetComponent<SpriteRenderer>();
-        star[2] = transform.GetChild(4).GetComponent<SpriteRenderer>();
 
-        if (map.Locked)
-        {
-            render.sprite = DataLoader.Data.MapSprite[0];
-            star[0].sprite = null;
-            star[1].sprite = null;
-            star[2].sprite = null;
-            transform.GetComponent<Collider2D>().enabled = false;
-            transform.GetChild(1).gameObject.SetActive(false);
+    // set map info
+    public SetMapInfo(): void {
+        if (this.map.Locked) {
+            this.group_star.visible = false;
+            this.img_icon.source = "SelectMap_locked_png";
+            this.enabled = false;
         }
-        else if (map.Stars == 0)
-        {
-            render.sprite = DataLoader.Data.MapSprite[1];
-            star[0].sprite = DataLoader.Data.MapSprite[4];
-            star[1].sprite = DataLoader.Data.MapSprite[4];
-            star[2].sprite = DataLoader.Data.MapSprite[4];
+        else if (this.map.Stars == 0) {
+            this.group_star.visible = true;
+            this.img_icon.source = "SelectMap_pre-play_png";
+            this.star0.source = "SelectMap_starmap5_png";
+            this.star1.source = "SelectMap_starmap5_png";
+            this.star2.source = "SelectMap_starmap5_png";
+            this.enabled = true;
         }
-        else
-        {
+        else {
+            this.group_star.visible = true;
+            this.img_icon.source = "SelectMap_passed_png";
 
-            render.sprite = DataLoader.Data.MapSprite[2];
-            star[0].sprite = DataLoader.Data.MapSprite[4];
-            star[1].sprite = DataLoader.Data.MapSprite[4];
-            star[2].sprite = DataLoader.Data.MapSprite[4];
-            for (int i = 0; i < map.Stars; i++)
-            {
-                star[i].sprite = DataLoader.Data.MapSprite[3];
-            }
+            let star: number = this.map.Stars;
+            this.star0.source = star > 0 ? "SelectMap_starmap1_png" : "SelectMap_starmap5_png";
+            this.star1.source = star > 1 ? "SelectMap_starmap1_png" : "SelectMap_starmap5_png";
+            this.star2.source = star > 2 ? "SelectMap_starmap1_png" : "SelectMap_starmap5_png";
         }
-}
-	
+    }
+
 
 
 }
