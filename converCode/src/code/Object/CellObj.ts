@@ -1,5 +1,5 @@
 // 格子游戏对象 组件
-class CellObj extends eui.Component {
+class CellObj extends GameObject {
 
 	public CellCode: number;
 	public cell: Cell;
@@ -52,21 +52,24 @@ class CellObj extends eui.Component {
 	private setChilEffectSprite(celleffect: number): void {
         if (celleffect > 0){
             // transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GribManager.cell.CellSprite[celleffect];
+            let res: string = GribManager.cell.CellSprite[celleffect];
+            this.icon.source = res;
         }
         else
         {
-            transform.GetChild(0).gameObject.SetActive(false);
+            // transform.GetChild(0).gameObject.SetActive(false);
+            this.icon.visible = false;
         }
 
     }
 
-    public void CelltypeProcess()
+    public CelltypeProcess():void
     {
-        if (cell.CellType > 1)
+        if (this.cell.CellType > 1)
         {
-            cell.CellType--;
-            runAnim();
-            if (cell.CellType == 1)
+            this.cell.CellType--;
+            this.runAnim();
+            if (this.cell.CellType == 1)
             {
                 GameController.action.CellNotEmpty--;
                 if (GameController.action.CellNotEmpty == 0)
@@ -75,11 +78,13 @@ class CellObj extends eui.Component {
 
         }
     }
-    void runAnim()
+    private runAnim():void
     {
-        Animation anim = GetComponent<Animation>();
-        anim.enabled = true;
-        anim.Play("CellChangeSprite");
+        // Animation anim = GetComponent<Animation>();
+        // anim.enabled = true;
+        // anim.Play("CellChangeSprite");
+        //TODO
+        debug("播放动画：CellChangeSprite");
     }
 
 

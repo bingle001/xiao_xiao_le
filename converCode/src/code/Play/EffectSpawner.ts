@@ -55,17 +55,17 @@ class EffectSpawner {
 		this.ComboCount++;
 	}
 
-	public ScoreInc(pos: Vector3): void {
+	public ScoreInc(pos: Vector2): void {
 		let scorebonus = 10 + this.ComboCount * 10;
 		if (PLayerInfo.MODE != 1) {
 			if (PLayerInfo.Info.Score < PLayerInfo.MapPlayer.Level * 5000)
 				Timer.timer.ScoreBarProcess(scorebonus);
-			else if (GameController.action.GameState == Timer.GameState.PLAYING) {
+			else if (GameController.action.GameState == GameState.PLAYING) {
 				Timer.timer.ClassicLvUp();
 			}
 		}
 		else {
-			if (GameController.action.GameState == Timer.GameState.PLAYING)
+			if (GameController.action.GameState == GameState.PLAYING)
 			PLayerInfo.Info.Score += scorebonus;
 			this.BonusEffect();
 			this.MiniStar(pos);
@@ -118,12 +118,12 @@ class EffectSpawner {
 	}
 
 	//TODO 应该是个飘字动画
-	private ScoreEff(score: number, pos: Vector3): void {
+	private ScoreEff(score: number, pos: Vector2): void {
 		debug("飘字动画 ScoreEff");
 		// let tmp: GameObject = this.EffectPrefabs[4];// (GameObject)Instantiate(EffectPrefabs[4]);
 		// tmp.transform.GetChild(0).GetComponent<TextMesh>().text = score.ToString();
 		// tmp.transform.SetParent(parent.transform, false);
-		// tmp.transform.position = new Vector3(pos.x, pos.y, tmp.transform.position.z);
+		// tmp.transform.position = new Vector2(pos.x, pos.y, tmp.transform.position.z);
 		// Destroy(tmp, SCORESHOW_TIME);
 	}
 
@@ -140,30 +140,30 @@ class EffectSpawner {
 	}
 
 	// 创建宝石销毁动画并返回
-	public JewelCash(pos: Vector3): GameObject {
+	public JewelCash(pos: Vector2): GameObject {
 		//TODO 创建宝石动画
 		let tmp: GameObject = new GameObject();// (GameObject)Instantiate(EffectPrefabs[0]);
 		// tmp.transform.SetParent(JewelCrashParent.transform, false);
-		// tmp.transform.localPosition = new Vector3(pos.x, pos.y, -0.2f);
+		// tmp.transform.localPosition = new Vector2(pos.x, pos.y, -0.2f);
 		return tmp;
 		// Destroy(tmp, JEWELCASH_TIME);
 	}
 
-	public Thunder(pos: Vector3): void {
+	public Thunder(pos: Vector2): void {
 		// // Debug.Break();
 		// // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[3]);
 		// // tmp.transform.SetParent(parent.transform, false);
-		// // tmp.transform.position = new Vector3 (pos.x,pos.y,-2.1f);
+		// // tmp.transform.position = new Vector2 (pos.x,pos.y,-2.1f);
 		// // Destroy(tmp, THUNDER_TIME);
 		// debug("todo");
 
 		// this.MGE(this.Energy.transform.position, pos, -0.4f);
 
-		let tmp = new Vector3(this.Energy.x, this.Energy.y);
+		let tmp = new Vector2(this.Energy.x, this.Energy.y);
 		this.MGE2(tmp, pos, -0.4);
 	}
 
-	public boom(pos: Vector3): void {
+	public boom(pos: Vector2): void {
 		//TODO 应该是爆炸特效
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[1]);
 		// SoundController.Sound.Boom();
@@ -187,7 +187,7 @@ class EffectSpawner {
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[5]);
 		// tmp.transform.SetParent(obj.transform.GetChild(0).transform, false);
 		// if (power == 3)
-		//     tmp.transform.localEulerAngles = new Vector3(0, 0, 90);
+		//     tmp.transform.localEulerAngles = new Vector2(0, 0, 90);
 	}
 
 	// 播放火攻击，行或列
@@ -195,9 +195,9 @@ class EffectSpawner {
 		//TODO
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[6]);
 		// tmp.transform.SetParent(parent.transform, false);  //播放在特效层中
-		// tmp.transform.position = new Vector3(pos.x, pos.y, -2.2f);
+		// tmp.transform.position = new Vector2(pos.x, pos.y, -2.2f);
 		// if (c)
-		//     tmp.transform.localEulerAngles = new Vector3(0, 0, 90);
+		//     tmp.transform.localEulerAngles = new Vector2(0, 0, 90);
 		// Destroy(tmp, FILEARROW_TIME);
 	}
 
@@ -213,7 +213,7 @@ class EffectSpawner {
 		// TODO
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[8]);
 		// tmp.transform.SetParent(parent.transform, false);  //播放在特效层中
-		// tmp.transform.position = new Vector3(pos.x, pos.y, tmp.transform.position.z);
+		// tmp.transform.position = new Vector2(pos.x, pos.y, tmp.transform.position.z);
 		// Animation anim = tmp.GetComponent<Animation>();
 		// StarEffectAnim(anim, tmp);
 		// Destroy(tmp, 1f);
@@ -276,10 +276,10 @@ class EffectSpawner {
 		// }
 	}
 
-	public MGE(pos: Vector3, target: Vector3): GameObject {
+	public MGE(pos: Vector2, target: Vector2): GameObject {
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[11]);
 		// tmp.transform.SetParent(parent.transform, false);
-		// tmp.transform.position = new Vector3(pos.x, pos.y, -0.22f);
+		// tmp.transform.position = new Vector2(pos.x, pos.y, -0.22f);
 
 		// float AngleRad = Mathf.Atan2(target.y - pos.y, target.x - pos.x);
 
@@ -296,9 +296,9 @@ class EffectSpawner {
 		return tmp;
 	}
 
-	public MGE2(pos: Vector3, target: Vector3, z: number): GameObject {
+	public MGE2(pos: Vector2, target: Vector2, z: number): GameObject {
 		let tmp = this.MGE(pos, target);
-		// tmp.transform.position += new Vector3(pos.x, pos.y, z);
+		// tmp.transform.position += new Vector2(pos.x, pos.y, z);
 		return tmp;
 	}
 
@@ -310,7 +310,7 @@ class EffectSpawner {
 		// //Debug.Log("bla");
 	}
 
-	public MiniStar(startpos: Vector3): void {
+	public MiniStar(startpos: Vector2): void {
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[12]);
 		// tmp.transform.SetParent(parent.transform, false);
 		// Ulti.MoveTo(tmp, startpos, new Vector2(-2.485f, 4.418f), 1.2f, -2.2f);

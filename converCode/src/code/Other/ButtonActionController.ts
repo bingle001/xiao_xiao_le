@@ -41,7 +41,8 @@ class ButtonActionController {
         Time.timeScale = 1;
         PLayerInfo.MODE = 1;
         PLayerInfo.MapPlayer = player;
-        this.StartCoroutine(GotoScreen("PlayScene"));
+        // this.StartCoroutine(GotoScreen("PlayScene"));
+        this.GotoScreen("PlayScene");
     }
 
 

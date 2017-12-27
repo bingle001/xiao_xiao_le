@@ -47,9 +47,7 @@ class DataLoader {
     }
     public Start()
 	{
-		//指播放速率, 1正常，2原来的2倍，以此类推
-		//Time.timeScale = 1;
-		
+		Time.timeScale = 1;
 		this.listmap = [];// new GameObject[297];
         //PlayerPrefs.DeleteKey(KEY_FRISTTIME);
         if (PlayerPrefs.GetInt(this.KEY_FRISTTIME, 0) == 0)
@@ -174,8 +172,8 @@ class DataLoader {
 		let oldX: number = this.listmap[CameraMovement.StarPointMoveIndex].x;
 		let oldY: number = this.listmap[CameraMovement.StarPointMoveIndex].y;
         let oldZ: number = 1;// this.listmap[CameraMovement.StarPointMoveIndex].z;
-		let newpos: Vector3 = new Vector3(oldX, oldY, oldZ - 0.3);
-        Ulti.MoveTo(CameraMovement.mcamera.StarPoint, newpos, this.STARMOVE_TIME, newpos.z);
+        let newpos: Vector2 = new Vector2(oldX, oldY);//, oldZ - 0.3);
+        Ulti.MoveTo(CameraMovement.mcamera.StarPoint, newpos, this.STARMOVE_TIME);// newpos.z);
 		TimerUtils.setTimeOut(this.STARMOVE_TIME, this.stopanimation, this);// StartCoroutine(stopanimation());
     }
 

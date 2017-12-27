@@ -44,6 +44,52 @@ class Utils{
         return list;
     }
 
+    /**
+     * 随机
+     * @param min
+     * @param max
+     * @returns {any}
+     */
+    public static random(min, max) {
+        var rand = Math.floor(Math.random() * (max - min + 1)) + min;
+        return rand;
+    }
+
+    /**
+     * 设置灰化
+     * node : 显示对象
+     * isGray : 默认灰化，false清除灰化
+     */
+    public static setGray(node: egret.DisplayObject, isGray = true) {
+        if (isGray) {
+            // //颜色矩阵数组
+            var colorMatrix = [
+                0.3, 0.6, 0, 0, 0,
+                0.3, 0.6, 0, 0, 0,
+                0.3, 0.6, 0, 0, 0,
+                0, 0, 0, 1, 0
+            ];
+            var colorFlilter = new egret.ColorMatrixFilter(colorMatrix);
+            node.filters = [colorFlilter];
+        } else {
+            node.filters = [];
+        }
+    }
+
+    /** 获取数组里的最大值 */
+    public static arrayMax(arr: number[]): number{
+        let max: number;
+        if (arr && arr.length > 0) {
+            max = arr[0];
+            for (let i = 1; i < arr.length; i++){
+                if (arr[i] > max) {
+                    max = arr[i];
+                }
+            }
+        }
+        return max;
+    }
+
 
 
 

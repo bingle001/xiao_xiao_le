@@ -13,7 +13,7 @@ class PLayerInfo {
 
     public Score:number;
 
-	public KEY_CLASSIC_HISCORE: string = "classichightscore";
+	public static KEY_CLASSIC_HISCORE: string = "classichightscore";
 
 	public textlv: eui.BitmapLabel;
 
@@ -24,10 +24,10 @@ class PLayerInfo {
 
     public Start():void{
         this.Score = 0;
-        EffectSpawner.effect.SetLevel(this.MapPlayer.Level);
-        EffectSpawner.effect.SetBest(this.MapPlayer.HightScore);
+        EffectSpawner.effect.SetLevel(PLayerInfo.MapPlayer.Level);
+        EffectSpawner.effect.SetBest(PLayerInfo.MapPlayer.HightScore);
         EffectSpawner.effect.SetScore(this.Score);
-        this.textlv.text = PLayerInfo.MapPlayer.Level.ToString();
+        this.textlv.text = PLayerInfo.MapPlayer.Level.toString();
 	}
 	
 
