@@ -95,7 +95,7 @@ var CameraMovement = (function (_super) {
         ButtonActionController.Click.ArcadeScene(this.map);
     };
     CameraMovement.prototype.FreezeMap = function () {
-        DataLoader.enableclick = false;
+        // DataLoader.enableclick = false;
         // fade.GetComponent<CanvasGroup>().blocksRaycasts = true;
         //TODO
     };
@@ -104,7 +104,7 @@ var CameraMovement = (function (_super) {
         SoundController.Sound.Click();
         // this.PopUp.SetActive(false);
         this.isPopup = false;
-        DataLoader.enableclick = true;
+        // DataLoader.enableclick = true;
         // fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
     };
     return CameraMovement;

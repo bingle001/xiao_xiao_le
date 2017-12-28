@@ -21,17 +21,18 @@ class Map extends eui.Component {
     private OnMouseDown() {
         CameraMovement.setstate = true;
         CameraMovement.movement = false;
-        if (DataLoader.enableclick) {
-            // transform.GetChild(0).transform.localScale = new Vector3(0.8f, 0.75f, 1);
-            //TODO
-            this.scaleX = 0.8;
-            this.scaleY = 0.75;
-        }
+        // if (DataLoader.enableclick) {
+        //     // transform.GetChild(0).transform.localScale = new Vector3(0.8f, 0.75f, 1);
+        //     //TODO
+        //     this.scaleX = 0.8;
+        //     this.scaleY = 0.75;
+        // }
     }
     private OnMouseUp() {
 
         CameraMovement.setstate = false;
-        if (DataLoader.enableclick && !CameraMovement.movement) {
+        // if (DataLoader.enableclick && !CameraMovement.movement) {
+        if(!CameraMovement.movement){
             SoundController.Sound.Click();
             // transform.GetChild(0).transform.localScale = new Vector3(0.8f, 0.8f, 1);
             //TODO

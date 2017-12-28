@@ -5,6 +5,17 @@ class Global {
 
 	public static CellWidth: number = 100;
 	public static cellHeight: number = 100;
+	public static JewelWidth: number = 98;
+	public static JewelHeight: number = 98;
+
+	public static BaseDistance: number = 100;
+
+	// 游戏为 7行9列
+	public static GameRow: number = 7;
+	public static GameCol: number = 9;
+
+	/** 关卡数量 */
+	public static MapPointCount: number = 297;
 
 
 }
@@ -35,6 +46,11 @@ class Random{
 
 
 function debug(content: string, ...params: any[]): void {
-	console.log(content, params);
+	if (params && params.length > 0) {
+		console.log(content, params);
+	}
+	else {
+		console.log(content);
+	}
 }
 

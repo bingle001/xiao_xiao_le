@@ -16,20 +16,22 @@ __reflect(Player.prototype, "Player");
 // 玩家保存记录实体类
 var PlayerUtils = (function () {
     function PlayerUtils() {
-        this.KEY_DATA = "DATA";
-        this.data = "";
     }
-    /// 保存玩家数据,保存的过程有点类似于JSON
-    PlayerUtils.prototype.Save = function (Maps) {
-        //PlayerPrefs.DeleteKey(KEY_DATA);
+    /**
+     * 保存玩家数据,保存的过程有点类似于JSON
+     */
+    PlayerUtils.Save = function (Maps) {
+        var data = "";
         for (var i in Maps) {
             var item = Maps[i];
-            this.data += item.ToSaveString();
+            data += item.ToSaveString();
         }
-        PlayerPrefs.SetString(this.KEY_DATA, this.data);
+        PlayerPrefs.SetString(this.KEY_DATA, data);
     };
-    /// 加载玩家数据
-    PlayerUtils.prototype.Load = function () {
+    /**
+     * 加载玩家数据
+     */
+    PlayerUtils.Load = function () {
         var list = [];
         var data = PlayerPrefs.GetString(this.KEY_DATA, "");
         var dataSplit = data.split(',');
@@ -45,6 +47,7 @@ var PlayerUtils = (function () {
         }
         return list;
     };
+    PlayerUtils.KEY_DATA = "DATA";
     return PlayerUtils;
 }());
 __reflect(PlayerUtils.prototype, "PlayerUtils");

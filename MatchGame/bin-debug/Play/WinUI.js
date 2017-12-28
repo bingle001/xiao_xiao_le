@@ -66,8 +66,7 @@ var WinUI = (function (_super) {
         DataLoader.MyData[index] = PLayerInfo.MapPlayer;
         if (PLayerInfo.MapPlayer.Level < 297)
             DataLoader.MyData[index + 1].Locked = false;
-        var p = new PlayerUtils();
-        p.Save(DataLoader.MyData);
+        PlayerUtils.Save(DataLoader.MyData);
     };
     return WinUI;
 }(eui.Component));

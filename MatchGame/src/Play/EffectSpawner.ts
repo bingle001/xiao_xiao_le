@@ -26,7 +26,7 @@ class EffectSpawner {
 
 	public REFRESH_COMBO_TIME = 2;
 	public BOOM_TIME = 0.5;
-	publicICECRASH_TIME = 0.5;
+	public ICECRASH_TIME = 0.5;
 	public JEWELCASH_TIME = 0.35;
 	public SCORESHOW_TIME = 0.5;
 	public THUNDER_TIME = 0.4;

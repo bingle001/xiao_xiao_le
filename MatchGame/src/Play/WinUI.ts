@@ -68,8 +68,7 @@ class WinUI extends eui.Component {
 		DataLoader.MyData[index] = PLayerInfo.MapPlayer;
 		if (PLayerInfo.MapPlayer.Level < 297)
 			DataLoader.MyData[index + 1].Locked = false;
-		let p: PlayerUtils = new PlayerUtils();
-		p.Save(DataLoader.MyData);
+		PlayerUtils.Save(DataLoader.MyData);
 	}
 
 

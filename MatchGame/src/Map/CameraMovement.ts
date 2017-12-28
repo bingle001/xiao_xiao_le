@@ -135,7 +135,7 @@ class CameraMovement extends egret.DisplayObjectContainer{
 
     public FreezeMap():void
     {
-        DataLoader.enableclick = false;
+        // DataLoader.enableclick = false;
         // fade.GetComponent<CanvasGroup>().blocksRaycasts = true;
         //TODO
     }
@@ -146,7 +146,7 @@ class CameraMovement extends egret.DisplayObjectContainer{
         SoundController.Sound.Click();
         // this.PopUp.SetActive(false);
         this.isPopup = false;
-        DataLoader.enableclick = true;
+        // DataLoader.enableclick = true;
         // fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
 
     }

@@ -29,10 +29,22 @@ class GribManager {
 
     private cellscript: CellObj;
 
-    private path: string = "resources/assets/map/";
-
     public static Awake(): void {
-        GribManager.cell = new GribManager();
+        if (!this.cell) {
+            return;
+        }
+        
+        let cell = new GribManager();
+        GribManager.cell = cell;
+
+        //初始化素材路径
+        cell.CellSprite = [];
+        cell.CellSprite[0] = "cell_tranf_png";
+        cell.CellSprite[1] = "cell_gray_png";
+        cell.CellSprite[2] = "cell_blue_png";
+        cell.CellSprite[3] = "cell_red_png";
+        cell.CellSprite[4] = "cell_red_png";    //4,5是有特效的，但最低还是最高级图片
+        cell.CellSprite[5] = "cell_red_png";
     }
 
     // Create Grid map

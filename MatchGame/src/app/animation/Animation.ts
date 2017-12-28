@@ -60,7 +60,7 @@ class Animation {
 	}
 
 	public static loadAni(sprites, eff_type: string, loader?: Function, loaderThis?: any, frameIndex: number = 0) {
-		var eff_config = AnimationData.loadConfig(eff_type);
+		var eff_config = AnimationData.getConfig(eff_type);
 		if (!eff_config) return;
 		var data = this.cheackNpcName(eff_type);
 		var anim = new SpriteAnimation(sprites, eff_type, eff_config.fHold, eff_config.fType, frameIndex);

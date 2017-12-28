@@ -8,6 +8,12 @@ var Global = (function () {
     Global.GameHeight = 1280;
     Global.CellWidth = 100;
     Global.cellHeight = 100;
+    Global.BaseDistance = 100;
+    // 游戏为 7行9列
+    Global.GameRow = 7;
+    Global.GameCol = 9;
+    /** 关卡数量 */
+    Global.MapPointCount = 297;
     return Global;
 }());
 __reflect(Global.prototype, "Global");
@@ -51,6 +57,11 @@ function debug(content) {
     for (var _i = 1; _i < arguments.length; _i++) {
         params[_i - 1] = arguments[_i];
     }
-    console.log(content, params);
+    if (params && params.length > 0) {
+        console.log(content, params);
+    }
+    else {
+        console.log(content);
+    }
 }
 //# sourceMappingURL=Global.js.map

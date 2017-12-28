@@ -7,8 +7,58 @@ var DataLoader = (function () {
         this.KEY_DATA = "DATA"; // key PlayerPrefs
         this.KEY_FRISTTIME = "one"; // key check first app to play 
         this.KEY_MAPPOS = "mappos";
-        this.mappos = [];
-        this.STARMOVE_TIME = 1; // time of movement icon select level
+        // //初始化地图上的据点
+        // private initMap() {
+        //     for (let i = 0; i < 99; i++) {
+        //         this.insmap(this.mappos[i], i);
+        //         this.insmap(this.mappos[i + 99], i + 99);
+        //         this.insmap(this.mappos[i + 198], i + 198);
+        //     }
+        //     //乱七八糟，据点初始化全部放到MapScene中去，这里只初始化数据
+        //     // //如果不是首次加载并且不是最后一关的话，就展示下一个点的位置。
+        //     // if (CameraMovement.StarPointMoveIndex != -1 && CameraMovement.StarPointMoveIndex != 297) {
+        //     //     this.StarPointMove();
+        //     //     CameraMovement.mcamera.PopUpShow(DataLoader.MyData[CameraMovement.StarPointMoveIndex]);
+        //     //     PlayerPrefs.SetFloat("LASTPOS", this.listmap[CameraMovement.StarPointMoveIndex].y);
+        //     //     PlayerPrefs.SetFloat("LASTPOSX", this.listmap[CameraMovement.StarPointMoveIndex].x);
+        //     // }
+        //     // else {
+        //     //     //如果是首次展示则直接播放StartPoint
+        //     //     // fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
+        //     //     // CameraMovement.mcamera.StarPoint.transform.GetChild(0).GetComponent<Animation>().Play("StarPoint");
+        //     //     //TODO
+        //     // }
+        // }
+        // // private StringToVector3(s: string): any {
+        // //     debug("StringToVector3");
+        // //     let p: string[] = s.split(',');
+        // //     let vt = new Vector3(Number(p[0]), Number(p[1]));
+        // //     return vt;
+        // // }
+        // // 初始化Map游戏对象
+        // private insmap(pos: Vector2, index: number): void {
+        //     let tmp = new GameObject();
+        //     tmp.x = pos.x;
+        //     tmp.y = pos.y;
+        //     this.mapParent.addChild(tmp);
+        //     this.listmap[index] = tmp;
+        // }
+        // // 显示当前玩家进度点
+        // private StarPointMove(): void {
+        //     // Vector3 newpos = listmap[CameraMovement.StarPointMoveIndex].transform.position + new Vector3(0, 0, -0.3];
+        //     let oldX: number = this.listmap[CameraMovement.StarPointMoveIndex].x;
+        //     let oldY: number = this.listmap[CameraMovement.StarPointMoveIndex].y;
+        //     let oldZ: number = 1;// this.listmap[CameraMovement.StarPointMoveIndex].z;
+        //     let newpos: Vector2 = new Vector2(oldX, oldY);//, oldZ - 0.3);
+        //     Ulti.MoveTo(CameraMovement.mcamera.StarPoint, newpos, this.STARMOVE_TIME);// newpos.z);
+        //     TimerUtils.setTimeOut(this.STARMOVE_TIME, this.stopanimation, this);// StartCoroutine(stopanimation());
+        // }
+        // // 播放StartPoint动画
+        // private stopanimation(): void {
+        //     //TODO DataLoader.stopanimation();
+        //     // CameraMovement.mcamera.StarPoint.transform.GetChild(0).transform.localPosition = new Vector3(0, 0.619,0);
+        //     // CameraMovement.mcamera.StarPoint.transform.GetChild(0).GetComponent<Animation>().Play("StarPoint");
+        // }
         //通关情况，保存的数据也是这种格式
         this.datadefautStr = "False,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,1,True,0,0,1,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,3,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,1,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,0,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,True,0,0,2,";
     }
@@ -16,119 +66,15 @@ var DataLoader = (function () {
         DataLoader.Data = new DataLoader();
     };
     DataLoader.prototype.Start = function () {
-        Time.timeScale = 1;
-        this.listmap = []; // new GameObject[297];
-        //PlayerPrefs.DeleteKey(KEY_FRISTTIME);
         if (PlayerPrefs.GetInt(this.KEY_FRISTTIME, 0) == 0) {
             PlayerPrefs.SetString(this.KEY_DATA, this.datadefautStr);
             PlayerPrefs.SetInt(this.KEY_FRISTTIME, 1);
         }
-        this.MapButtonDrawer(); //StartCoroutine(MapButtonDrawer());
-    };
-    DataLoader.prototype.moveobj = function (mouseposition) {
-        // Vector3 wp = Camera.main.ScreenToWorldPoint(mouseposition);
-        // Vector2 touchPos = [wp.x, wp.y];
-        // if (Physics2D.OverlapPoint(touchPos))
-        // {
-        //     GameObject tmp = Physics2D.OverlapPoint(touchPos).gameObject;
-        //     if (tmp != null && tmp.tag == "map")
-        //     {
-        //         return tmp;
-        //     }
-        // }
-        //TODO 应该是检测当前移动哪个物品
-        return null;
-    };
-    // Draw buttons level on scene
-    DataLoader.prototype.MapButtonDrawer = function () {
-        DataLoader.enableclick = false;
-        this.MapPosD();
-        this.processbar.scaleX = 0.3; // processbar.fillAmount = 0.3f;       //更新进度条
-        Debug.Log("1");
-        var pu = new PlayerUtils();
-        DataLoader.MyData = pu.Load(); //加载玩家已经通关的数据
-        this.processbar.scaleX = 0.5; // processbar.fillAmount = 0.5f;       //更新进度条
-        Debug.Log("2");
-        for (var i = 0; i < 99; i++) {
-            //更新进度条
-            // processbar.fillAmount += 0.0016835016835017f * 3;
-            // //一次初始化3个Map 游戏对象
-            // this.insmap(this.mappos[i], i);
-            // this.insmap(this.mappos[i + 99], i + 99);
-            // this.insmap(this.mappos[i + 198], i + 198);
-            //下一帧在执行.(分帧执行,这样才会产生更新进度度的动画,不像神曲有些加载的时候显示的时直接卡死，因为没有分帧执行)
-            // yield return null;
-            //TODO 分帧执行
-            //这里暂时全部一起初始化掉
-            this.insmap(this.mappos[i], i);
-            this.insmap(this.mappos[i + 99], i + 99);
-            this.insmap(this.mappos[i + 198], i + 198);
-        }
-        this.processbar.scaleX += 0.0016835016835017 * 3 * 99;
-        Debug.Log("3");
-        //设置进度条消失
-        // processbar.transform.parent.gameObject.SetActive(false);
-        this.processbar.visible = false;
-        DataLoader.enableclick = true;
-        //如果不是首次加载并且不是最后一关的话，就展示下一个点的位置。
-        if (CameraMovement.StarPointMoveIndex != -1 && CameraMovement.StarPointMoveIndex != 297) {
-            this.StarPointMove();
-            // yield return new WaitForSeconds(this.STARMOVE_TIME);
-            //TODO 
-            CameraMovement.mcamera.PopUpShow(DataLoader.MyData[CameraMovement.StarPointMoveIndex]);
-            PlayerPrefs.SetFloat("LASTPOS", this.listmap[CameraMovement.StarPointMoveIndex].y);
-            PlayerPrefs.SetFloat("LASTPOSX", this.listmap[CameraMovement.StarPointMoveIndex].x);
-        }
-        else {
-            //如果是首次展示则直接播放StartPoint
-            // fade.GetComponent<CanvasGroup>().blocksRaycasts = false;
-            // CameraMovement.mcamera.StarPoint.transform.GetChild(0).GetComponent<Animation>().Play("StarPoint");
-            //TODO
-        }
-    };
-    DataLoader.prototype.StringToVector3 = function (s) {
-        debug("StringToVector3");
-        var p = s.split(',');
-        var vt = new Vector3(Number(p[0]), Number(p[1]));
-        return vt;
-    };
-    // 初始化Map游戏对象
-    DataLoader.prototype.insmap = function (pos, index) {
-        // tmp = (GameObject)Instantiate(map);
-        // tmp.transform.position = new Vector3(pos.x, pos.y);
-        // tmp.transform.SetParent(mapParent.transform, false);
-        // listmap[index] = tmp;
-        // tmp.transform.GetChild(1).GetComponent<TextMesh>().text = (index + 1).ToString();
-        // tmp.name = (index + 1).ToString();
-        // Map m = tmp.GetComponent<Map>();
-        // m.map = MyData[index];
-        // m.SetMapInfo();
-        var tmp = new GameObject();
-        tmp.x = pos.x;
-        tmp.y = pos.y;
-        this.mapParent.addChild(tmp);
-        this.listmap[index] = tmp;
-        //TODO 初始化地图据点，应该有个显示对象
-    };
-    // 显示当前玩家进度点
-    DataLoader.prototype.StarPointMove = function () {
-        DataLoader.enableclick = false;
-        // Vector3 newpos = listmap[CameraMovement.StarPointMoveIndex].transform.position + new Vector3(0, 0, -0.3];
-        var oldX = this.listmap[CameraMovement.StarPointMoveIndex].x;
-        var oldY = this.listmap[CameraMovement.StarPointMoveIndex].y;
-        var oldZ = 1; // this.listmap[CameraMovement.StarPointMoveIndex].z;
-        var newpos = new Vector2(oldX, oldY); //, oldZ - 0.3);
-        Ulti.MoveTo(CameraMovement.mcamera.StarPoint, newpos, this.STARMOVE_TIME); // newpos.z);
-        TimerUtils.setTimeOut(this.STARMOVE_TIME, this.stopanimation, this); // StartCoroutine(stopanimation());
-    };
-    // 播放StartPoint动画
-    DataLoader.prototype.stopanimation = function () {
-        //TODO DataLoader.stopanimation();
-        // CameraMovement.mcamera.StarPoint.transform.GetChild(0).transform.localPosition = new Vector3(0, 0.619,0);
-        // CameraMovement.mcamera.StarPoint.transform.GetChild(0).GetComponent<Animation>().Play("StarPoint");
+        this.initPosData();
+        DataLoader.MyData = PlayerUtils.Load(); //加载玩家已经通关的数据
     };
     // 初始化地图点
-    DataLoader.prototype.MapPosD = function () {
+    DataLoader.prototype.initPosData = function () {
         var mappos = [];
         mappos[0] = [-0.004228723, -3.587];
         mappos[1] = [0.695, -3.232];
@@ -429,8 +375,7 @@ var DataLoader = (function () {
         mappos[296] = [-0.956, 92.74];
         this.mappos = mappos;
     };
-    // 玩家已经通关的数据
-    DataLoader.MyData = []; // list of Player object
+    DataLoader.MyData = []; //// 玩家已经通关的数据     // list of Player object
     return DataLoader;
 }());
 __reflect(DataLoader.prototype, "DataLoader");

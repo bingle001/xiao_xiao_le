@@ -9,26 +9,26 @@ class AnimationData {
 		this.m_pEffConfig = {};
 
 		this.m_pEffConfig[AniTypes.Arrow] = this.createCfgItem(16, 1, true);
-		this.m_pEffConfig[AniTypes.Bash] = this.createCfgItem(12, 1, true);
-		this.m_pEffConfig[AniTypes.Boom] = this.createCfgItem(10, 1, true);
-		this.m_pEffConfig[AniTypes.Fire] = this.createCfgItem(13, 1, true);
-		this.m_pEffConfig[AniTypes.Ice] = this.createCfgItem(6, 1, true);
-		this.m_pEffConfig[AniTypes.Lock] = this.createCfgItem(6, 1, true);
+		this.m_pEffConfig[AniTypes.Bash] = this.createCfgItem(12, 1);
+		this.m_pEffConfig[AniTypes.Boom] = this.createCfgItem(10, 1);
+		this.m_pEffConfig[AniTypes.Fire] = this.createCfgItem(13, 1)
+		this.m_pEffConfig[AniTypes.Ice] = this.createCfgItem(6, 1);
+		this.m_pEffConfig[AniTypes.Lock] = this.createCfgItem(6, 1);
 		this.m_pEffConfig[AniTypes.Magic] = this.createCfgItem(4, 1, true);
 		this.m_pEffConfig[AniTypes.JewelStar] = this.createCfgItem(10, 1, true);
 		
 	}
 
 	/**
-     * @param fHao  播放速度 值越大越慢
+     * @param frame 帧数
      * @param fileNum   资源文件数量
      * @param isRepeat  是否重复播放
      * @param loadType  加载类型
      * @returns {any}
      */
-	public static createCfgItem(fHao = 3, fileNum = 1, isRepeat = false, loadType = 0): AnimationConfig {
+	public static createCfgItem(frame, fileNum = 1, isRepeat = false, loadType = 0): AnimationConfig {
 		var item: AnimationConfig = new AnimationConfig();
-        item.fHold = fHao;
+        item.frame = frame;
         item.fType = FrameAnimNumType.num;
         item.isRepeat = isRepeat;
         item.fileNum = fileNum;
@@ -36,11 +36,11 @@ class AnimationData {
         return item;
     }
 
-    public static createRoleCfgItem(fHao = 3, fileNum = 1, isRepeat = false) {
-        return this.createCfgItem(fHao, fileNum, isRepeat, 1);
+    public static createRoleCfgItem(frame, fileNum = 1, isRepeat = false) {
+        return this.createCfgItem(frame, fileNum, isRepeat, 1);
     }
 
-    public static loadConfig(eff_type) {
+    public static getConfig(eff_type) {
         return this.m_pEffConfig[eff_type];
     }
 
@@ -51,8 +51,8 @@ class AnimationData {
 
 /** 动画文件配置 */
 class AnimationConfig{
-	/** 播放速度 值越大越慢 */
-	public fHold:number = 3;
+	/** 总帧数 */
+	public frame:number = 0;
 	/** 是否重复播放 */
 	public isRepeat: boolean = false;
 	/** 资源文件数量 */
