@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MapPointSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="group_star" horizontalCenter="0">
+		<e:Image id="star0" source="SelectMap_starmap1_png" x="0" y="0"/>
+		<e:Image id="star1" source="SelectMap_starmap1_png" x="15" y="0"/>
+		<e:Image id="star2" source="SelectMap_starmap1_png" x="30" y="0"/>
+	</e:Group>
+	<e:Image id="img_icon" source="SelectMap_locked_png" y="20"/>
+	<e:BitmapLabel id="lbl_num" y="74" text="1" font="so-levels_fnt" horizontalCenter="0.5"/>
+</e:Skin>

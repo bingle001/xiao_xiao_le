@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="LoadingUISkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image source="Load_background_loading_png"/>
+	<e:Image id="img_bar" source="Load_loading2_png" y="663" horizontalCenter="-0.5" width="546" height="36"/>
+</e:Skin>

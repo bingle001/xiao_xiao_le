@@ -9,9 +9,9 @@
 	],
 	"game": [
 		"bin-debug/code/app/GameObject.js",
-		"bin-debug/code/app/animation/AnimateTimer.js",
 		"bin-debug/code/app/MonoBehaviour.js",
 		"bin-debug/code/app/Vector2.js",
+		"bin-debug/code/app/animation/AnimateTimer.js",
 		"bin-debug/code/Map/CameraMovement.js",
 		"bin-debug/AssetAdapter.js",
 		"bin-debug/code/app/Global.js",
