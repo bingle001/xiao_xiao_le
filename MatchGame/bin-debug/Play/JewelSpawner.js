@@ -1,8 +1,8 @@
 var __reflect = (this && this.__reflect) || function (p, c, t) {
     p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
 };
-/// 此组件被挂载到PlayScene中的Screen中
-/// 职责:负责生成宝石对象
+// 此组件被挂载到PlayScene中的Screen中
+// 职责:负责生成宝石对象
 var JewelSpawner = (function () {
     function JewelSpawner() {
         this.BaseDistance = 100; //应该是100，实际的大小 //?? 1;
@@ -14,11 +14,12 @@ var JewelSpawner = (function () {
             JewelSpawner.spawn.prespawnlist[i] = new Array(); // new List<GameObject>();
         }
         //素材
+        JewelSpawner.spawn.JewelSprite = [];
         for (var i = 0; i < 7; i++) {
             JewelSpawner.spawn.JewelSprite[i] = ResUtils.getJewel(i + 1);
         }
     };
-    /// 初始化地图数据(创建地图上的宝石)
+    // 初始化地图数据(创建地图上的宝石)
     JewelSpawner.prototype.JewelMapCreate = function (map) {
         this.JewelGrib = Utils.initVector2(GameObject, 7, 9); // new GameObject[7, 9];
         this.JewelGribScript = Utils.initVector2(JewelObj, 7, 9); // new JewelObj[7, 9];
@@ -70,7 +71,7 @@ var JewelSpawner = (function () {
                         s = y;
                 }
                 for (var y = s; y < 9; y++) {
-                    if (GribManager.cell.Map[x][y] > 0 && this.JewelGribScript[x][y] == null) {
+                    if (GribManager.cell.mapData[x][y] > 0 && this.JewelGribScript[x][y] == null) {
                         this.RJewelInstantiate(x, y);
                     }
                 }
@@ -175,7 +176,7 @@ var JewelSpawner = (function () {
         this.Destroy(o); //???
         return o;
     };
-    /// 创建宝石
+    // 创建宝石
     JewelSpawner.prototype.RJewelInstantiate = function (x, y) {
         // ObjTmp = (GameObject)Instantiate(JewelObject);
         // JewelScript = ObjTmp.GetComponent<JewelObj>();

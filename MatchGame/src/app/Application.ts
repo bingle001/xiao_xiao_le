@@ -19,6 +19,8 @@ class Application {
 		Time.Awake();
 		DataLoader.Awake();
 		GribManager.Awake();
+		GameController.Awake();
+		JewelSpawner.Awake();
 
 		Application.changeScene(SceneType.Home);
 	}

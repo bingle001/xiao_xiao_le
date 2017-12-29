@@ -1,5 +1,5 @@
-/// 此组件被挂载到PlayScene中的Screen中
-/// 职责:负责生成宝石对象
+// 此组件被挂载到PlayScene中的Screen中
+// 职责:负责生成宝石对象
 class JewelSpawner {
 
     public static spawn: JewelSpawner;
@@ -45,12 +45,13 @@ class JewelSpawner {
         }
 
         //素材
+        JewelSpawner.spawn.JewelSprite = [];
         for (let i = 0; i < 7; i++) {
             JewelSpawner.spawn.JewelSprite[i] = ResUtils.getJewel(i + 1);
         }
     }
 
-    /// 初始化地图数据(创建地图上的宝石)
+    // 初始化地图数据(创建地图上的宝石)
     public JewelMapCreate(map: number[][]): void {
         this.JewelGrib = Utils.initVector2(GameObject, 7, 9);// new GameObject[7, 9];
         this.JewelGribScript = Utils.initVector2(JewelObj, 7, 9);// new JewelObj[7, 9];
@@ -111,7 +112,7 @@ class JewelSpawner {
                         s = y;
                 }
                 for (let y = s; y < 9; y++) {
-                    if (GribManager.cell.Map[x][y] > 0 && this.JewelGribScript[x][y] == null) {
+                    if (GribManager.cell.mapData[x][y] > 0 && this.JewelGribScript[x][y] == null) {
                         this.RJewelInstantiate(x, y);
                     }
                 }
@@ -236,7 +237,7 @@ class JewelSpawner {
         return o;
     }
 
-    /// 创建宝石
+    // 创建宝石
     private RJewelInstantiate(x: number, y: number): GameObject {
         // ObjTmp = (GameObject)Instantiate(JewelObject);
         // JewelScript = ObjTmp.GetComponent<JewelObj>();

@@ -8,6 +8,8 @@ var Global = (function () {
     Global.GameHeight = 1280;
     Global.CellWidth = 100;
     Global.cellHeight = 100;
+    Global.JewelWidth = 98;
+    Global.JewelHeight = 98;
     Global.BaseDistance = 100;
     // 游戏为 7行9列
     Global.GameRow = 7;
@@ -58,10 +60,10 @@ function debug(content) {
         params[_i - 1] = arguments[_i];
     }
     if (params && params.length > 0) {
-        console.log(content, params);
+        egret.log.apply(egret, [content].concat(params));
     }
     else {
-        console.log(content);
+        egret.log(content);
     }
 }
 //# sourceMappingURL=Global.js.map

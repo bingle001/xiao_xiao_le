@@ -99,19 +99,19 @@ class JewelObj extends GameObject {
         // EffectSpawner.effect.JewelCrashArray[x][y].SetActive(true);
     }
 
-    /// 重新调整JewelPosition的位置，并播放下落动画
-    /// 此方法有点类似于排序，主要是处理当Map中有消除的方块后产生空位，此时需要将空位上方的方块移动到空位。
-    /// （说白了就是冒泡排序，地图中消失的方块移动到后面）
-    /// 将数组中Y轴的往下移动。全部移动完后，所有地图中空的位置均为后面的值，例如6、7、8这几个位置是空的）
+    // 重新调整JewelPosition的位置，并播放下落动画
+    // 此方法有点类似于排序，主要是处理当Map中有消除的方块后产生空位，此时需要将空位上方的方块移动到空位。
+    // （说白了就是冒泡排序，地图中消失的方块移动到后面）
+    // 将数组中Y轴的往下移动。全部移动完后，所有地图中空的位置均为后面的值，例如6、7、8这几个位置是空的）
     public getNewPosition(): void {
         let newpos = this.jewel.JewelPosition.y;
         let x: number = this.jewel.JewelPosition.x;
         let oldpos = this.jewel.JewelPosition.y;
 
         for (let y = newpos - 1; y >= 0; y--) {
-            if (GribManager.cell.Map[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGribScript[x][y] == null)
+            if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGribScript[x][y] == null)
                 newpos = y;
-            else if (GribManager.cell.Map[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
+            else if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
                 break;
             }
         }
@@ -126,7 +126,7 @@ class JewelObj extends GameObject {
         }
     }
 
-    /// 获取行消除List
+    // 获取行消除List
     public GetRow(Pos: Vector2, type: number, bonus: JewelObj): JewelObj[] {
         let tmp1: JewelObj[] = this.GetLeft(Pos, type);
         let tmp2: JewelObj[] = this.GetRight(Pos, type);
@@ -138,7 +138,7 @@ class JewelObj extends GameObject {
             return new Array<JewelObj>();// new List<JewelObj>();
     }
 
-    /// 获取列消除List
+    // 获取列消除List
     public GetCollumn(Pos: Vector2, type: number, bonus: JewelObj): JewelObj[] {
         let tmp1: JewelObj[] = this.GetTop(Pos, type);
         let tmp2: JewelObj[] = this.GetBot(Pos, type);
@@ -149,7 +149,7 @@ class JewelObj extends GameObject {
             return new Array<JewelObj>();// new List<JewelObj>();
     }
 
-    /// 播放移动无效的动画
+    // 播放移动无效的动画
     public SetBackAnimation(Obj: GameObject): void {
         if (!Supporter.sp.isNomove) {
             //TODO 
@@ -206,7 +206,7 @@ class JewelObj extends GameObject {
         return tmp;
     }
 
-    /// 检测上方是否有相同的方块
+    // 检测上方是否有相同的方块
     private GetTop(Pos: Vector2, type: number): JewelObj[] {
         let tmp: JewelObj[] = [];// new List<JewelObj>();
         for (let y = Pos.y + 1; y < 9; y++) {
@@ -222,7 +222,7 @@ class JewelObj extends GameObject {
         return tmp;
     }
 
-    /// 检测下方是否有相同的方块
+    // 检测下方是否有相同的方块
     private GetBot(Pos: Vector2, type: number): JewelObj[] {
         let tmp: JewelObj[] = [];// new List<JewelObj>();
         for (let y = Pos.y - 1; y >= 0; y--) {

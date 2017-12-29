@@ -3,20 +3,31 @@
  */
 class GameScene extends BaseScene{
 
-	public cellParent: egret.DisplayObjectContainer;
-	public jewelParent: egret.DisplayObjectContainer;
+	public img_bg:eui.Image;
+	public group_cellParent:eui.Group;
+	public group_borderParent:eui.Group;
+
 
 	public constructor() {
 		super();
 		this.name = "GameScene";
+		this.initSkin("game/GameSceneSkin.exml");
 	}
 
 	/**
 	 * 创建完成时会调用
 	 */
-	protected onCreated(): void{
+	protected onCreated(): void {
 		super.onCreated();
-		debug("homeScene onCreated");
+		debug("GameScene onCreated");
+
+		if (PLayerInfo.MODE == 1) {
+			GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent);
+		}
+		else {
+			GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent);
+		}
+		// GameController.action.Start();
 	}
 
 	/**

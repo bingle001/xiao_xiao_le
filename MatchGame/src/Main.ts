@@ -82,13 +82,14 @@ class Main extends eui.UILayer {
             // custom lifecycle plugin
         })
 
-        egret.lifecycle.onPause = () => {
-            egret.ticker.pause();
-        }
+        //会被暂停掉，调试先忽略
+        // egret.lifecycle.onPause = () => {
+        //     egret.ticker.pause();
+        // }
 
-        egret.lifecycle.onResume = () => {
-            egret.ticker.resume();
-        }
+        // egret.lifecycle.onResume = () => {
+        //     egret.ticker.resume();
+        // }
 
         //注入自定义的素材解析器
         egret.registerImplementation("eui.IAssetAdapter", new AssetAdapter());

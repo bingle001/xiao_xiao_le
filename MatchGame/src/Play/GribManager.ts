@@ -1,66 +1,59 @@
-// 格子管理器 组件 （挂载到MainCamera游戏对象上）
+// 格子管理器
 // 职责:产生各种特效
 class GribManager {
 
-    public constructor() {
-    }
-
     public static cell: GribManager;
-
-    public GribCell: GameObject[];
-
-    public GribCellObj: CellObj[][];
-
-    public GribParent: GameObject;
-
-    public CellPrefab: GameObject;
-
     public CellSprite: string[]; //Sprite[]
 
-    public border: GameObject[];
+    public GribCell: Cell[][];
+    public GribCellObj: CellObj[][];
+    public GribParent: egret.DisplayObjectContainer;
 
-    public corner: GameObject[];
+    public border: eui.Image[];
+    public corner: eui.Image[];
+    public BorderParent: egret.DisplayObjectContainer;
 
-    public BorderParent: GameObject;
-
-    public Map: number[][];
-
-    private ObjTmp: GameObject;
-
-    private cellscript: CellObj;
+    public mapName: string;
+    public mapData: number[][]; //当前关卡数据
 
     public static Awake(): void {
-        if (!this.cell) {
-            return;
-        }
-        
         let cell = new GribManager();
         GribManager.cell = cell;
 
         //初始化素材路径
         cell.CellSprite = [];
-        cell.CellSprite[0] = "cell_tranf_png";
-        cell.CellSprite[1] = "cell_gray_png";
-        cell.CellSprite[2] = "cell_blue_png";
-        cell.CellSprite[3] = "cell_red_png";
-        cell.CellSprite[4] = "cell_red_png";    //4,5是有特效的，但最低还是最高级图片
-        cell.CellSprite[5] = "cell_red_png";
+        // cell.CellSprite[0] = "cell_tranf_png";
+        cell.CellSprite[0] = "cell_gray_png";
+        cell.CellSprite[1] = "cell_blue_png";
+        cell.CellSprite[2] = "cell_red_png";
+
+        // cell.CellSprite[4] = "cell_red_png";    //4,5是有特效的，但最低还是最高级图片
+        // cell.CellSprite[5] = "cell_red_png";
     }
 
     // Create Grid map
-    public GribMapCreate(MapName: string): void {  //IEnumerator
-        this.GribCell = Utils.initVector2(GameObject, 7, 9);// new GameObject[7, 9];
-        this.Map = this.MapReader(MapName);
-        // yield return new WaitForEndOfFrame();        //这样写的好处是为了能跟上帧频,即每帧执行一块
-        this.GribCreate(this.Map);
-        // yield return new WaitForEndOfFrame();
-        this.BorderCreate(this.Map);
-        // yield return new WaitForEndOfFrame();
-        this.EffectCrash(this.Map);
-        // yield return new WaitForSeconds(1);
-        JewelSpawner.spawn.JewelMapCreate(this.Map);
-        // yield return new WaitForEndOfFrame();
-        JewelSpawner.spawn.EnableAllJewel();
+    public GribMapCreate(mapName: string, cellParent: egret.DisplayObjectContainer, borderParent: egret.DisplayObjectContainer): void {
+        mapName = "7";   //test
+        this.mapName = mapName;
+        this.GribParent = cellParent;
+        this.BorderParent = borderParent;
+
+        this.GribCell = Utils.initVector2(Cell, 7, 9);// new GameObject[7, 9];
+        this.mapData = this.MapReader(mapName);
+        this.GribCreate(this.mapData);
+        this.BorderCreate(this.mapData);
+        this.EffectCrash(this.mapData);
+        // JewelSpawner.spawn.JewelMapCreate(this.mapData);
+        // JewelSpawner.spawn.EnableAllJewel();
+    }
+
+    public test(map: number): void{
+        this.GribParent.removeChildren();
+        this.BorderParent.removeChildren();
+        this.GribCell = Utils.initVector2(Cell, 7, 9);// new GameObject[7, 9];
+        this.mapData = this.MapReader(map.toString());
+        this.GribCreate(this.mapData);
+        this.BorderCreate(this.mapData);
     }
 
     private GribCreate(map: number[][]): void {
@@ -68,55 +61,48 @@ class GribManager {
         this.GribCellObj = Utils.initVector2(CellObj, 7, 9);// new CellObj[7, 9];
         for (let x = 0; x < 7; x++) {
             for (let y = 0; y < 9; y++) {
-                if (map[x][y] > 1)
+                if (map[x][y] > 1) {
                     GameController.action.CellNotEmpty++;
-                if (map[x][y] > 0)
+                }
+                if (map[x][y] > 0) {
                     this.CellInstantiate(x, y, map[x][y]);
-                //！！！！下面这行代码多余的，会导制重复创建 JewelCash 缓存
-                //EffectSpawner.effect.JewelCrashArray[x, y] = EffectSpawner.effect.JewelCash(new Vector3(x,y));
+                }
             }
         }
     }
 
-    /// 根据地图批量创建销毁动画显示对象，并缓存到JewelCrashArray
+    // 根据地图批量创建销毁动画显示对象，并缓存到JewelCrashArray
     private EffectCrash(map: number[][]): void {
-        for (let x = 0; x < 7; x++) {
-            for (let y = 0; y < 9; y++) {
-                if (map[x][y] > 0)
-                    EffectSpawner.effect.JewelCrashArray[x][y] = EffectSpawner.effect.JewelCash(new Vector3(x, y));
-            }
-        }
+        //TODO 为何这里要创建宝石的销毁动画？？？
+        // for (let x = 0; x < 7; x++) {
+        //     for (let y = 0; y < 9; y++) {
+        //         if (map[x][y] > 0)
+        //             EffectSpawner.effect.JewelCrashArray[x][y] = EffectSpawner.effect.JewelCash(new Vector3(x, y));
+        //     }
+        // }
     }
 
     private CellInstantiate(x: number, y: number, type: number): void {
-        // ObjTmp = (GameObject)Instantiate(CellPrefab);
-        // ObjTmp.transform.SetParent(GribParent.transform, false);
-        // ObjTmp.transform.localPosition = new Vector3(x, y);
-        // cellscript = ObjTmp.GetComponent<CellObj>();
-        // cellscript.CellCode = type;
-        // cellscript.cell = SetCell(type, x, y);
-        // cellscript.SetSprite(cellscript.cell.CellType-1);
-        // GribCell[x, y] = ObjTmp;
-        // GribCellObj[x, y] = cellscript;
-
         let tmp = new CellObj();
-        this.GribParent.addChild(tmp);
-        tmp.x = x;
-        tmp.y = y;
         tmp.CellCode = type;
         tmp.cell = this.SetCell(type, x, y);
         tmp.SetSprite(tmp.cell.CellType - 1);
         this.GribCell[x][y] = tmp.cell;
         this.GribCellObj[x][y] = tmp;
+
+        tmp.x = x * Global.BaseDistance;
+        tmp.y = (8-y) * Global.BaseDistance;
+        this.GribParent.addChild(tmp);
     }
 
-    private MapReader(mapName: string): number[][]//int[,]
+    private MapReader(mapName: string): number[][]
     {
-        let tmp: number[][] = Utils.initVector2(Number, 7, 9);// new int[7, 9];
-        let mapStringdata: string = RES.getRes(mapName + "_txt");
+        let tmp: number[][] = Utils.initVector2(Number, 7, 9);
+        let _data = RES.getRes("_data_json");
+        let mapStringdata: string = _data[mapName];
         debug("读取文件：", mapStringdata);
         let pattern = new RegExp("\\t|\\n|\\t\\n");
-        let stringresult: string[] = mapStringdata.split(pattern);// Split(new char[] { '	', '\n' });
+        let stringresult: string[] = mapStringdata.split(pattern);
         debug("解析文件结果：", stringresult);
         let dem = 0;
         for (let y = 8; y >= 0; y--) {
@@ -147,11 +133,12 @@ class GribManager {
         for (let x = 0; x < 7; x++) {
             for (let y = 0; y < 9; y++) {
                 let i = map[x][y];
+                let cell = this.GribCellObj[x][y];
                 if (i > 0) {
-                    this.borderins(this.GribCell[x][y], this.left(x, y), this.right(x, y), this.top(x, y), this.bot(x, y));
-                    this.CornerOutChecker(this.GribCell[x][y], this.topleft(x, y), this.topright(x, y), this.botleft(x, y), this.botright(x, y), x, y);
+                    this.borderins(cell, this.left(x, y), this.right(x, y), this.top(x, y), this.bot(x, y));
+                    this.CornerOutChecker(cell, this.topleft(x, y), this.topright(x, y), this.botleft(x, y), this.botright(x, y), x, y);
                 } else {
-                    this.boderInChecker(map, x, y);
+                    this.boderInChecker(cell, map, x, y);
                 }
             }
         }
@@ -160,7 +147,7 @@ class GribManager {
     private left(x: number, y: number): boolean {
         if (x == 0)
             return true;
-        else if (x - 1 >= 0 && this.Map[x - 1][y] == 0)
+        else if (x - 1 >= 0 && this.mapData[x - 1][y] == 0)
             return true;
 
         return false;
@@ -169,16 +156,18 @@ class GribManager {
     private right(x: number, y: number): boolean {
         if (x == 6)
             return true;
-        else if (x + 1 <= 6 && this.Map[x + 1][y] == 0)
+        else if (x + 1 <= 6 && this.mapData[x + 1][y] == 0)
             return true;
 
         return false;
     }
 
+    //这就有意思了，所谓bot就是顶，所谓top就是界面上的底，数据应该是反过来放置的！！
+
     private bot(x: number, y: number): boolean {
         if (y == 0)
             return true;
-        else if (x < 7 && y - 1 >= 0 && this.Map[x][y - 1] == 0)
+        else if (x < 7 && y - 1 >= 0 && this.mapData[x][y - 1] == 0)
             return true;
 
         return false;
@@ -187,185 +176,131 @@ class GribManager {
     private top(x: number, y: number): boolean {
         if (y == 8)
             return true;
-        else if (y + 1 <= 8 && this.Map[x][y + 1] == 0)
+        else if (y + 1 <= 8 && this.mapData[x][y + 1] == 0)
             return true;
 
         return false;
     }
 
     private topleft(x: number, y: number): boolean {
-        if (x - 1 < 0 || y + 1 > 8)
+        if (x - 1 < 0 && y + 1 > 8)     //这里应该用 && 而不是 || 吧
             return true;
-        else if (x - 1 >= 0 && y + 1 <= 8 && this.Map[x - 1][y + 1] == 0)
+        else if (x - 1 >= 0 && y + 1 <= 8 && this.mapData[x - 1][y + 1] == 0)
             return true;
 
         return false;
     }
 
     private topright(x: number, y: number): boolean {
-        if (x + 1 > 6 || y + 1 > 8)
+        if (x + 1 > 6 && y + 1 > 8)
             return true;
-        else if (x + 1 <= 6 && y + 1 <= 8 && this.Map[x + 1][y + 1] == 0)
+        else if (x + 1 <= 6 && y + 1 <= 8 && this.mapData[x + 1][y + 1] == 0)
             return true;
 
         return false;
     }
 
     private botleft(x: number, y: number): boolean {
-        if (x - 1 < 0 || y - 1 < 0)
+        if (x - 1 < 0 && y - 1 < 0)
             return true;
-        else if (x - 1 >= 0 && y - 1 >= 0 && this.Map[x - 1][y - 1] == 0)
+        else if (x - 1 >= 0 && y - 1 >= 0 && this.mapData[x - 1][y - 1] == 0)
             return true;
 
         return false;
     }
 
     private botright(x: number, y: number): boolean {
-        if (x + 1 > 6 || y - 1 < 0)
+        if (x + 1 > 6 && y - 1 < 0)
             return true;
-        else if (x + 1 <= 6 && y - 1 >= 0 && this.Map[x + 1][y - 1] == 0)
+        else if (x + 1 <= 6 && y - 1 >= 0 && this.mapData[x + 1][y - 1] == 0)
             return true;
 
         return false;
     }
 
-    //应该是创建边缘
-    private borderins(parent: GameObject, left: boolean, right: boolean, top: boolean, bot: boolean): void {
-        // if (left)
-        // {
-        //         ObjTmp = (GameObject)Instantiate(this.border[2]);
-        //         ObjTmp.transform.SetParent(this.BorderParent.transform, false);
-        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
-        //      //   boderInChecker(parent);
-        // }
-        // if (right)
-        // {
-
-        //         ObjTmp = (GameObject)Instantiate(border[3]);
-        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
-        //         //boderInChecker(parent);
-        // }
-        // if (top)
-        // {
-
-        //         ObjTmp = (GameObject)Instantiate(border[1]);
-        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-        // if (bot)
-        // {
-
-        //         ObjTmp = (GameObject)Instantiate(border[0]);
-        //         ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //         ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-
-        let res: string = "goc-a_png";
-        let sx: number = 1;
-        let sy: number = 1;
-        let tx: number = 0;
-        let ty: number = 0;
-
-        let cellW: number = 100;
-        let cellH: number = 100;
-        let borderW: number = 24;//边界图片的大小
-        let borderH: number = 24;
-        let gap: number = 100 - 24;
+    //应该是线，上下左右4个方向
+    private borderins(cell: GameObject, left: boolean, right: boolean, top: boolean, bot: boolean): void {
+        let tw: number = 100;
+        let th: number = 10;
 
         if (left) {
-            sx = 1;
-            sy = 1;
-            tx = 0;
-            ty = 0;
-            this.addBorderinsImg(res, parent, sx, sy, tx, ty);
+            this.addBorderLineImage(90, cell.x, cell.y);
         }
         if (right) {
-            sx = -1;
-            sy = 1;
-            tx = gap;
-            ty = 0;
-            this.addBorderinsImg(res, parent, sx, sy, tx, ty);
+            this.addBorderLineImage(90, cell.x + tw + th, cell.y);
         }
-
+        if (bot) {
+            this.addBorderLineImage(0, cell.x, cell.y + tw);
+        }
         if (top) {
-
+            this.addBorderLineImage(0, cell.x, cell.y - th);
         }
-
     }
 
-    private addBorderinsImg(res: string, parent: GameObject, sx, sy, tx, ty): void {
+    private addBorderLineImage(rotation: number, tx: number, ty: number): void {    //线
         let img: eui.Image = new eui.Image();
-        img.source = "goc-a_png";
-        img.scaleX = sx;
-        img.scaleY = sy;
+        img.source = "vien_png";
         img.x = tx;
         img.y = ty;
-        parent.addChild(img);
+        img.rotation = rotation;
+        this.BorderParent.addChild(img);
     }
 
-
-    private CornerOutChecker(parent: GameObject, topleft: boolean, topright: boolean, botleft: boolean, botright: boolean, x: number, y: number): void {
-        let _top: boolean = this.top(x, y);
-        let _bot: boolean = this.bot(x, y);
-        let _left: boolean = this.left(x, y);
-        let _right: boolean = this.right(x, y);
-
-        // if (topleft &&  _top && _left)
-        // {
-        //     ObjTmp = (GameObject)Instantiate(corner[0]);
-        //     ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //     ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-        // if (topright && _top && _right)
-        // {
-        //     ObjTmp = (GameObject)Instantiate(corner[1]);
-        //     ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //     ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-        // if (botleft && _bot && _left)
-        // {
-        //     ObjTmp = (GameObject)Instantiate(corner[2]);
-        //     ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //     ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-        // if (botright && _bot && _right)
-        // {
-        //     ObjTmp = (GameObject)Instantiate(corner[3]);
-        //     ObjTmp.transform.SetParent(BorderParent.transform, false);
-        //     ObjTmp.transform.localPosition += parent.transform.localPosition;
-        // }
-
+    private addBorderCornerImage(rotation: number, tx: number, ty: number): void {   //角
+        let img: eui.Image = new eui.Image();
+        img.source = "goc-b_png";
+        img.x = tx;
+        img.y = ty;
+        img.rotation = rotation;
+        this.BorderParent.addChild(img);
     }
 
-    private boderInChecker(map: number[][], x: number, y: number): void {
+    private addBorderCornerInsideImage(rotation: number, tx: number, ty: number): void {   //内角
+        let img: eui.Image = new eui.Image();
+        img.source = "goc-a_png";
+        img.x = tx;
+        img.y = ty;
+        img.rotation = rotation;
+        this.BorderParent.addChild(img);
+    }
+
+    //线，4个角全部用线连起来
+    private CornerOutChecker(cell: GameObject, topleft: boolean, topright: boolean, botleft: boolean, botright: boolean, x: number, y: number): void {
+        let base: number = 100;
+        let gap: number = 24;
+        let th: number = 10;
+
+        if (topleft){// && _top && _left) {
+            this.addBorderCornerImage(270, cell.x - 10, cell.y + base + 10);
+        }
+        if (topright){// && _top && _right) {
+            this.addBorderCornerImage(180, cell.x + base + 10, cell.y + base + 10);
+        }
+        if (botleft){// && _bot && _left) {
+            this.addBorderCornerImage(0, cell.x - 10, cell.y - 10);
+        }
+        if (botright){// && _bot && _right) {
+            this.addBorderCornerImage(90, cell.x + base + 10, cell.y - 10);
+        }
+    }
+
+    //应该是检测内角
+    private boderInChecker(cell: GameObject, map: number[][], x: number, y: number): void {
+        let base: number = 100;
         if (x - 1 >= 0 && y - 1 >= 0 && map[x - 1][y] > 0 && map[x][y - 1] > 0) {
-
-            // ObjTmp = (GameObject)Instantiate(corner[6]);
-            // ObjTmp.transform.SetParent(BorderParent.transform, false);
-            // ObjTmp.transform.localPosition += new Vector3(x-1, y-1);
+            this.addBorderCornerInsideImage(0, cell.x, cell.y);
         }
         if (x - 1 >= 0 && y + 1 < 9 && map[x - 1][y] > 0 && map[x][y + 1] > 0) {
-
-            // ObjTmp = (GameObject)Instantiate(corner[4]);
-            // ObjTmp.transform.SetParent(BorderParent.transform, false);
-            // ObjTmp.transform.localPosition += new Vector3(x - 1 , y);
+            this.addBorderCornerInsideImage(180, cell.x + base, cell.y + base);
         }
         if (x + 1 < 7 && y - 1 >= 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0) {
-
-            // ObjTmp = (GameObject)Instantiate(corner[7]);
-            // ObjTmp.transform.SetParent(BorderParent.transform, false);
-            // ObjTmp.transform.localPosition += new Vector3(x, y - 1);
+            this.addBorderCornerInsideImage(90, cell.x + base, cell.y);
         }
         if (x + 1 < 7 && y + 1 < 9 && map[x + 1][y] > 0 && map[x][y + 1] > 0) {
-
-            // ObjTmp = (GameObject)Instantiate(corner[5]);
-            // ObjTmp.transform.SetParent(BorderParent.transform, false);
-            // ObjTmp.transform.localPosition += new Vector3(x, y);
+            this.addBorderCornerInsideImage(270, cell.x, cell.y + base);
         }
-
-
     }
+    
 
     private CornerOutCheckTop(parent: GameObject): boolean {
         let obj: CellObj = parent as CellObj; //parent.GetComponent<CellObj>();

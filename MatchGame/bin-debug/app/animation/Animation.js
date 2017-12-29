@@ -71,7 +71,7 @@ var Animation = (function () {
     };
     Animation.loadAni = function (sprites, eff_type, loader, loaderThis, frameIndex) {
         if (frameIndex === void 0) { frameIndex = 0; }
-        var eff_config = AnimationData.loadConfig(eff_type);
+        var eff_config = AnimationData.getConfig(eff_type);
         if (!eff_config)
             return;
         var data = this.cheackNpcName(eff_type);

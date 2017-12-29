@@ -201,8 +201,8 @@ class EffectSpawner {
 		// Destroy(tmp, FILEARROW_TIME);
 	}
 
-	/// (buff效果)
-	/// 产生一个时钟技能
+	// (buff效果)
+	// 产生一个时钟技能
 	public Clock(obj: GameObject): void {
 		//TODO
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[7]);
@@ -220,7 +220,7 @@ class EffectSpawner {
 
 	}
 
-	/// 在指定的格子上播放冰冻动画
+	// 在指定的格子上播放冰冻动画
 	public IceCrash(pos: Vector2): void {
 		// TODO
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[9]);
@@ -230,7 +230,7 @@ class EffectSpawner {
 
 	}
 
-	/// 在指定的格子上播放锁动画
+	// 在指定的格子上播放锁动画
 	public LockCrash(pos: Vector2): void {
 		// TODO
 		// GameObject tmp = (GameObject)Instantiate(EffectPrefabs[10]);

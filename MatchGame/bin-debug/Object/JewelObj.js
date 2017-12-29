@@ -11,14 +11,18 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-// 宝石游戏对象 组件 (挂在 Jewel游戏对象下)
+// 宝石游戏对象
 // 职责:自身提供多种方法，用于宝石生命周期的自管理
 var JewelObj = (function (_super) {
     __extends(JewelObj, _super);
     function JewelObj() {
         var _this = _super.call(this) || this;
         _this.DELAY = 0.2;
+        _this.width = Global.CellWidth;
+        _this.height = Global.cellHeight;
         _this.render = new eui.Image();
+        _this.render.horizontalCenter = 0;
+        _this.render.verticalCenter = 0;
         _this.addChild(_this.render);
         return _this;
     }
@@ -86,18 +90,18 @@ var JewelObj = (function (_super) {
         // EffectSpawner.effect.JewelCrashArray[x][y].SetActive(false);
         // EffectSpawner.effect.JewelCrashArray[x][y].SetActive(true);
     };
-    /// 重新调整JewelPosition的位置，并播放下落动画
-    /// 此方法有点类似于排序，主要是处理当Map中有消除的方块后产生空位，此时需要将空位上方的方块移动到空位。
-    /// （说白了就是冒泡排序，地图中消失的方块移动到后面）
-    /// 将数组中Y轴的往下移动。全部移动完后，所有地图中空的位置均为后面的值，例如6、7、8这几个位置是空的）
+    // 重新调整JewelPosition的位置，并播放下落动画
+    // 此方法有点类似于排序，主要是处理当Map中有消除的方块后产生空位，此时需要将空位上方的方块移动到空位。
+    // （说白了就是冒泡排序，地图中消失的方块移动到后面）
+    // 将数组中Y轴的往下移动。全部移动完后，所有地图中空的位置均为后面的值，例如6、7、8这几个位置是空的）
     JewelObj.prototype.getNewPosition = function () {
         var newpos = this.jewel.JewelPosition.y;
         var x = this.jewel.JewelPosition.x;
         var oldpos = this.jewel.JewelPosition.y;
         for (var y = newpos - 1; y >= 0; y--) {
-            if (GribManager.cell.Map[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGribScript[x][y] == null)
+            if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGribScript[x][y] == null)
                 newpos = y;
-            else if (GribManager.cell.Map[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
+            else if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
                 break;
             }
         }
@@ -110,7 +114,7 @@ var JewelObj = (function (_super) {
             Ulti.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED); //StartCoroutine(Ulti.IEDrop(this.gameObject, this.jewel.JewelPosition, GameController.DROP_SPEED));
         }
     };
-    /// 获取行消除List
+    // 获取行消除List
     JewelObj.prototype.GetRow = function (Pos, type, bonus) {
         var tmp1 = this.GetLeft(Pos, type);
         var tmp2 = this.GetRight(Pos, type);
@@ -120,7 +124,7 @@ var JewelObj = (function (_super) {
         else
             return new Array(); // new List<JewelObj>();
     };
-    /// 获取列消除List
+    // 获取列消除List
     JewelObj.prototype.GetCollumn = function (Pos, type, bonus) {
         var tmp1 = this.GetTop(Pos, type);
         var tmp2 = this.GetBot(Pos, type);
@@ -130,7 +134,7 @@ var JewelObj = (function (_super) {
         else
             return new Array(); // new List<JewelObj>();
     };
-    /// 播放移动无效的动画
+    // 播放移动无效的动画
     JewelObj.prototype.SetBackAnimation = function (Obj) {
         if (!Supporter.sp.isNomove) {
             //TODO 
@@ -183,7 +187,7 @@ var JewelObj = (function (_super) {
         }
         return tmp;
     };
-    /// 检测上方是否有相同的方块
+    // 检测上方是否有相同的方块
     JewelObj.prototype.GetTop = function (Pos, type) {
         var tmp = []; // new List<JewelObj>();
         for (var y = Pos.y + 1; y < 9; y++) {
@@ -197,7 +201,7 @@ var JewelObj = (function (_super) {
         }
         return tmp;
     };
-    /// 检测下方是否有相同的方块
+    // 检测下方是否有相同的方块
     JewelObj.prototype.GetBot = function (Pos, type) {
         var tmp = []; // new List<JewelObj>();
         for (var y = Pos.y - 1; y >= 0; y--) {

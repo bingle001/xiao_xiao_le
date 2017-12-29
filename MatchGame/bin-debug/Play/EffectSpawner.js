@@ -7,7 +7,7 @@ var EffectSpawner = (function () {
     function EffectSpawner() {
         this.REFRESH_COMBO_TIME = 2;
         this.BOOM_TIME = 0.5;
-        this.publicICECRASH_TIME = 0.5;
+        this.ICECRASH_TIME = 0.5;
         this.JEWELCASH_TIME = 0.35;
         this.SCORESHOW_TIME = 0.5;
         this.THUNDER_TIME = 0.4;
@@ -160,8 +160,8 @@ var EffectSpawner = (function () {
         //     tmp.transform.localEulerAngles = new Vector2(0, 0, 90);
         // Destroy(tmp, FILEARROW_TIME);
     };
-    /// (buff效果)
-    /// 产生一个时钟技能
+    // (buff效果)
+    // 产生一个时钟技能
     EffectSpawner.prototype.Clock = function (obj) {
         //TODO
         // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[7]);
@@ -176,7 +176,7 @@ var EffectSpawner = (function () {
         // StarEffectAnim(anim, tmp);
         // Destroy(tmp, 1f);
     };
-    /// 在指定的格子上播放冰冻动画
+    // 在指定的格子上播放冰冻动画
     EffectSpawner.prototype.IceCrash = function (pos) {
         // TODO
         // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[9]);
@@ -184,7 +184,7 @@ var EffectSpawner = (function () {
         // tmp.transform.position = GribManager.cell.GribCell[(int)pos.x, (int)pos.y].transform.position;
         // Destroy(tmp, ICECRASH_TIME);//延时销毁
     };
-    /// 在指定的格子上播放锁动画
+    // 在指定的格子上播放锁动画
     EffectSpawner.prototype.LockCrash = function (pos) {
         // TODO
         // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[10]);

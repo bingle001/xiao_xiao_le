@@ -14,6 +14,8 @@ class HomeScene extends BaseScene {
 	protected onCreated(): void{
 		super.onCreated();
 		debug("homeScene onCreated");
+
+		this.lbl_start.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onBtnStart, this);
 	}
 
 	/**
@@ -21,7 +23,11 @@ class HomeScene extends BaseScene {
 	 * 移除舞台时会调用
 	 */
 	protected onDestroy(): void{
-		
+		this.lbl_start.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onBtnStart, this);
+	}
+
+	private onBtnStart(e: egret.TouchEvent): void{
+		Application.changeScene(SceneType.Game);
 	}
 
 	/**

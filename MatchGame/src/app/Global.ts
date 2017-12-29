@@ -47,10 +47,10 @@ class Random{
 
 function debug(content: string, ...params: any[]): void {
 	if (params && params.length > 0) {
-		console.log(content, params);
+		egret.log(content, ...params);
 	}
 	else {
-		console.log(content);
+		egret.log(content);
 	}
 }
 

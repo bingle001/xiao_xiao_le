@@ -25,12 +25,17 @@ var HomeScene = (function (_super) {
     HomeScene.prototype.onCreated = function () {
         _super.prototype.onCreated.call(this);
         debug("homeScene onCreated");
+        this.lbl_start.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onBtnStart, this);
     };
     /**
      * 销毁
      * 移除舞台时会调用
      */
     HomeScene.prototype.onDestroy = function () {
+        this.lbl_start.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onBtnStart, this);
+    };
+    HomeScene.prototype.onBtnStart = function (e) {
+        Application.changeScene(SceneType.Game);
     };
     /**
      * 每帧调用

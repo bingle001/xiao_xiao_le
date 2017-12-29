@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="testCell" width="400" height="300" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group width="100" height="100" x="91" y="65">
+		<e:Image source="vien_png" rotation="90" visible="false"/>
+		<e:Image source="goc-a_png" rotation="270" y="100"/>
+	</e:Group>
+</e:Skin>

@@ -16,8 +16,15 @@ var CellObj = (function (_super) {
     __extends(CellObj, _super);
     function CellObj() {
         var _this = _super.call(this) || this;
+        _this.width = Global.CellWidth;
+        _this.height = Global.cellHeight;
         _this.icon = new eui.Image();
-        _this.addChild(_this.icon);
+        _this.icon.horizontalCenter = 0;
+        _this.icon.verticalCenter = 0;
+        // this.addChild(this.icon);
+        _this.ani = new BaseAni();
+        _this.ani.horizontalCenter = 0;
+        _this.ani.verticalCenter = 0;
         return _this;
     }
     // change to sprite by index
@@ -26,40 +33,52 @@ var CellObj = (function (_super) {
     };
     // set sprite for cell when change index
     CellObj.prototype.SetSprite = function (type) {
-        //TODO
-        // this.GetComponent<SpriteRenderer>().sprite = GribManager.cell.CellSprite[type];
+        var res;
+        if (type <= 0) {
+            res = "cell_tranf_png";
+        }
+        else if (type > 2) {
+            res = GribManager.cell.CellSprite[2];
+        }
+        else {
+            res = GribManager.cell.CellSprite[type];
+        }
+        this.icon.source = res;
+        this.icon.scaleX = 1;
+        this.SetActive(this, this.icon, type > 0);
         this.setChilEffectSprite(this.cell.CellEffect);
+    };
+    CellObj.prototype.setChilEffectSprite = function (celleffect) {
+        if (celleffect == 4) {
+            this.ani.setAni(AniTypes.Ice);
+            this.SetActive(this, this.ani, true);
+        }
+        else if (celleffect == 5) {
+            this.ani.setAni(AniTypes.Lock);
+            this.SetActive(this, this.ani, true);
+        }
+        else {
+            this.SetActive(this, this.ani, false);
+        }
     };
     // remove effect of cell
     CellObj.prototype.RemoveEffect = function () {
         if (this.cell.CellEffect > 0) {
-            //TODO
-            //     transform.GetChild(0).gameObject.SetActive(false);
-            //     if (cell.CellEffect == 5)
-            //     {
-            //         EffectSpawner.effect.IceCrash(cell.CellPosition);
-            //         SoundController.Sound.IceCrash();
-            //     }
-            //     else if (cell.CellEffect == 4)
-            //     {
-            //         EffectSpawner.effect.LockCrash(cell.CellPosition);
-            //         SoundController.Sound.LockCrash();
-            //     }
-            //     cell.CellEffect = 0;
-            //     if (JewelSpawner.spawn.JewelGribScript[(int)cell.CellPosition.x, (int)cell.CellPosition.y] != null)
-            //         JewelSpawner.spawn.JewelGribScript[(int)cell.CellPosition.x, (int)cell.CellPosition.y].RuleChecker();
+            if (this.cell.CellEffect == 5) {
+                this.ani.play();
+                SoundController.Sound.IceCrash();
+            }
+            else if (this.cell.CellEffect == 4) {
+                this.ani.play();
+                SoundController.Sound.LockCrash();
+            }
+            this.cell.CellEffect = 0;
+            if (JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y] != null) {
+                JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y].RuleChecker();
+            }
         }
     };
-    CellObj.prototype.setChilEffectSprite = function (celleffect) {
-        if (celleffect > 0) {
-            // transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GribManager.cell.CellSprite[celleffect];
-            var res = GribManager.cell.CellSprite[celleffect];
-            this.icon.source = res;
-        }
-        else {
-            // transform.GetChild(0).gameObject.SetActive(false);
-            this.icon.visible = false;
-        }
+    CellObj.prototype.aniPlayOver = function () {
     };
     CellObj.prototype.CelltypeProcess = function () {
         if (this.cell.CellType > 1) {
@@ -67,8 +86,9 @@ var CellObj = (function (_super) {
             this.runAnim();
             if (this.cell.CellType == 1) {
                 GameController.action.CellNotEmpty--;
-                if (GameController.action.CellNotEmpty == 0)
+                if (GameController.action.CellNotEmpty == 0) {
                     GameController.action.isShowStar = true;
+                }
             }
         }
     };
@@ -78,6 +98,16 @@ var CellObj = (function (_super) {
         // anim.Play("CellChangeSprite");
         //TODO
         debug("播放动画：CellChangeSprite");
+        egret.Tween.removeTweens(this.icon);
+        egret.Tween.get(this.icon).to({ scaleX: 0 }, 200).call(this.appearNewCell, this);
+    };
+    CellObj.prototype.appearNewCell = function () {
+        this.SetSpriteEvent();
+        if (this.icon.parent) {
+            this.icon.scaleX = 0;
+            egret.Tween.removeTweens(this.icon);
+            egret.Tween.get(this.icon).to({ scaleX: 1 }, 200);
+        }
     };
     return CellObj;
 }(GameObject));

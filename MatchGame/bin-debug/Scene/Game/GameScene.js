@@ -19,6 +19,7 @@ var GameScene = (function (_super) {
     function GameScene() {
         var _this = _super.call(this) || this;
         _this.name = "GameScene";
+        _this.initSkin("game/GameSceneSkin.exml");
         return _this;
     }
     /**
@@ -26,7 +27,14 @@ var GameScene = (function (_super) {
      */
     GameScene.prototype.onCreated = function () {
         _super.prototype.onCreated.call(this);
-        debug("homeScene onCreated");
+        debug("GameScene onCreated");
+        if (PLayerInfo.MODE == 1) {
+            GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent);
+        }
+        else {
+            GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent);
+        }
+        // GameController.action.Start();
     };
     /**
      * 销毁

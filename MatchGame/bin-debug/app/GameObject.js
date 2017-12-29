@@ -69,6 +69,28 @@ var GameObject = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    GameObject.prototype.removeFromParent = function () {
+        if (this.parent) {
+            this.parent.removeChild(this);
+        }
+    };
+    /**
+     * 激活或取消激活某个显示对象
+     */
+    GameObject.prototype.SetActive = function (parent, obj, isActive) {
+        if (parent && obj) {
+            if (isActive) {
+                obj.visible = true;
+                parent.addChild(obj);
+            }
+            else {
+                obj.visible = false;
+                if (obj.parent) {
+                    obj.parent.removeChild(obj);
+                }
+            }
+        }
+    };
     return GameObject;
 }(egret.DisplayObjectContainer));
 __reflect(GameObject.prototype, "GameObject");

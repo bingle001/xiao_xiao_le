@@ -15,6 +15,9 @@ var Application = (function () {
         debug("游戏启动");
         Time.Awake();
         DataLoader.Awake();
+        GribManager.Awake();
+        GameController.Awake();
+        JewelSpawner.Awake();
         Application.changeScene(SceneType.Home);
     };
     Application.changeScene = function (sceneType) {

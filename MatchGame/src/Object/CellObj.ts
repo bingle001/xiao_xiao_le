@@ -4,7 +4,6 @@ class CellObj extends GameObject {
     public CellCode: number;
     public cell: Cell;
 
-    private bg: eui.Image;
     private icon: eui.Image;
     private ani: BaseAni;
 
@@ -13,12 +12,6 @@ class CellObj extends GameObject {
 
         this.width = Global.CellWidth;
         this.height = Global.cellHeight;
-
-        this.bg = new eui.Image();
-        this.bg.source = GribManager.cell.CellSprite[0];
-        this.bg.horizontalCenter = 0;
-        this.bg.verticalCenter = 0;
-        this.addChild(this.bg);
 
         this.icon = new eui.Image();
         this.icon.horizontalCenter = 0;
@@ -37,7 +30,17 @@ class CellObj extends GameObject {
 
     // set sprite for cell when change index
     public SetSprite(type: number): void {
-        this.icon.source = GribManager.cell.CellSprite[type];
+        let res: string;
+        if (type <= 0) {
+            res = "cell_tranf_png";
+        }
+        else if (type > 2) {
+            res = GribManager.cell.CellSprite[2];
+        }
+        else {
+            res = GribManager.cell.CellSprite[type];
+        }
+        this.icon.source = res;
         this.icon.scaleX = 1;
         this.SetActive(this, this.icon, type > 0);
         this.setChilEffectSprite(this.cell.CellEffect);

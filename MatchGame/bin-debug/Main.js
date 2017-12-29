@@ -101,12 +101,13 @@ var Main = (function (_super) {
         egret.lifecycle.addLifecycleListener(function (context) {
             // custom lifecycle plugin
         });
-        egret.lifecycle.onPause = function () {
-            egret.ticker.pause();
-        };
-        egret.lifecycle.onResume = function () {
-            egret.ticker.resume();
-        };
+        //会被暂停掉，调试先忽略
+        // egret.lifecycle.onPause = () => {
+        //     egret.ticker.pause();
+        // }
+        // egret.lifecycle.onResume = () => {
+        //     egret.ticker.resume();
+        // }
         //注入自定义的素材解析器
         egret.registerImplementation("eui.IAssetAdapter", new AssetAdapter());
         egret.registerImplementation("eui.IThemeAdapter", new ThemeAdapter());

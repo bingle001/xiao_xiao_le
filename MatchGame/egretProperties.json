@@ -10,9 +10,6 @@
   "egret_version": "5.0.9",
   "template": {},
   "eui": {
-    "exmlRoot": [
-      "resource/eui_skins"
-    ],
     "themes": [
       "resource/default.thm.json"
     ],

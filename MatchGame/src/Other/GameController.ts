@@ -51,13 +51,6 @@ class GameController {
     }
 
     public Start() {
-        if (PLayerInfo.MODE == 1)
-            GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name);//StartCoroutine
-        else
-            GribManager.cell.GribMapCreate("classic");//StartCoroutine
-        // yield return new WaitForSeconds(1.5f);
-
-
         EffectSpawner.effect.ComboTick();//StartCoroutine();
         Timer.timer.TimeTick(true);
         this.GameState = GameState.PLAYING;
@@ -303,7 +296,7 @@ class GameController {
     }
 
 
-    /// 播放格子除动画特效
+    // 播放格子除动画特效
     public CellRemoveEffect(x: number, y: number): void {
         if (x - 1 >= 0 && GribManager.cell.GribCellObj[x - 1][y] != null)
             GribManager.cell.GribCellObj[x - 1][y].RemoveEffect();
@@ -318,7 +311,7 @@ class GameController {
             GribManager.cell.GribCellObj[x][y + 1].RemoveEffect();
     }
 
-    /// 销毁一行
+    // 销毁一行
     public PDestroyRow(_x: number, y: number): void {
         this.dropjewel();
         SoundController.Sound.Fire();
@@ -342,7 +335,7 @@ class GameController {
         }
     }
 
-    /// 销毁一列
+    // 销毁一列
     public PDestroyCollumn(x: number, _y: number): void {
         this.dropjewel();
         SoundController.Sound.Fire();
@@ -378,7 +371,7 @@ class GameController {
     }
 
     public PDestroyType(type: number, pos: Vector3): void {
-        this.DestroyType(type, pos);////StartCoroutine(DestroyType(type, pos));
+        this.DestroyType(type, pos);///StartCoroutine(DestroyType(type, pos));
     }
 
     private DestroyType(type: number, pos: Vector3)  //IEnumerator
@@ -400,7 +393,7 @@ class GameController {
         this.NoSelect.visible = false;// NoSelect.SetActive(false);
     }
 
-    /// 为本局游戏追加时间
+    // 为本局游戏追加时间
     public PBonusTime(): void {
         this.TimeInc(); //StartCoroutine(TimeInc());
     }
@@ -415,7 +408,8 @@ class GameController {
                 if (listeff.length > 0) {
                     let tmp: CellObj = listeff[Utils.random(0, listeff.length)];
                     tmp.RemoveEffect();
-                    EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.cell.CellPosition.x, tmp.cell.CellPosition.y].position);
+                    //TODO
+                    // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.cell.CellPosition.x, tmp.cell.CellPosition.y].position);
                 }
                 else {
                     this.destroynotempty();
@@ -427,7 +421,8 @@ class GameController {
                 let tmp: JewelObj = JewelSpawner.spawn.JewelGribScript[vtmp.x][vtmp.y];
                 if (tmp != null && tmp != this.JewelStar) {
                     tmp.Destroy();
-                    EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.jewel.JewelPosition.x][tmp.jewel.JewelPosition.y].position);
+                    //TODO
+                    // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.jewel.JewelPosition.x][tmp.jewel.JewelPosition.y].position);
                 }
             }
         }
@@ -476,7 +471,8 @@ class GameController {
             let tmp: Vector2 = listnotempty[Utils.random(0, listnotempty.length)].cell.CellPosition;
             if (JewelSpawner.spawn.JewelGribScript[tmp.x][tmp.y] != null) {
                 JewelSpawner.spawn.JewelGribScript[tmp.x][tmp.y].Destroy();
-                EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.x][tmp.y].position);
+                //TODO
+                // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.x][tmp.y].position);
             }
         }
         // }
@@ -504,7 +500,7 @@ class GameController {
         }
     }
 
-    /// 随机在一个宝石身上产生一个技能特效
+    // 随机在一个宝石身上产生一个技能特效
     public AddBonusPower(): void {
         let dem = 0;
         while (true) {

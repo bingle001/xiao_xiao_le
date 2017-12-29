@@ -1,1 +1,1 @@
-{"version":3,"file":"Jewel.js","sourceRoot":"","sources":["../../src/Object/Jewel.ts"],"names":[],"mappings":";;;AAAA,KAAK;AACL;IASC;QAPO,cAAS,GAAW,CAAC,CAAC,CAAW,gBAAgB;QAIxD,SAAS;QACF,eAAU,GAAW,CAAC,CAAC,CAAU,kBAAkB;IAG1D,CAAC;IAIF,YAAC;AAAD,CAAC,AAdD,IAcC;AAdK,UAAA,KAAK,oBAcV,CAAA"}
+{"version":3,"file":"Jewel.js","sourceRoot":"","sources":["../../src/Object/Jewel.ts"],"names":[],"mappings":";;;AAAA,KAAK;AACL;IAQC;QANO,cAAS,GAAW,CAAC,CAAC,CAAW,gBAAgB;QAGxD,SAAS;QACF,eAAU,GAAW,CAAC,CAAC,CAAU,kBAAkB;IAG1D,CAAC;IAIF,YAAC;AAAD,CAAC,AAbD,IAaC;AAbK,UAAA,KAAK,oBAaV,CAAA"}
