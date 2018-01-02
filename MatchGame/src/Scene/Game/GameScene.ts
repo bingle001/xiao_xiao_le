@@ -5,7 +5,8 @@ class GameScene extends BaseScene{
 
 	public img_bg:eui.Image;
 	public group_cellParent:eui.Group;
-	public group_borderParent:eui.Group;
+	public group_borderParent: eui.Group;
+	public group_cornerParent: eui.Group;
 
 
 	public constructor() {
@@ -22,10 +23,10 @@ class GameScene extends BaseScene{
 		debug("GameScene onCreated");
 
 		if (PLayerInfo.MODE == 1) {
-			GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent);
+			GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent, this.group_cornerParent);
 		}
 		else {
-			GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent);
+			GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent, this.group_cornerParent);
 		}
 		// GameController.action.Start();
 	}

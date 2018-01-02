@@ -11,19 +11,20 @@ var GribManager = (function () {
         GribManager.cell = cell;
         //初始化素材路径
         cell.CellSprite = [];
-        // cell.CellSprite[0] = "cell_tranf_png";
-        cell.CellSprite[0] = "cell_gray_png";
-        cell.CellSprite[1] = "cell_blue_png";
-        cell.CellSprite[2] = "cell_red_png";
+        cell.CellSprite[0] = "cell_tranf_png";
+        cell.CellSprite[1] = "cell_gray_png";
+        cell.CellSprite[2] = "cell_blue_png";
+        cell.CellSprite[3] = "cell_red_png";
         // cell.CellSprite[4] = "cell_red_png";    //4,5是有特效的，但最低还是最高级图片
         // cell.CellSprite[5] = "cell_red_png";
     };
     // Create Grid map
-    GribManager.prototype.GribMapCreate = function (mapName, cellParent, borderParent) {
+    GribManager.prototype.GribMapCreate = function (mapName, cellParent, borderParent, cornerParent) {
         mapName = "7"; //test
         this.mapName = mapName;
         this.GribParent = cellParent;
         this.BorderParent = borderParent;
+        this.CornerParent = cornerParent;
         this.GribCell = Utils.initVector2(Cell, 7, 9); // new GameObject[7, 9];
         this.mapData = this.MapReader(mapName);
         this.GribCreate(this.mapData);
@@ -35,6 +36,7 @@ var GribManager = (function () {
     GribManager.prototype.test = function (map) {
         this.GribParent.removeChildren();
         this.BorderParent.removeChildren();
+        this.CornerParent.removeChildren();
         this.GribCell = Utils.initVector2(Cell, 7, 9); // new GameObject[7, 9];
         this.mapData = this.MapReader(map.toString());
         this.GribCreate(this.mapData);
@@ -74,12 +76,14 @@ var GribManager = (function () {
         tmp.x = x * Global.BaseDistance;
         tmp.y = (8 - y) * Global.BaseDistance;
         this.GribParent.addChild(tmp);
+        // tmp.debug(x, y);
     };
     GribManager.prototype.MapReader = function (mapName) {
         var tmp = Utils.initVector2(Number, 7, 9);
         var _data = RES.getRes("_data_json");
         var mapStringdata = _data[mapName];
-        debug("读取文件：", mapStringdata);
+        debug("读取文件：");
+        debug(mapStringdata);
         var pattern = new RegExp("\\t|\\n|\\t\\n");
         var stringresult = mapStringdata.split(pattern);
         debug("解析文件结果：", stringresult);
@@ -116,7 +120,7 @@ var GribManager = (function () {
                     this.CornerOutChecker(cell, this.topleft(x, y), this.topright(x, y), this.botleft(x, y), this.botright(x, y), x, y);
                 }
                 else {
-                    this.boderInChecker(cell, map, x, y);
+                    this.boderInChecker(map, x, y);
                 }
             }
         }
@@ -135,7 +139,6 @@ var GribManager = (function () {
             return true;
         return false;
     };
-    //这就有意思了，所谓bot就是顶，所谓top就是界面上的底，数据应该是反过来放置的！！
     GribManager.prototype.bot = function (x, y) {
         if (y == 0)
             return true;
@@ -151,28 +154,28 @@ var GribManager = (function () {
         return false;
     };
     GribManager.prototype.topleft = function (x, y) {
-        if (x - 1 < 0 && y + 1 > 8)
+        if (x - 1 < 0 || y + 1 > 8)
             return true;
         else if (x - 1 >= 0 && y + 1 <= 8 && this.mapData[x - 1][y + 1] == 0)
             return true;
         return false;
     };
     GribManager.prototype.topright = function (x, y) {
-        if (x + 1 > 6 && y + 1 > 8)
+        if (x + 1 > 6 || y + 1 > 8)
             return true;
         else if (x + 1 <= 6 && y + 1 <= 8 && this.mapData[x + 1][y + 1] == 0)
             return true;
         return false;
     };
     GribManager.prototype.botleft = function (x, y) {
-        if (x - 1 < 0 && y - 1 < 0)
+        if (x - 1 < 0 || y - 1 < 0)
             return true;
         else if (x - 1 >= 0 && y - 1 >= 0 && this.mapData[x - 1][y - 1] == 0)
             return true;
         return false;
     };
     GribManager.prototype.botright = function (x, y) {
-        if (x + 1 > 6 && y - 1 < 0)
+        if (x + 1 > 6 || y - 1 < 0)
             return true;
         else if (x + 1 <= 6 && y - 1 >= 0 && this.mapData[x + 1][y - 1] == 0)
             return true;
@@ -209,7 +212,7 @@ var GribManager = (function () {
         img.x = tx;
         img.y = ty;
         img.rotation = rotation;
-        this.BorderParent.addChild(img);
+        this.CornerParent.addChild(img);
     };
     GribManager.prototype.addBorderCornerInsideImage = function (rotation, tx, ty) {
         var img = new eui.Image();
@@ -217,40 +220,46 @@ var GribManager = (function () {
         img.x = tx;
         img.y = ty;
         img.rotation = rotation;
-        this.BorderParent.addChild(img);
+        this.CornerParent.addChild(img);
     };
-    //线，4个角全部用线连起来
+    // 外角
     GribManager.prototype.CornerOutChecker = function (cell, topleft, topright, botleft, botright, x, y) {
         var base = 100;
         var gap = 24;
         var th = 10;
-        if (topleft) {
-            this.addBorderCornerImage(270, cell.x - 10, cell.y + base + 10);
-        }
-        if (topright) {
-            this.addBorderCornerImage(180, cell.x + base + 10, cell.y + base + 10);
-        }
-        if (botleft) {
+        var _top = this.top(x, y);
+        var _bot = this.bot(x, y);
+        var _left = this.left(x, y);
+        var _right = this.right(x, y);
+        if (topleft && _top && _left) {
             this.addBorderCornerImage(0, cell.x - 10, cell.y - 10);
         }
-        if (botright) {
+        if (topright && _top && _right) {
             this.addBorderCornerImage(90, cell.x + base + 10, cell.y - 10);
+        }
+        if (botleft && _bot && _left) {
+            this.addBorderCornerImage(270, cell.x - 10, cell.y + base + 10);
+        }
+        if (botright && _bot && _right) {
+            this.addBorderCornerImage(180, cell.x + base + 10, cell.y + base + 10);
         }
     };
     //应该是检测内角
-    GribManager.prototype.boderInChecker = function (cell, map, x, y) {
+    GribManager.prototype.boderInChecker = function (map, x, y) {
         var base = 100;
+        var tx = x * Global.BaseDistance;
+        var ty = (8 - y) * Global.BaseDistance;
         if (x - 1 >= 0 && y - 1 >= 0 && map[x - 1][y] > 0 && map[x][y - 1] > 0) {
-            this.addBorderCornerInsideImage(0, cell.x, cell.y);
+            this.addBorderCornerInsideImage(270, tx, ty + base);
         }
         if (x - 1 >= 0 && y + 1 < 9 && map[x - 1][y] > 0 && map[x][y + 1] > 0) {
-            this.addBorderCornerInsideImage(180, cell.x + base, cell.y + base);
+            this.addBorderCornerInsideImage(0, tx, ty);
         }
         if (x + 1 < 7 && y - 1 >= 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0) {
-            this.addBorderCornerInsideImage(90, cell.x + base, cell.y);
+            this.addBorderCornerInsideImage(180, tx + base, ty + base);
         }
         if (x + 1 < 7 && y + 1 < 9 && map[x + 1][y] > 0 && map[x][y + 1] > 0) {
-            this.addBorderCornerInsideImage(270, cell.x, cell.y + base);
+            this.addBorderCornerInsideImage(90, tx + base, ty);
         }
     };
     GribManager.prototype.CornerOutCheckTop = function (parent) {

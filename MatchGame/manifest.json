@@ -11,12 +11,12 @@
 	],
 	"game": [
 		"bin-debug/app/compoment/BaseCompoment.js",
-		"bin-debug/app/compoment/BaseAni.js",
 		"bin-debug/app/compoment/BaseScene.js",
 		"bin-debug/app/GameObject.js",
 		"bin-debug/app/MonoBehaviour.js",
 		"bin-debug/app/Vector2.js",
 		"bin-debug/app/animation/AnimateTimer.js",
+		"bin-debug/app/compoment/BaseAni.js",
 		"bin-debug/Map/DataLoader.js",
 		"bin-debug/app/Time.js",
 		"bin-debug/app/TimerUtils.js",
@@ -40,7 +40,7 @@
 		"bin-debug/Effect/IceCrashAni.js",
 		"bin-debug/Effect/LockCrashAni.js",
 		"bin-debug/Map/CameraMovement.js",
-		"bin-debug/app/Application.js",
+		"bin-debug/Scene/Map/MapScene.js",
 		"bin-debug/Map/Map.js",
 		"bin-debug/Object/Cell.js",
 		"bin-debug/Object/CellObj.js",
@@ -70,6 +70,6 @@
 		"bin-debug/Resolution/Resolution.js",
 		"bin-debug/Scene/Game/GameScene.js",
 		"bin-debug/Scene/Home/HomeScene.js",
-		"bin-debug/Scene/Map/MapScene.js"
+		"bin-debug/app/Application.js"
 	]
 }

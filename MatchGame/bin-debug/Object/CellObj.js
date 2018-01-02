@@ -34,18 +34,18 @@ var CellObj = (function (_super) {
     // set sprite for cell when change index
     CellObj.prototype.SetSprite = function (type) {
         var res;
-        if (type <= 0) {
+        if (type < 0) {
             res = "cell_tranf_png";
         }
-        else if (type > 2) {
-            res = GribManager.cell.CellSprite[2];
+        else if (type > 3) {
+            res = GribManager.cell.CellSprite[3];
         }
         else {
             res = GribManager.cell.CellSprite[type];
         }
         this.icon.source = res;
         this.icon.scaleX = 1;
-        this.SetActive(this, this.icon, type > 0);
+        this.SetActive(this, this.icon, type >= 0);
         this.setChilEffectSprite(this.cell.CellEffect);
     };
     CellObj.prototype.setChilEffectSprite = function (celleffect) {
@@ -108,6 +108,18 @@ var CellObj = (function (_super) {
             egret.Tween.removeTweens(this.icon);
             egret.Tween.get(this.icon).to({ scaleX: 1 }, 200);
         }
+    };
+    CellObj.prototype.debug = function (x, y) {
+        if (!this.m_pLbl) {
+            this.m_pLbl = new egret.TextField();
+            this.m_pLbl.size = 20;
+            this.m_pLbl.x = 20;
+            this.m_pLbl.y = 20;
+            this.m_pLbl.textColor = 0xffffff;
+            this.addChild(this.m_pLbl);
+        }
+        this.m_pLbl.text = "(" + x + "," + y + ")";
+        this.name = x + "_" + y;
     };
     return CellObj;
 }(GameObject));

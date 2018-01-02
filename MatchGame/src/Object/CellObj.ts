@@ -31,18 +31,18 @@ class CellObj extends GameObject {
     // set sprite for cell when change index
     public SetSprite(type: number): void {
         let res: string;
-        if (type <= 0) {
+        if (type < 0) {
             res = "cell_tranf_png";
         }
-        else if (type > 2) {
-            res = GribManager.cell.CellSprite[2];
+        else if (type > 3) {
+            res = GribManager.cell.CellSprite[3];
         }
         else {
             res = GribManager.cell.CellSprite[type];
         }
         this.icon.source = res;
         this.icon.scaleX = 1;
-        this.SetActive(this, this.icon, type > 0);
+        this.SetActive(this, this.icon, type >= 0);
         this.setChilEffectSprite(this.cell.CellEffect);
     }
 
@@ -114,6 +114,20 @@ class CellObj extends GameObject {
             egret.Tween.removeTweens(this.icon);
             egret.Tween.get(this.icon).to({ scaleX: 1 }, 200);
         }
+    }
+
+    private m_pLbl: egret.TextField;
+    public debug(x, y): void{
+        if (!this.m_pLbl) {
+            this.m_pLbl = new egret.TextField();
+            this.m_pLbl.size = 20;
+            this.m_pLbl.x = 20;
+            this.m_pLbl.y = 20;
+            this.m_pLbl.textColor = 0xffffff;
+            this.addChild(this.m_pLbl);
+        }
+        this.m_pLbl.text = "(" + x + "," + y + ")";
+        this.name = x + "_" + y;
     }
 
 

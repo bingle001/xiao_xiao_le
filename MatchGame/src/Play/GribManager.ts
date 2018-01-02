@@ -9,9 +9,10 @@ class GribManager {
     public GribCellObj: CellObj[][];
     public GribParent: egret.DisplayObjectContainer;
 
-    public border: eui.Image[];
-    public corner: eui.Image[];
+    public border: eui.Image[]; //线
     public BorderParent: egret.DisplayObjectContainer;
+    public corner: eui.Image[]; //角
+    public CornerParent: egret.DisplayObjectContainer;
 
     public mapName: string;
     public mapData: number[][]; //当前关卡数据
@@ -22,21 +23,22 @@ class GribManager {
 
         //初始化素材路径
         cell.CellSprite = [];
-        // cell.CellSprite[0] = "cell_tranf_png";
-        cell.CellSprite[0] = "cell_gray_png";
-        cell.CellSprite[1] = "cell_blue_png";
-        cell.CellSprite[2] = "cell_red_png";
+        cell.CellSprite[0] = "cell_tranf_png";
+        cell.CellSprite[1] = "cell_gray_png";
+        cell.CellSprite[2] = "cell_blue_png";
+        cell.CellSprite[3] = "cell_red_png";
 
         // cell.CellSprite[4] = "cell_red_png";    //4,5是有特效的，但最低还是最高级图片
         // cell.CellSprite[5] = "cell_red_png";
     }
 
     // Create Grid map
-    public GribMapCreate(mapName: string, cellParent: egret.DisplayObjectContainer, borderParent: egret.DisplayObjectContainer): void {
-        mapName = "7";   //test
+    public GribMapCreate(mapName: string, cellParent: egret.DisplayObjectContainer, borderParent: egret.DisplayObjectContainer, cornerParent: egret.DisplayObjectContainer): void {
+        mapName = "7";  //test
         this.mapName = mapName;
         this.GribParent = cellParent;
         this.BorderParent = borderParent;
+        this.CornerParent = cornerParent;
 
         this.GribCell = Utils.initVector2(Cell, 7, 9);// new GameObject[7, 9];
         this.mapData = this.MapReader(mapName);
@@ -50,6 +52,7 @@ class GribManager {
     public test(map: number): void{
         this.GribParent.removeChildren();
         this.BorderParent.removeChildren();
+        this.CornerParent.removeChildren();
         this.GribCell = Utils.initVector2(Cell, 7, 9);// new GameObject[7, 9];
         this.mapData = this.MapReader(map.toString());
         this.GribCreate(this.mapData);
@@ -89,10 +92,10 @@ class GribManager {
         tmp.SetSprite(tmp.cell.CellType - 1);
         this.GribCell[x][y] = tmp.cell;
         this.GribCellObj[x][y] = tmp;
-
         tmp.x = x * Global.BaseDistance;
-        tmp.y = (8-y) * Global.BaseDistance;
+        tmp.y = (8 - y) * Global.BaseDistance;
         this.GribParent.addChild(tmp);
+        // tmp.debug(x, y);
     }
 
     private MapReader(mapName: string): number[][]
@@ -100,7 +103,8 @@ class GribManager {
         let tmp: number[][] = Utils.initVector2(Number, 7, 9);
         let _data = RES.getRes("_data_json");
         let mapStringdata: string = _data[mapName];
-        debug("读取文件：", mapStringdata);
+        debug("读取文件：");
+        debug(mapStringdata);
         let pattern = new RegExp("\\t|\\n|\\t\\n");
         let stringresult: string[] = mapStringdata.split(pattern);
         debug("解析文件结果：", stringresult);
@@ -137,8 +141,9 @@ class GribManager {
                 if (i > 0) {
                     this.borderins(cell, this.left(x, y), this.right(x, y), this.top(x, y), this.bot(x, y));
                     this.CornerOutChecker(cell, this.topleft(x, y), this.topright(x, y), this.botleft(x, y), this.botright(x, y), x, y);
-                } else {
-                    this.boderInChecker(cell, map, x, y);
+                }
+                else {
+                    this.boderInChecker(map, x, y);
                 }
             }
         }
@@ -162,8 +167,6 @@ class GribManager {
         return false;
     }
 
-    //这就有意思了，所谓bot就是顶，所谓top就是界面上的底，数据应该是反过来放置的！！
-
     private bot(x: number, y: number): boolean {
         if (y == 0)
             return true;
@@ -183,7 +186,7 @@ class GribManager {
     }
 
     private topleft(x: number, y: number): boolean {
-        if (x - 1 < 0 && y + 1 > 8)     //这里应该用 && 而不是 || 吧
+        if (x - 1 < 0 || y + 1 > 8)
             return true;
         else if (x - 1 >= 0 && y + 1 <= 8 && this.mapData[x - 1][y + 1] == 0)
             return true;
@@ -192,7 +195,7 @@ class GribManager {
     }
 
     private topright(x: number, y: number): boolean {
-        if (x + 1 > 6 && y + 1 > 8)
+        if (x + 1 > 6 || y + 1 > 8)
             return true;
         else if (x + 1 <= 6 && y + 1 <= 8 && this.mapData[x + 1][y + 1] == 0)
             return true;
@@ -201,7 +204,7 @@ class GribManager {
     }
 
     private botleft(x: number, y: number): boolean {
-        if (x - 1 < 0 && y - 1 < 0)
+        if (x - 1 < 0 || y - 1 < 0)
             return true;
         else if (x - 1 >= 0 && y - 1 >= 0 && this.mapData[x - 1][y - 1] == 0)
             return true;
@@ -210,7 +213,7 @@ class GribManager {
     }
 
     private botright(x: number, y: number): boolean {
-        if (x + 1 > 6 && y - 1 < 0)
+        if (x + 1 > 6 || y - 1 < 0)
             return true;
         else if (x + 1 <= 6 && y - 1 >= 0 && this.mapData[x + 1][y - 1] == 0)
             return true;
@@ -252,7 +255,7 @@ class GribManager {
         img.x = tx;
         img.y = ty;
         img.rotation = rotation;
-        this.BorderParent.addChild(img);
+        this.CornerParent.addChild(img);
     }
 
     private addBorderCornerInsideImage(rotation: number, tx: number, ty: number): void {   //内角
@@ -261,43 +264,49 @@ class GribManager {
         img.x = tx;
         img.y = ty;
         img.rotation = rotation;
-        this.BorderParent.addChild(img);
+        this.CornerParent.addChild(img);
     }
 
-    //线，4个角全部用线连起来
+    // 外角
     private CornerOutChecker(cell: GameObject, topleft: boolean, topright: boolean, botleft: boolean, botright: boolean, x: number, y: number): void {
         let base: number = 100;
         let gap: number = 24;
         let th: number = 10;
+        let _top: boolean = this.top(x, y);
+        let _bot: boolean = this.bot(x, y);
+        let _left: boolean = this.left(x, y);
+        let _right: boolean = this.right(x, y);
 
-        if (topleft){// && _top && _left) {
-            this.addBorderCornerImage(270, cell.x - 10, cell.y + base + 10);
-        }
-        if (topright){// && _top && _right) {
-            this.addBorderCornerImage(180, cell.x + base + 10, cell.y + base + 10);
-        }
-        if (botleft){// && _bot && _left) {
+        if (topleft && _top && _left) {
             this.addBorderCornerImage(0, cell.x - 10, cell.y - 10);
         }
-        if (botright){// && _bot && _right) {
+        if (topright && _top && _right) {
             this.addBorderCornerImage(90, cell.x + base + 10, cell.y - 10);
+        }
+        if (botleft && _bot && _left) {
+            this.addBorderCornerImage(270, cell.x - 10, cell.y + base + 10);
+        }
+        if (botright && _bot && _right) {
+            this.addBorderCornerImage(180, cell.x + base + 10, cell.y + base + 10);
         }
     }
 
     //应该是检测内角
-    private boderInChecker(cell: GameObject, map: number[][], x: number, y: number): void {
+    private boderInChecker(map: number[][], x: number, y: number): void {
         let base: number = 100;
+        let tx: number = x * Global.BaseDistance;
+        let ty: number = (8 - y) * Global.BaseDistance;
         if (x - 1 >= 0 && y - 1 >= 0 && map[x - 1][y] > 0 && map[x][y - 1] > 0) {
-            this.addBorderCornerInsideImage(0, cell.x, cell.y);
+            this.addBorderCornerInsideImage(270, tx, ty + base);
         }
         if (x - 1 >= 0 && y + 1 < 9 && map[x - 1][y] > 0 && map[x][y + 1] > 0) {
-            this.addBorderCornerInsideImage(180, cell.x + base, cell.y + base);
+            this.addBorderCornerInsideImage(0, tx, ty);
         }
         if (x + 1 < 7 && y - 1 >= 0 && map[x + 1][y] > 0 && map[x][y - 1] > 0) {
-            this.addBorderCornerInsideImage(90, cell.x + base, cell.y);
+            this.addBorderCornerInsideImage(180, tx + base, ty + base);
         }
         if (x + 1 < 7 && y + 1 < 9 && map[x + 1][y] > 0 && map[x][y + 1] > 0) {
-            this.addBorderCornerInsideImage(270, cell.x, cell.y + base);
+            this.addBorderCornerInsideImage(90, tx + base, ty);
         }
     }
     

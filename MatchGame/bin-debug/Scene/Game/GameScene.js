@@ -29,10 +29,10 @@ var GameScene = (function (_super) {
         _super.prototype.onCreated.call(this);
         debug("GameScene onCreated");
         if (PLayerInfo.MODE == 1) {
-            GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent);
+            GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent, this.group_cornerParent);
         }
         else {
-            GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent);
+            GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent, this.group_cornerParent);
         }
         // GameController.action.Start();
     };
