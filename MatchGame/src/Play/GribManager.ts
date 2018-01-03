@@ -45,8 +45,8 @@ class GribManager {
         this.GribCreate(this.mapData);
         this.BorderCreate(this.mapData);
         this.EffectCrash(this.mapData);
-        // JewelSpawner.spawn.JewelMapCreate(this.mapData);
-        // JewelSpawner.spawn.EnableAllJewel();
+        JewelSpawner.spawn.JewelMapCreate(this.mapData);
+        JewelSpawner.spawn.EnableAllJewel();
     }
 
     public test(map: number): void{
@@ -57,6 +57,8 @@ class GribManager {
         this.mapData = this.MapReader(map.toString());
         this.GribCreate(this.mapData);
         this.BorderCreate(this.mapData);
+        JewelSpawner.spawn.JewelMapCreate(this.mapData);
+        JewelSpawner.spawn.EnableAllJewel();
     }
 
     private GribCreate(map: number[][]): void {
@@ -67,8 +69,13 @@ class GribManager {
                 if (map[x][y] > 1) {
                     GameController.action.CellNotEmpty++;
                 }
+
                 if (map[x][y] > 0) {
                     this.CellInstantiate(x, y, map[x][y]);
+                }
+                else {
+                    this.GribCell[x][y] = null;
+                    this.GribCellObj[x][y] = null;
                 }
             }
         }
@@ -312,7 +319,7 @@ class GribManager {
     
 
     private CornerOutCheckTop(parent: GameObject): boolean {
-        let obj: CellObj = parent as CellObj; //parent.GetComponent<CellObj>();
+        let obj: CellObj = parent as CellObj;
         let x: number = obj.cell.CellPosition.x;
         let y: number = obj.cell.CellPosition.y;
         for (let i = y + 1; i < 9; i++) {
@@ -323,7 +330,7 @@ class GribManager {
     }
 
     private CornerOutCheckBot(parent: GameObject): boolean {
-        let obj: CellObj = parent as CellObj;// parent.GetComponent<CellObj>();
+        let obj: CellObj = parent as CellObj;
         let x: number = obj.cell.CellPosition.x;
         let y: number = obj.cell.CellPosition.y;
         for (let i = y - 1; i >= 0; i--) {
@@ -333,7 +340,7 @@ class GribManager {
         return true;
     }
     private CornerOutCheckRight(parent: GameObject): boolean {
-        let obj: CellObj = parent as CellObj;// parent.GetComponent<CellObj>();
+        let obj: CellObj = parent as CellObj;
         let x: number = obj.cell.CellPosition.x;
         let y: number = obj.cell.CellPosition.y;
         for (let i = x + 1; i < 7; i++) {
@@ -343,7 +350,7 @@ class GribManager {
         return true;
     }
     private CornerOutCheckLeft(parent: GameObject): boolean {
-        let obj: CellObj = parent as CellObj;// parent.GetComponent<CellObj>();
+        let obj: CellObj = parent as CellObj;
         let x: number = obj.cell.CellPosition.x;
         let y: number = obj.cell.CellPosition.y;
         for (let i = x - 1; i >= 0; i--) {

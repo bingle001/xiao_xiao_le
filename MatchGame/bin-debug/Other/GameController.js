@@ -15,96 +15,87 @@ var GameController = (function () {
     }
     GameController.Awake = function () {
         GameController.action = new GameController();
+        GameController.action.drop = new SpawnController();
     };
-    GameController.prototype.Start = function () {
+    GameController.prototype.Start = function (selector, noSelector) {
+        this.Selector = selector;
+        this.Selector.visible = false;
+        this.NoSelect = noSelector;
+        this.NoSelect.visible = false;
         EffectSpawner.effect.ComboTick(); //StartCoroutine();
-        Timer.timer.TimeTick(true);
         this.GameState = GameState.PLAYING;
-        this.NoSelect.visible = false; // NoSelect.SetActive(false);
+        Timer.timer.TimeTick(true);
+        Time.addFrameCall(this.Update, this);
     };
     GameController.prototype.Update = function () {
         this.JewelSelecter();
-        this.backpress();
     };
-    //process click action
     GameController.prototype.JewelSelecter = function () {
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input._isMouseDown && !this.ishold) {
             this.ishold = true;
-            if (this.Pointer == null) {
-                this.Pointer = this.JewelTouchChecker(Input.mousePosition);
+            this.Pointer = this.JewelTouchChecker(Input._localX, Input._localY);
+            if (this.Pointer) {
+                this.EnableSelector(this.Pointer.x, this.Pointer.y);
             }
             Supporter.sp.StopSuggestionAnim();
-            if (this.Pointer != null && this.Pointer.name.indexOf("Jewel") == -1) {
-                this.Pointer = null;
-            }
         }
-        else if (Input.GetMouseButton(0) && this.ishold) {
+        else if (Input._isMouseDown && this.ishold) {
             if (this.Pointer != null) {
-                this.EnableSelector(this.Pointer.position); // Pointer.transform.position);
-                this.Selected = this.JewelTouchChecker(Input.mousePosition);
-                if (this.Selected != null && this.Pointer != this.Selected && this.Selected.name.indexOf("Jewel") != -1) {
+                this.Selected = this.JewelTouchChecker(Input._localX, Input._localY);
+                if (this.Selected != null && this.Pointer != this.Selected) {
                     if (this.DistanceChecker(this.Pointer, this.Selected)) {
                         this.RuleChecker(this.Pointer, this.Selected);
                         this.Pointer = null;
                         this.Selected = null;
-                        this.Selector.visible = true; // Selector.SetActive(false);
+                        this.Selector.visible = false;
                     }
                     else {
                         this.Pointer = this.Selected;
                         this.Selected = null;
-                        this.EnableSelector(this.Pointer.position); //.transform.position);
+                        this.EnableSelector(this.Pointer.x, this.Pointer.y);
                     }
                 }
             }
         }
-        else if (Input.GetMouseButtonUp(0)) {
+        else if (this.ishold) {
             this.ishold = false;
         }
     };
     //check distance between 2 object
     GameController.prototype.DistanceChecker = function (obj1, obj2) {
-        var v1 = obj1.jewel.JewelPosition; // obj1.GetComponent<JewelObj>().jewel.JewelPosition;
-        var v2 = obj2.jewel.JewelPosition; // obj2.GetComponent<JewelObj>().jewel.JewelPosition;
+        var v1 = obj1.jewel.JewelPosition;
+        var v2 = obj2.jewel.JewelPosition;
         if (Vector2.Distance(v1, v2) <= 1) {
             return true;
         }
         return false;
     };
     //check logic game
-    GameController.prototype.RuleChecker = function (obj1, obj2) {
-        var Jewel1 = obj1; // obj1.GetComponent<JewelObj>();
-        var Jewel2 = obj2; // obj2.GetComponent<JewelObj>();
-        Debug.Log("Pointer:" + Jewel1.jewel.JewelPosition.x + "," + Jewel1.jewel.JewelPosition.y);
-        Debug.Log("Selected:" + Jewel2.jewel.JewelPosition.x + "," + Jewel2.jewel.JewelPosition.y);
-        var NeiObj1 = Ulti.ListPlus(Jewel1.GetCollumn(Jewel2.jewel.JewelPosition, Jewel1.jewel.JewelType, null), Jewel1.GetRow(Jewel2.jewel.JewelPosition, Jewel1.jewel.JewelType, null), Jewel1);
-        var NeiObj2 = Ulti.ListPlus(Jewel2.GetCollumn(Jewel1.jewel.JewelPosition, Jewel2.jewel.JewelType, null), Jewel2.GetRow(Jewel1.jewel.JewelPosition, Jewel2.jewel.JewelType, null), Jewel2);
-        if (Jewel1.jewel.JewelType == 99 || Jewel2.jewel.JewelType == 99)
-            if (Jewel1.jewel.JewelType == 8 || Jewel2.jewel.JewelType == 8) {
-                Jewel1.SetBackAnimation(obj2);
-                Jewel2.SetBackAnimation(obj1);
+    GameController.prototype.RuleChecker = function (jewel1, jewel2) {
+        Debug.Log("Pointer:" + jewel1.jewel.JewelPosition.x + "," + jewel1.jewel.JewelPosition.y);
+        Debug.Log("Selected:" + jewel2.jewel.JewelPosition.x + "," + jewel2.jewel.JewelPosition.y);
+        var NeiObj1 = Utils.ListPlus(jewel1.GetCollumn(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1.GetRow(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1);
+        var NeiObj2 = Utils.ListPlus(jewel2.GetCollumn(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2.GetRow(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2);
+        if (jewel1.jewel.JewelType == 99 || jewel2.jewel.JewelType == 99) {
+            if (jewel1.jewel.JewelType == 8 || jewel2.jewel.JewelType == 8) {
+                jewel1.SetBackAnimation(jewel2);
+                jewel2.SetBackAnimation(jewel1);
                 return;
             }
-        if (NeiObj1.length >= 3 || NeiObj2.length >= 3 || Jewel1.jewel.JewelType == 8 || Jewel2.jewel.JewelType == 8) {
-            Ulti.MoveTo(obj1, obj2.localPosition, 0.2);
-            Ulti.MoveTo(obj2, obj1.localPosition, 0.2);
-            this.SwapJewelPosition(obj1, obj2);
-            this.JewelProcess(NeiObj1, NeiObj2, obj1, obj2);
+        }
+        if (NeiObj1.length >= 3 || NeiObj2.length >= 3 || jewel1.jewel.JewelType == 8 || jewel2.jewel.JewelType == 8) {
+            Utils.MoveTo(jewel1, jewel2.jewel.JewelPosition, 0.2);
+            Utils.MoveTo(jewel2, jewel1.jewel.JewelPosition, 0.2);
+            this.SwapJewelPosition(jewel1, jewel2);
+            var self_1 = this;
+            egret.setTimeout(function () {
+                self_1.JewelProcess(NeiObj1, NeiObj2, jewel1, jewel2);
+            }, this, 200);
         }
         else {
-            Jewel1.SetBackAnimation(obj2);
-            Jewel2.SetBackAnimation(obj1);
+            jewel1.SetBackAnimation(jewel2);
+            jewel2.SetBackAnimation(jewel1);
         }
-    };
-    GameController.prototype.backpress = function () {
-        //TODO  暂停游戏
-        // if (Input.GetKeyDown(KeyCode.Escape) && GameState == Timer.GameState.PLAYING)
-        // {
-        //     Timer.timer.Pause();
-        // }
-        // else if (Input.GetKeyDown(KeyCode.Escape) && GameState == Timer.GameState.PAUSE)
-        // {
-        //     Timer.timer.Resume();
-        // }
     };
     GameController.prototype.JewelProcess = function (list1, list2, obj1, obj2) {
         var c1 = list1.length;
@@ -113,17 +104,17 @@ var GameController = (function () {
             this.ListProcess(list1, obj2, obj1, obj1.jewel.JewelType);
         }
         else if (obj1.jewel.JewelType == 8) {
-            obj2.Destroy(); //obj2.GetComponent<JewelObj>().Destroy();
-            this.PDestroyType(obj2.jewel.JewelType, obj2.position);
-            obj1.Destroy(); //obj1.GetComponent<JewelObj>().Destroy();
+            obj2.Destroy();
+            this.PDestroyType(obj2.jewel.JewelType, obj2.jewel.JewelPosition);
+            obj1.Destroy();
         }
         if (c2 > 2) {
             this.ListProcess(list2, obj1, obj2, obj2.jewel.JewelType);
         }
         else if (obj2.jewel.JewelType == 8) {
-            obj1.Destroy(); // obj1.GetComponent<JewelObj>().Destroy();
-            this.PDestroyType(obj1.jewel.JewelType, obj1.position);
-            obj2.Destroy(); // obj2.GetComponent<JewelObj>().Destroy();
+            obj1.Destroy();
+            this.PDestroyType(obj1.jewel.JewelType, obj1.jewel.JewelPosition);
+            obj2.Destroy();
         }
     };
     GameController.prototype.JewelProcess2 = function (list1, obj1) {
@@ -135,12 +126,10 @@ var GameController = (function () {
     GameController.prototype.ListProcess = function (list, obj, obj1, type) {
         var v;
         if (obj1 != null) {
-            this.JewelScript = obj1; // .GetComponent<JewelObj>();
-            v = new Vector3(this.JewelScript.jewel.JewelPosition.x, this.JewelScript.jewel.JewelPosition.y);
+            v = obj1.jewel.JewelPosition;
         }
         else {
-            this.JewelScript = obj; // .GetComponent<JewelObj>();
-            v = new Vector3(this.JewelScript.jewel.JewelPosition.x, this.JewelScript.jewel.JewelPosition.y);
+            v = obj.jewel.JewelPosition;
         }
         var c = list.length;
         if (c == 3) {
@@ -166,8 +155,7 @@ var GameController = (function () {
     };
     // 开启滑落检测
     GameController.prototype.dropjewel = function () {
-        this.drop.DELAY = GameController.DROP_DELAY;
-        // this.drop.enabled = true;
+        this.drop.setDelay(GameController.DROP_DELAY);
     };
     GameController.prototype.DestroyJewel = function (list) {
         SoundController.Sound.JewelCrash();
@@ -187,34 +175,41 @@ var GameController = (function () {
         }
         this.SpawnJewelPower(type, power, pos); //StartCoroutine(SpawnJewelPower(type, power, pos));
     };
-    GameController.prototype.JewelTouchChecker = function (mouseposition) {
-        var wp = mouseposition; // Camera.main.ScreenToWorldPoint(mouseposition);
-        var touchPos = new Vector2(wp.x, wp.y);
-        // if (Physics2D.OverlapPoint(touchPos))
-        // {
-        //     return Physics2D.OverlapPoint(touchPos).gameObject;
-        // }
-        //TODO 应该是判断碰撞到哪个gameobject
+    //检测当前鼠标碰到哪一个
+    GameController.prototype.JewelTouchChecker = function (localX, localY) {
+        var list = JewelSpawner.spawn.JewelGrib;
+        for (var x = 0; x < list.length; x++) {
+            for (var y = 0; y < list[x].length; y++) {
+                var obj = list[x][y];
+                if (obj) {
+                    if (localX >= obj.x && localY >= obj.y && localX < obj.x + obj.width && localY < obj.y + obj.height) {
+                        debug("当前触碰点：(%s, %s)", obj.jewel.JewelPosition.x, obj.jewel.JewelPosition.y);
+                        return obj;
+                    }
+                }
+            }
+        }
         return null;
     };
     //swap map jewel position
     GameController.prototype.SwapJewelPosition = function (jewel1, jewel2) {
-        var tmp1 = jewel1; // .GetComponent<JewelObj>();
-        var tmp2 = jewel2; // .GetComponent<JewelObj>();
-        //交互宝时对象在Map中的位置
-        var tmp = tmp1.jewel.JewelPosition;
-        tmp1.jewel.JewelPosition = tmp2.jewel.JewelPosition;
-        tmp2.jewel.JewelPosition = tmp;
+        // let tmp1: JewelObj = jewel1 as JewelObj;// .GetComponent<JewelObj>();
+        // let tmp2: JewelObj = jewel2 as JewelObj;// .GetComponent<JewelObj>();
         //交换对象
-        var Objtmp = JewelSpawner.spawn.JewelGrib[tmp1.jewel.JewelPosition.x][tmp1.jewel.JewelPosition.y];
-        JewelSpawner.spawn.JewelGrib[tmp1.jewel.JewelPosition.x][tmp1.jewel.JewelPosition.y] = jewel2;
-        JewelSpawner.spawn.JewelGrib[tmp2.jewel.JewelPosition.x][tmp2.jewel.JewelPosition.y] = Objtmp;
+        // let Objtmp: JewelObj = JewelSpawner.spawn.JewelGrib[jewel1.jewel.JewelPosition.x][jewel1.jewel.JewelPosition.y];
+        JewelSpawner.spawn.JewelGrib[jewel1.jewel.JewelPosition.x][jewel1.jewel.JewelPosition.y] = jewel2;
+        JewelSpawner.spawn.JewelGrib[jewel2.jewel.JewelPosition.x][jewel2.jewel.JewelPosition.y] = jewel1;
+        //交互宝时对象在Map中的位置
+        var tmp = jewel1.jewel.JewelPosition;
+        jewel1.jewel.JewelPosition = jewel2.jewel.JewelPosition;
+        jewel2.jewel.JewelPosition = tmp;
         //交换脚本
-        var scripttmp = tmp1;
-        JewelSpawner.spawn.JewelGribScript[tmp2.jewel.JewelPosition.x][tmp2.jewel.JewelPosition.y] = tmp2;
-        JewelSpawner.spawn.JewelGribScript[tmp1.jewel.JewelPosition.x][tmp1.jewel.JewelPosition.y] = scripttmp;
-        if (tmp1.jewel.JewelType == 99 || tmp2.jewel.JewelType == 99)
+        // let scripttmp: JewelObj = tmp1;
+        // JewelSpawner.spawn.JewelGrib[tmp2.jewel.JewelPosition.x][tmp2.jewel.JewelPosition.y] = tmp2.jewel;
+        // JewelSpawner.spawn.JewelGrib[tmp1.jewel.JewelPosition.x][tmp1.jewel.JewelPosition.y] = scripttmp.jewel;
+        if (jewel1.jewel.JewelType == 99 || jewel2.jewel.JewelType == 99) {
             this.WinChecker();
+        }
     };
     GameController.prototype.SpawnJewelPower = function (type, power, pos) {
         // yield return new WaitForSeconds(0.4f);
@@ -243,8 +238,8 @@ var GameController = (function () {
             if (_x != x) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0)
                     celleffect.push(GribManager.cell.GribCellObj[x][y]);
-                if (JewelSpawner.spawn.JewelGribScript[x][y] != null && JewelSpawner.spawn.JewelGribScript[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
-                    jeweldes.push(JewelSpawner.spawn.JewelGribScript[x][y]);
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
+                    jeweldes.push(JewelSpawner.spawn.JewelGrib[x][y]);
             }
         }
         for (var i in celleffect) {
@@ -266,8 +261,8 @@ var GameController = (function () {
             if (_y != y) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0)
                     celleffect.push(GribManager.cell.GribCellObj[x][y]);
-                if (JewelSpawner.spawn.JewelGribScript[x][y] != null && JewelSpawner.spawn.JewelGribScript[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
-                    jeweldes.push(JewelSpawner.spawn.JewelGribScript[x][y]);
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
+                    jeweldes.push(JewelSpawner.spawn.JewelGrib[x][y]);
             }
         }
         for (var i in celleffect) {
@@ -284,8 +279,8 @@ var GameController = (function () {
         for (var i = x - 1; i <= x + 1; i++) {
             for (var j = y - 1; j <= y + 1; j++) {
                 if (i != x || j != y)
-                    if (i >= 0 && i < 7 && j >= 0 && j < 9 && JewelSpawner.spawn.JewelGribScript[i][j] != null && JewelSpawner.spawn.JewelGribScript[i][j].jewel.JewelType != 99)
-                        JewelSpawner.spawn.JewelGribScript[i][j].Destroy();
+                    if (i >= 0 && i < 7 && j >= 0 && j < 9 && JewelSpawner.spawn.JewelGrib[i][j] != null && JewelSpawner.spawn.JewelGrib[i][j].jewel.JewelType != 99)
+                        JewelSpawner.spawn.JewelGrib[i][j].Destroy();
             }
         }
     };
@@ -297,9 +292,9 @@ var GameController = (function () {
         this.dropjewel();
         for (var x = 0; x < 7; x++) {
             for (var y = 0; y < 9; y++) {
-                var tmp = JewelSpawner.spawn.JewelGribScript[x][y];
+                var tmp = JewelSpawner.spawn.JewelGrib[x][y];
                 if (tmp != null && tmp.jewel.JewelType == type) {
-                    EffectSpawner.effect.MGE(pos, JewelSpawner.spawn.JewelGrib[x][y].position);
+                    EffectSpawner.effect.MGE(pos, JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelPosition);
                     tmp.Destroy();
                 }
             }
@@ -314,11 +309,11 @@ var GameController = (function () {
     GameController.prototype.DestroyRandom = function () {
         //uu tien destroy ganh
         this.dropjewel();
-        if (PLayerInfo.MODE == 1) {
+        if (PlayerInfo.MODE == 1) {
             if (!this.isStar) {
                 var listeff = this.getListCellEffect();
                 if (listeff.length > 0) {
-                    var tmp = listeff[Utils.random(0, listeff.length)];
+                    var tmp = listeff[Utils.random(0, listeff.length - 1)];
                     tmp.RemoveEffect();
                     //TODO
                     // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.cell.CellPosition.x, tmp.cell.CellPosition.y].position);
@@ -329,7 +324,7 @@ var GameController = (function () {
             }
             else {
                 var vtmp = this.posUnderStar();
-                var tmp = JewelSpawner.spawn.JewelGribScript[vtmp.x][vtmp.y];
+                var tmp = JewelSpawner.spawn.JewelGrib[vtmp.x][vtmp.y];
                 if (tmp != null && tmp != this.JewelStar) {
                     tmp.Destroy();
                     //TODO
@@ -354,8 +349,9 @@ var GameController = (function () {
         for (var y = 0; y < 9; y++) {
             for (var x = 0; x < 7; x++) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellType > 1) {
-                    if (JewelSpawner.spawn.JewelGribScript[x][y] != null)
+                    if (JewelSpawner.spawn.JewelGrib[x][y] != null) {
                         tmp.push(GribManager.cell.GribCellObj[x][y]);
+                    }
                 }
             }
         }
@@ -366,11 +362,11 @@ var GameController = (function () {
         var x = this.JewelStar.jewel.JewelPosition.x;
         var y = this.JewelStar.jewel.JewelPosition.y;
         for (var i = 0; i < y; i++) {
-            if (JewelSpawner.spawn.JewelGribScript[x][i] != null)
-                under.push(JewelSpawner.spawn.JewelGribScript[x][i].jewel.JewelPosition);
+            if (JewelSpawner.spawn.JewelGrib[x][i] != null)
+                under.push(JewelSpawner.spawn.JewelGrib[x][i].jewel.JewelPosition);
         }
         if (under.length > 0)
-            return under[Utils.random(0, under.length)];
+            return under[Utils.random(0, under.length - 1)];
         else
             return new Vector2(x, y);
     };
@@ -379,9 +375,9 @@ var GameController = (function () {
         // {
         var listnotempty = this.getListNotEmpty();
         if (listnotempty.length > 0) {
-            var tmp = listnotempty[Utils.random(0, listnotempty.length)].cell.CellPosition;
-            if (JewelSpawner.spawn.JewelGribScript[tmp.x][tmp.y] != null) {
-                JewelSpawner.spawn.JewelGribScript[tmp.x][tmp.y].Destroy();
+            var tmp = listnotempty[Utils.random(0, listnotempty.length - 1)].cell.CellPosition;
+            if (JewelSpawner.spawn.JewelGrib[tmp.x][tmp.y] != null) {
+                JewelSpawner.spawn.JewelGrib[tmp.x][tmp.y].Destroy();
                 //TODO
                 // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.x][tmp.y].position);
             }
@@ -415,9 +411,9 @@ var GameController = (function () {
             dem++;
             if (dem >= 63)
                 return;
-            var x = Utils.random(0, 7);
-            var y = Utils.random(0, 9);
-            var tmp = JewelSpawner.spawn.JewelGribScript[x][y];
+            var x = Utils.random(0, 6); // (0, 7);
+            var y = Utils.random(0, 8); // (0, 9);
+            var tmp = JewelSpawner.spawn.JewelGrib[x][y];
             if (tmp != null && tmp.jewel.JewelType != 8 && tmp.jewel.JewelPower == 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
                 //随机1种技能
                 var r = Utils.random(2, 4);
@@ -438,7 +434,7 @@ var GameController = (function () {
             if (listpos.length > 0)
                 break;
         }
-        pos = listpos[Utils.random(0, listpos.length)];
+        pos = listpos[Utils.random(0, listpos.length - 1)];
         JewelSpawner.spawn.SpawnStar(pos);
         SoundController.Sound.StarIn();
     };
@@ -455,11 +451,10 @@ var GameController = (function () {
             this.Destroy(this.JewelStar); //.gameObject);
         }
     };
-    GameController.prototype.EnableSelector = function (pos) {
-        // Selector.transform.position = pos;
-        this.Selector.x = pos.x;
-        this.Selector.y = pos.y;
-        this.Selector.visible = true; // Selector.SetActive(true);
+    GameController.prototype.EnableSelector = function (tx, ty) {
+        this.Selector.x = tx;
+        this.Selector.y = ty;
+        this.Selector.visible = true;
     };
     GameController.prototype.Destroy = function (obj) {
         //TODO

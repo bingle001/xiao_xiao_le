@@ -45,6 +45,17 @@ class Utils{
     }
 
     /**
+     * 初始化指定长度的一维数组
+     */
+    public static initVector(len: number, defaultValue: any = 0): any{
+        let list = [];
+        for (let i = 0; i < len; i++){
+            list.push(defaultValue);
+        }
+        return list;
+    }
+
+    /**
      * 随机
      * @param min
      * @param max
@@ -90,6 +101,64 @@ class Utils{
         return max;
     }
 
+
+
+
+
+    /// 将两个List合并
+	/// 触发消除的方块
+	public static ListPlus(l1: JewelObj[], l2: JewelObj[], bonus: JewelObj): JewelObj[] {
+		let tmp = [];
+		for (let i = l1.length - 1; i >= 0; i--) {
+			tmp.push(l1[i]);
+		}
+		if (bonus != null)
+			tmp.push(bonus);
+
+		for (let i = 0; i < l2.length; i++) {
+			tmp.push(l2[i]);
+		}
+
+		return tmp;
+	}
+
+	/// 移动显示对象
+	public static MoveTo(obj: GameObject, NewPos: Vector2, duration: number): void {
+
+		let tx: number = Global.posX(NewPos.x);
+		let ty: number = Global.posY(NewPos.y);
+		let time: number = duration * 1000;
+
+		egret.Tween.removeTweens(obj);
+		egret.Tween.get(obj).to({ x: tx, y: ty }, time);
+		debug("移动显示对象:", obj, NewPos, duration);
+	}
+
+    public static MoveTo2(obj: GameObject, startpos: Vector2, NewPos: Vector2, duration: number): void {
+
+        let sx = Global.posX(startpos.x);
+        let sy = Global.posY(startpos.y);
+
+        debug("移动位置2:");
+        obj.x = sx;
+        obj.y = sy;
+		this.MoveTo(obj, NewPos, duration);
+	}
+
+	// 使用协程播放下落动画
+    public static IEDrop(obj: JewelObj, NewPos: Vector2, speed: number): void {
+        let dy = Global.posY(NewPos.y);
+        let ty = dy - obj.y;
+        let time: number = (ty / Global.BaseDistance) * (1000 / speed);
+
+        egret.Tween.removeTweens(obj);
+        egret.Tween.get(obj).to({ y: dy }, time).call(function () {
+            obj.Bounce();
+        }, this);
+
+        debug("IEDrop : 物体下落 (%s→%s), 时间：%sms", obj.y, dy, time);
+    }
+    
 
 
 

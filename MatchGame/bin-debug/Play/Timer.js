@@ -40,7 +40,7 @@ var Timer = (function (_super) {
         this.AdsCd(); //StartCoroutine
     };
     Timer.prototype.TimeTick = function (b) {
-        if (b && PLayerInfo.MODE == 1) {
+        if (b && PlayerInfo.MODE == 1) {
             //开始计时
             this.m_pIsUpdate = true; // this.update.enabled = true;
         }
@@ -108,7 +108,7 @@ var Timer = (function (_super) {
     Timer.prototype.Lost = function () {
         GameController.action.GameState = GameState.LOST;
         this.NoSelect.visible = true; // NoSelect.SetActive(true);
-        EffectSpawner.effect.SetScore(PLayerInfo.Info.Score);
+        EffectSpawner.effect.SetScore(PlayerInfo.Info.Score);
         this.DisableAll(); // StartCoroutine(DisableAll());
         SoundController.Sound.Lose();
         this.showFullAds();
@@ -133,21 +133,21 @@ var Timer = (function (_super) {
         }
     };
     Timer.prototype.Restart = function () {
-        if (PLayerInfo.MODE == 1) {
-            PLayerInfo.Info.Score = 0;
-            ButtonActionController.Click.ArcadeScene(PLayerInfo.MapPlayer);
+        if (PlayerInfo.MODE == 1) {
+            PlayerInfo.Info.Score = 0;
+            ButtonActionController.Click.ArcadeScene(PlayerInfo.MapPlayer);
         }
         else {
             ButtonActionController.Click.ClassicScene(1);
         }
     };
     Timer.prototype.Home = function () {
-        ButtonActionController.Click.SelectMap(PLayerInfo.MODE);
+        ButtonActionController.Click.SelectMap(PlayerInfo.MODE);
     };
     Timer.prototype.Next = function () {
         ButtonActionController.Click.SelectMap(1);
-        if (PLayerInfo.MapPlayer.Level < 297)
-            CameraMovement.StarPointMoveIndex = PLayerInfo.MapPlayer.Level;
+        if (PlayerInfo.MapPlayer.Level < 297)
+            CameraMovement.StarPointMoveIndex = PlayerInfo.MapPlayer.Level;
         else
             CameraMovement.StarPointMoveIndex = -1;
     };
@@ -168,7 +168,7 @@ var Timer = (function (_super) {
     };
     Timer.prototype.IEWin = function () {
         this.DisableJewel(true);
-        EffectSpawner.effect.StarWinEffect(GameController.action.JewelStar.position);
+        EffectSpawner.effect.StarWinEffect(GameController.action.JewelStar.jewel.JewelPosition);
         SoundController.Sound.Win();
         // ?? //GameController.action.JewelStar.gameObject.transform.GetChild(0).gameObject.SetActive(false);
         // yield return new WaitForSeconds(1f);
@@ -186,18 +186,18 @@ var Timer = (function (_super) {
         this.DisableJewel(true);
         this.showFullAds();
         // yield return new WaitForSeconds(1f);
-        ButtonActionController.Click.ClassicScene(PLayerInfo.MapPlayer.Level + 1);
+        ButtonActionController.Click.ClassicScene(PlayerInfo.MapPlayer.Level + 1);
     };
     Timer.prototype.DisableJewel = function (b) {
         for (var x = 0; x < 7; x++) {
             for (var y = 0; y < 9; y++) {
                 if (!b) {
-                    if (JewelSpawner.spawn.JewelGribScript[x][y] != null)
-                        JewelSpawner.spawn.JewelGribScript[x][y].JewelDisable();
+                    if (JewelSpawner.spawn.JewelGrib[x][y] != null)
+                        JewelSpawner.spawn.JewelGrib[x][y].JewelDisable();
                 }
                 else {
-                    if (JewelSpawner.spawn.JewelGribScript[x][y] != null && JewelSpawner.spawn.JewelGribScript[x][y] != GameController.action.JewelStar)
-                        JewelSpawner.spawn.JewelGribScript[x][y].JewelDisable();
+                    if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] != GameController.action.JewelStar)
+                        JewelSpawner.spawn.JewelGrib[x][y].JewelDisable();
                 }
             }
         }

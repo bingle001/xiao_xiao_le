@@ -63,7 +63,7 @@ class Timer extends MonoBehaviour{
     }
 
     public TimeTick(b: boolean): void {
-        if (b && PLayerInfo.MODE == 1) {
+        if (b && PlayerInfo.MODE == 1) {
             //开始计时
             this.m_pIsUpdate = true;// this.update.enabled = true;
         }
@@ -141,7 +141,7 @@ class Timer extends MonoBehaviour{
     public Lost(): void {
         GameController.action.GameState = GameState.LOST;
         this.NoSelect.visible = true;// NoSelect.SetActive(true);
-        EffectSpawner.effect.SetScore(PLayerInfo.Info.Score);
+        EffectSpawner.effect.SetScore(PlayerInfo.Info.Score);
         this.DisableAll();// StartCoroutine(DisableAll());
         SoundController.Sound.Lose();
         this.showFullAds();
@@ -167,21 +167,21 @@ class Timer extends MonoBehaviour{
         }
     }
     public Restart(): void {
-        if (PLayerInfo.MODE == 1) {
-            PLayerInfo.Info.Score = 0;
-            ButtonActionController.Click.ArcadeScene(PLayerInfo.MapPlayer);
+        if (PlayerInfo.MODE == 1) {
+            PlayerInfo.Info.Score = 0;
+            ButtonActionController.Click.ArcadeScene(PlayerInfo.MapPlayer);
         }
         else {
             ButtonActionController.Click.ClassicScene(1);
         }
     }
     public Home(): void {
-        ButtonActionController.Click.SelectMap(PLayerInfo.MODE);
+        ButtonActionController.Click.SelectMap(PlayerInfo.MODE);
     }
     public Next(): void {
         ButtonActionController.Click.SelectMap(1);
-        if (PLayerInfo.MapPlayer.Level < 297)
-            CameraMovement.StarPointMoveIndex = PLayerInfo.MapPlayer.Level;
+        if (PlayerInfo.MapPlayer.Level < 297)
+            CameraMovement.StarPointMoveIndex = PlayerInfo.MapPlayer.Level;
         else
             CameraMovement.StarPointMoveIndex = -1;
     }
@@ -207,7 +207,7 @@ class Timer extends MonoBehaviour{
     private IEWin(): void    //IEnumerator
     {
         this.DisableJewel(true);
-        EffectSpawner.effect.StarWinEffect(GameController.action.JewelStar.position);
+        EffectSpawner.effect.StarWinEffect(GameController.action.JewelStar.jewel.JewelPosition);
         SoundController.Sound.Win();
         // ?? //GameController.action.JewelStar.gameObject.transform.GetChild(0).gameObject.SetActive(false);
         // yield return new WaitForSeconds(1f);
@@ -228,19 +228,19 @@ class Timer extends MonoBehaviour{
         this.DisableJewel(true);
         this.showFullAds();
         // yield return new WaitForSeconds(1f);
-        ButtonActionController.Click.ClassicScene(PLayerInfo.MapPlayer.Level + 1);
+        ButtonActionController.Click.ClassicScene(PlayerInfo.MapPlayer.Level + 1);
     }
 
     public DisableJewel(b: boolean): void {
         for (let x = 0; x < 7; x++) {
             for (let y = 0; y < 9; y++) {
                 if (!b) {
-                    if (JewelSpawner.spawn.JewelGribScript[x][y] != null)
-                        JewelSpawner.spawn.JewelGribScript[x][y].JewelDisable();
+                    if (JewelSpawner.spawn.JewelGrib[x][y] != null)
+                        JewelSpawner.spawn.JewelGrib[x][y].JewelDisable();
                 }
                 else {
-                    if (JewelSpawner.spawn.JewelGribScript[x][y] != null && JewelSpawner.spawn.JewelGribScript[x][y] != GameController.action.JewelStar)
-                        JewelSpawner.spawn.JewelGribScript[x][y].JewelDisable();
+                    if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] != GameController.action.JewelStar)
+                        JewelSpawner.spawn.JewelGrib[x][y].JewelDisable();
                 }
             }
         }

@@ -5,10 +5,10 @@ var LoseUI = (function () {
     function LoseUI() {
     }
     LoseUI.prototype.Start = function () {
-        if (PLayerInfo.MODE != 1)
-            this.playerScore = PLayerInfo.Info.Score + (PLayerInfo.MapPlayer.Level - 1) * 5000;
+        if (PlayerInfo.MODE != 1)
+            this.playerScore = PlayerInfo.Info.Score + (PlayerInfo.MapPlayer.Level - 1) * 5000;
         else
-            this.playerScore = PLayerInfo.Info.Score;
+            this.playerScore = PlayerInfo.Info.Score;
         // display score text
         this.Score.text = this.playerScore.toString();
         // display best score text
@@ -16,13 +16,13 @@ var LoseUI = (function () {
     };
     /// compare score with best score
     LoseUI.prototype.getBestScore = function (score) {
-        if (PLayerInfo.MODE != 1) {
-            if (score > PLayerInfo.MapPlayer.HightScore) {
-                PLayerInfo.MapPlayer.HightScore = score;
-                PlayerPrefs.SetInt(PLayerInfo.KEY_CLASSIC_HISCORE, PLayerInfo.MapPlayer.HightScore);
+        if (PlayerInfo.MODE != 1) {
+            if (score > PlayerInfo.MapPlayer.HightScore) {
+                PlayerInfo.MapPlayer.HightScore = score;
+                PlayerPrefs.SetInt(PlayerInfo.KEY_CLASSIC_HISCORE, PlayerInfo.MapPlayer.HightScore);
             }
         }
-        return PLayerInfo.MapPlayer.HightScore;
+        return PlayerInfo.MapPlayer.HightScore;
     };
     return LoseUI;
 }());

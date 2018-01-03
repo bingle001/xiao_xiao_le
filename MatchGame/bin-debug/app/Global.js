@@ -4,6 +4,12 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 var Global = (function () {
     function Global() {
     }
+    Global.posX = function (x) {
+        return x * Global.BaseDistance;
+    };
+    Global.posY = function (y) {
+        return (8 - y) * Global.BaseDistance;
+    };
     Global.GameWidth = 720;
     Global.GameHeight = 1280;
     Global.CellWidth = 100;

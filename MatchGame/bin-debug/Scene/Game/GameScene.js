@@ -28,13 +28,40 @@ var GameScene = (function (_super) {
     GameScene.prototype.onCreated = function () {
         _super.prototype.onCreated.call(this);
         debug("GameScene onCreated");
-        if (PLayerInfo.MODE == 1) {
-            GribManager.cell.GribMapCreate(PLayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent, this.group_cornerParent);
+        this.group_jewelParent.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+        JewelSpawner.spawn.initJewelParent(this.group_jewelParent);
+        if (PlayerInfo.MODE == 1) {
+            GribManager.cell.GribMapCreate(PlayerInfo.MapPlayer.Name, this.group_cellParent, this.group_borderParent, this.group_cornerParent);
         }
         else {
             GribManager.cell.GribMapCreate("classic", this.group_cellParent, this.group_borderParent, this.group_cornerParent);
         }
-        // GameController.action.Start();
+        PlayerInfo.Info.Start();
+        GameController.action.Start(this.group_selector, this.group_noSelector);
+        EffectSpawner.effect.start(this.group_effectParent);
+    };
+    GameScene.prototype.onTouchBegin = function (e) {
+        this.group_jewelParent.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
+        Input._isMouseDown = true;
+        Input._localX = e.localX;
+        Input._localY = e.localY;
+        // debug("onTouchBegin:(%s, %s)", Input._localX, Input._localY);
+    };
+    GameScene.prototype.onTouchMove = function (e) {
+        if (e.target == this.group_jewelParent) {
+            Input._localX = e.localX;
+            Input._localY = e.localY;
+            // debug("onTouchMove:(%s, %s)", Input._localX, Input._localY);
+        }
+    };
+    GameScene.prototype.onTouchEnd = function (e) {
+        this.group_jewelParent.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);
+        this.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.onTouchMove, this);
+        this.stage.removeEventListener(egret.TouchEvent.TOUCH_END, this.onTouchEnd, this);
+        Input._isMouseDown = false;
+        // debug("onTouchEnd");
     };
     /**
      * 销毁

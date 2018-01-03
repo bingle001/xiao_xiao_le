@@ -29,16 +29,16 @@ class Time {
 	private static _secondStamp: number = 0;
 	private static _smoothDeltaTime: number = 0;
 
-	private static _frameFuncMaps;//每帧回调列表
-	private static _secondFuncMaps;
+	private static _frameFuncMaps: any[];//每帧回调列表
+	private static _secondFuncMaps: any[];
 
 	public static Awake(): void {
 		this._timeStamp = egret.getTimer();
 		this._secondStamp = this._timeStamp;
 		this._smoothDeltaTime = 1 / 30; //暂时30帧	//60帧
 
-		this._frameFuncMaps = {};
-		this._secondFuncMaps = {};
+		this._frameFuncMaps = [];
+		this._secondFuncMaps = [];
 
 		egret.startTick(this.ticker, this);
 	}
@@ -77,9 +77,9 @@ class Time {
 
 	private static callBackMaps(maps, deltaTime: number): void {
 		for (let i in maps) {
-			let obj = maps;
+			let obj = maps[i];
 			if (obj && obj.callback && obj.thisObj) {
-				if (obj.params) {
+				if (obj.params && obj.params.length > 0) {
 					obj.callback.call(obj.thisObj, deltaTime, obj.params);
 				}
 				else {
@@ -95,12 +95,15 @@ class Time {
 	 */
 	public static addFrameCall(callback: Function, thisObj: any, ...params: any[]): void {
 		if (callback && thisObj) {
-			let obj = {
-				callback,
-				thisObj,
-				params,
+			let index: number = this.checkIndex(callback, thisObj, this._frameFuncMaps);
+			if (index == -1) {
+				let obj = {
+					callback,
+					thisObj,
+					params,
+				}
+				this._frameFuncMaps.push(obj);
 			}
-			this._frameFuncMaps[thisObj.hashCode] = obj;
 		}
 	}
 
@@ -110,23 +113,26 @@ class Time {
 	 */
 	public static addSecondCall(callback: Function, thisObj: any, ...params: any[]): void {
 		if (callback && thisObj) {
-			let obj = {
-				callback,
-				thisObj,
-				params,
+			let index: number = this.checkIndex(callback, thisObj, this._secondFuncMaps);
+			if (index == -1) {
+				let obj = {
+					callback,
+					thisObj,
+					params,
+				}
+				this._frameFuncMaps.push(obj);
 			}
-			this._frameFuncMaps[thisObj.hashCode] = obj;
 		}
 	}
 
 	/**
 	 * 移除每帧回调
 	 */
-	public static removeFrameCall(thisObj: any): void{
-		if (thisObj) {
-			if (this._frameFuncMaps[thisObj.hashCode]) {
-				this._frameFuncMaps[thisObj.hashCode] = null;
-				delete this._frameFuncMaps[thisObj.hashCode];
+	public static removeFrameCall(callback: Function, thisObj: any): void {
+		if (callback && thisObj) {
+			let index: number = this.checkIndex(callback, thisObj, this._frameFuncMaps);
+			if (index >= 0) {
+				this._frameFuncMaps.splice(index, 1);
 			}
 		}
 	}
@@ -134,14 +140,31 @@ class Time {
 	/**
 	 * 移除每秒回调
 	 */
-	public static removeSecondCall(thisObj: any): void{
-		if (thisObj) {
-			if (this._secondFuncMaps[thisObj.hashCode]) {
-				this._secondFuncMaps[thisObj.hashCode] = null;
-				delete this._secondFuncMaps[thisObj.hashCode];
+	public static removeSecondCall(callback: Function, thisObj: any): void {
+		if (callback && thisObj) {
+			let index: number = this.checkIndex(callback, thisObj, this._secondFuncMaps);
+			if (index >= 0) {
+				this._secondFuncMaps.splice(index, 1);
 			}
 		}
 	}
+
+	/**
+	 * 判断在列表中的第几项
+	 */
+	private static checkIndex(callback: Function, thisObj: any, maps: any[]): number{
+		for (let i = 0; i < maps.length; i++){
+			let obj = maps[i];
+			if (obj.callback == callback && obj.thisObj == thisObj) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
+
+
 
 
 

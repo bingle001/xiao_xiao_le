@@ -16,6 +16,15 @@ class Global {
 
 	/** 关卡数量 */
 	public static MapPointCount: number = 297;
+	
+
+	public static posX(x: number): number{
+		return x * Global.BaseDistance;
+	}
+
+	public static posY(y: number): number{
+		return (8 - y) * Global.BaseDistance;
+	}
 
 
 }

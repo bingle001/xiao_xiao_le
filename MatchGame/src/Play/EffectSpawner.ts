@@ -5,7 +5,7 @@ class EffectSpawner {
 	public static effect: EffectSpawner;
 
 	// 父容器对象
-	public parent: GameObject;
+	public parent: egret.DisplayObjectContainer;
 
 	// 特效Prefab列表
 	public EffectPrefabs: GameObject[];
@@ -14,7 +14,7 @@ class EffectSpawner {
 	public redglass;	//Animator
 
 	// 宝石销毁动画缓存,避免销毁后在重新创建动画对象
-	public JewelCrashArray: GameObject[][];
+	public JewelCrashArray: BashAni[][];
 
 	// 宝石销毁动画缓存的父容器，即所有销毁动画均挂在此对象像。
 	public JewelCrashParent: GameObject;
@@ -41,10 +41,26 @@ class EffectSpawner {
 	private isEnergyInc: boolean = false;
 
 	public static Awake(): void {
-		if (EffectSpawner.effect == null) {
-			EffectSpawner.effect = new EffectSpawner();
-			EffectSpawner.effect.JewelCrashArray = Utils.initVector2(GameObject, 7, 9);// new GameObject[7, 9];
+		EffectSpawner.effect = new EffectSpawner();
+	}
+
+	public start(effectParent: egret.DisplayObjectContainer): void{
+		this.parent = effectParent;
+		this.parent.removeChildren();
+
+		let list = [];
+		for (let x = 0; x < 7; x++){
+			let arr = [];
+			for (let y = 0; y < 9; y++) {
+				let ani = new BashAni();
+				ani.x = Global.posX(x);
+				ani.y = Global.posY(y);
+				this.parent.addChild(ani);
+				arr.push(ani);
+			}
+			list.push(arr);
 		}
+		this.JewelCrashArray = list;
 	}
 
 	public ContinueCombo(): void {
@@ -57,8 +73,8 @@ class EffectSpawner {
 
 	public ScoreInc(pos: Vector2): void {
 		let scorebonus = 10 + this.ComboCount * 10;
-		if (PLayerInfo.MODE != 1) {
-			if (PLayerInfo.Info.Score < PLayerInfo.MapPlayer.Level * 5000)
+		if (PlayerInfo.MODE != 1) {
+			if (PlayerInfo.Info.Score < PlayerInfo.MapPlayer.Level * 5000)
 				Timer.timer.ScoreBarProcess(scorebonus);
 			else if (GameController.action.GameState == GameState.PLAYING) {
 				Timer.timer.ClassicLvUp();
@@ -66,13 +82,13 @@ class EffectSpawner {
 		}
 		else {
 			if (GameController.action.GameState == GameState.PLAYING)
-			PLayerInfo.Info.Score += scorebonus;
+			PlayerInfo.Info.Score += scorebonus;
 			this.BonusEffect();
 			this.MiniStar(pos);
 		}
 
 		this.ScoreEff(scorebonus, pos);
-		this.SetScore(PLayerInfo.Info.Score);
+		this.SetScore(PlayerInfo.Info.Score);
 	}
 
 	private BonusEffect(): void {
@@ -128,15 +144,15 @@ class EffectSpawner {
 	}
 
 	public SetLevel(lv: number): void {
-		this.level.text = lv.toString();
+		// this.level.text = lv.toString();
 	}
 
 	public SetBest(bestscore: number): void {
-		this.best.text = bestscore.toString();
+		// this.best.text = bestscore.toString();
 	}
 
 	public SetScore(_score: number): void {
-		this.Score.text = _score.toString();
+		// this.Score.text = _score.toString();
 	}
 
 	// 创建宝石销毁动画并返回
@@ -159,8 +175,8 @@ class EffectSpawner {
 
 		// this.MGE(this.Energy.transform.position, pos, -0.4f);
 
-		let tmp = new Vector2(this.Energy.x, this.Energy.y);
-		this.MGE2(tmp, pos, -0.4);
+		// let tmp = new Vector2(this.Energy.x, this.Energy.y);
+		// this.MGE2(tmp, pos, -0.4);
 	}
 
 	public boom(pos: Vector2): void {

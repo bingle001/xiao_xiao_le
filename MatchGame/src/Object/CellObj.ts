@@ -21,6 +21,9 @@ class CellObj extends GameObject {
         this.ani = new BaseAni();
         this.ani.horizontalCenter = 0;
         this.ani.verticalCenter = 0;
+
+        this.cell = new Cell();
+        this.CellCode = 0;
     }
 
     // change to sprite by index
@@ -74,8 +77,8 @@ class CellObj extends GameObject {
             }
 
             this.cell.CellEffect = 0;
-            if (JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y] != null) {
-                JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y].RuleChecker();
+            if (JewelSpawner.spawn.JewelGrib[this.cell.CellPosition.x][this.cell.CellPosition.y] != null) {
+                JewelSpawner.spawn.JewelGrib[this.cell.CellPosition.x][this.cell.CellPosition.y].RuleChecker();
             }
         }
     }

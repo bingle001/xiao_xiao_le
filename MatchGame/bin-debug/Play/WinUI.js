@@ -18,7 +18,7 @@ var WinUI = (function (_super) {
     }
     WinUI.prototype.Start = function () {
         this.TimeBonus.text = (Math.abs(Timer.timer.GameTime)).toString();
-        this.playerScore = this.getGameScore(PLayerInfo.Info.Score, Timer.timer.GameTime);
+        this.playerScore = this.getGameScore(PlayerInfo.Info.Score, Timer.timer.GameTime);
         this.Score.text = this.playerScore.toString();
         this.Best.text = this.getBestScore(this.playerScore).toString();
         this.star = this.getGameStar(this.playerScore);
@@ -27,10 +27,10 @@ var WinUI = (function (_super) {
     };
     /// get best score
     WinUI.prototype.getBestScore = function (score) {
-        if (score > PLayerInfo.MapPlayer.HightScore) {
-            PLayerInfo.MapPlayer.HightScore = score;
+        if (score > PlayerInfo.MapPlayer.HightScore) {
+            PlayerInfo.MapPlayer.HightScore = score;
         }
-        return PLayerInfo.MapPlayer.HightScore;
+        return PlayerInfo.MapPlayer.HightScore;
     };
     /// calculate score
     WinUI.prototype.getGameScore = function (playerscore, gametime) {
@@ -39,16 +39,16 @@ var WinUI = (function (_super) {
     /// caculate star number by score
     WinUI.prototype.getGameStar = function (score) {
         if (score >= 80000) {
-            PLayerInfo.MapPlayer.Stars = 3;
+            PlayerInfo.MapPlayer.Stars = 3;
             return 3;
         }
         else if (score >= 60000) {
-            if (PLayerInfo.MapPlayer.Stars < 2)
-                PLayerInfo.MapPlayer.Stars = 2;
+            if (PlayerInfo.MapPlayer.Stars < 2)
+                PlayerInfo.MapPlayer.Stars = 2;
             return 2;
         }
         else {
-            PLayerInfo.MapPlayer.Stars = 1;
+            PlayerInfo.MapPlayer.Stars = 1;
             return 1;
         }
     };
@@ -62,9 +62,9 @@ var WinUI = (function (_super) {
     };
     /// sava data
     WinUI.prototype.SaveData = function () {
-        var index = PLayerInfo.MapPlayer.Level - 1;
-        DataLoader.MyData[index] = PLayerInfo.MapPlayer;
-        if (PLayerInfo.MapPlayer.Level < 297)
+        var index = PlayerInfo.MapPlayer.Level - 1;
+        DataLoader.MyData[index] = PlayerInfo.MapPlayer;
+        if (PlayerInfo.MapPlayer.Level < 297)
             DataLoader.MyData[index + 1].Locked = false;
         PlayerUtils.Save(DataLoader.MyData);
     };

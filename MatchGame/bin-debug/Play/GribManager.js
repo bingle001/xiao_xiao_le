@@ -30,8 +30,8 @@ var GribManager = (function () {
         this.GribCreate(this.mapData);
         this.BorderCreate(this.mapData);
         this.EffectCrash(this.mapData);
-        // JewelSpawner.spawn.JewelMapCreate(this.mapData);
-        // JewelSpawner.spawn.EnableAllJewel();
+        JewelSpawner.spawn.JewelMapCreate(this.mapData);
+        JewelSpawner.spawn.EnableAllJewel();
     };
     GribManager.prototype.test = function (map) {
         this.GribParent.removeChildren();
@@ -41,6 +41,8 @@ var GribManager = (function () {
         this.mapData = this.MapReader(map.toString());
         this.GribCreate(this.mapData);
         this.BorderCreate(this.mapData);
+        JewelSpawner.spawn.JewelMapCreate(this.mapData);
+        JewelSpawner.spawn.EnableAllJewel();
     };
     GribManager.prototype.GribCreate = function (map) {
         GameController.action.CellNotEmpty = 0;
@@ -52,6 +54,10 @@ var GribManager = (function () {
                 }
                 if (map[x][y] > 0) {
                     this.CellInstantiate(x, y, map[x][y]);
+                }
+                else {
+                    this.GribCell[x][y] = null;
+                    this.GribCellObj[x][y] = null;
                 }
             }
         }
@@ -263,7 +269,7 @@ var GribManager = (function () {
         }
     };
     GribManager.prototype.CornerOutCheckTop = function (parent) {
-        var obj = parent; //parent.GetComponent<CellObj>();
+        var obj = parent;
         var x = obj.cell.CellPosition.x;
         var y = obj.cell.CellPosition.y;
         for (var i = y + 1; i < 9; i++) {
@@ -273,7 +279,7 @@ var GribManager = (function () {
         return true;
     };
     GribManager.prototype.CornerOutCheckBot = function (parent) {
-        var obj = parent; // parent.GetComponent<CellObj>();
+        var obj = parent;
         var x = obj.cell.CellPosition.x;
         var y = obj.cell.CellPosition.y;
         for (var i = y - 1; i >= 0; i--) {
@@ -283,7 +289,7 @@ var GribManager = (function () {
         return true;
     };
     GribManager.prototype.CornerOutCheckRight = function (parent) {
-        var obj = parent; // parent.GetComponent<CellObj>();
+        var obj = parent;
         var x = obj.cell.CellPosition.x;
         var y = obj.cell.CellPosition.y;
         for (var i = x + 1; i < 7; i++) {
@@ -293,7 +299,7 @@ var GribManager = (function () {
         return true;
     };
     GribManager.prototype.CornerOutCheckLeft = function (parent) {
-        var obj = parent; // parent.GetComponent<CellObj>();
+        var obj = parent;
         var x = obj.cell.CellPosition.x;
         var y = obj.cell.CellPosition.y;
         for (var i = x - 1; i >= 0; i--) {

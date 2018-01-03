@@ -20,10 +20,24 @@ var EffectSpawner = (function () {
         this.isEnergyInc = false;
     }
     EffectSpawner.Awake = function () {
-        if (EffectSpawner.effect == null) {
-            EffectSpawner.effect = new EffectSpawner();
-            EffectSpawner.effect.JewelCrashArray = Utils.initVector2(GameObject, 7, 9); // new GameObject[7, 9];
+        EffectSpawner.effect = new EffectSpawner();
+    };
+    EffectSpawner.prototype.start = function (effectParent) {
+        this.parent = effectParent;
+        this.parent.removeChildren();
+        var list = [];
+        for (var x = 0; x < 7; x++) {
+            var arr = [];
+            for (var y = 0; y < 9; y++) {
+                var ani = new BashAni();
+                ani.x = Global.posX(x);
+                ani.y = Global.posY(y);
+                this.parent.addChild(ani);
+                arr.push(ani);
+            }
+            list.push(arr);
         }
+        this.JewelCrashArray = list;
     };
     EffectSpawner.prototype.ContinueCombo = function () {
         this.ComboCountdown = this.REFRESH_COMBO_TIME;
@@ -33,8 +47,8 @@ var EffectSpawner = (function () {
     };
     EffectSpawner.prototype.ScoreInc = function (pos) {
         var scorebonus = 10 + this.ComboCount * 10;
-        if (PLayerInfo.MODE != 1) {
-            if (PLayerInfo.Info.Score < PLayerInfo.MapPlayer.Level * 5000)
+        if (PlayerInfo.MODE != 1) {
+            if (PlayerInfo.Info.Score < PlayerInfo.MapPlayer.Level * 5000)
                 Timer.timer.ScoreBarProcess(scorebonus);
             else if (GameController.action.GameState == GameState.PLAYING) {
                 Timer.timer.ClassicLvUp();
@@ -42,12 +56,12 @@ var EffectSpawner = (function () {
         }
         else {
             if (GameController.action.GameState == GameState.PLAYING)
-                PLayerInfo.Info.Score += scorebonus;
+                PlayerInfo.Info.Score += scorebonus;
             this.BonusEffect();
             this.MiniStar(pos);
         }
         this.ScoreEff(scorebonus, pos);
-        this.SetScore(PLayerInfo.Info.Score);
+        this.SetScore(PlayerInfo.Info.Score);
     };
     EffectSpawner.prototype.BonusEffect = function () {
         this.ThunderCount++;
@@ -98,13 +112,13 @@ var EffectSpawner = (function () {
         // Destroy(tmp, SCORESHOW_TIME);
     };
     EffectSpawner.prototype.SetLevel = function (lv) {
-        this.level.text = lv.toString();
+        // this.level.text = lv.toString();
     };
     EffectSpawner.prototype.SetBest = function (bestscore) {
-        this.best.text = bestscore.toString();
+        // this.best.text = bestscore.toString();
     };
     EffectSpawner.prototype.SetScore = function (_score) {
-        this.Score.text = _score.toString();
+        // this.Score.text = _score.toString();
     };
     // 创建宝石销毁动画并返回
     EffectSpawner.prototype.JewelCash = function (pos) {
@@ -123,8 +137,8 @@ var EffectSpawner = (function () {
         // // Destroy(tmp, THUNDER_TIME);
         // debug("todo");
         // this.MGE(this.Energy.transform.position, pos, -0.4f);
-        var tmp = new Vector2(this.Energy.x, this.Energy.y);
-        this.MGE2(tmp, pos, -0.4);
+        // let tmp = new Vector2(this.Energy.x, this.Energy.y);
+        // this.MGE2(tmp, pos, -0.4);
     };
     EffectSpawner.prototype.boom = function (pos) {
         //TODO 应该是爆炸特效

@@ -31,8 +31,8 @@ var BaseScene = (function (_super) {
      */
     BaseScene.prototype.onDestroy = function () {
         _super.prototype.onDestroy.call(this);
-        Time.removeFrameCall(this);
-        Time.removeSecondCall(this);
+        Time.removeFrameCall(this.onEnterFrame, this);
+        Time.removeSecondCall(this.onEnterSecond, this);
     };
     /**
      * 每帧调用

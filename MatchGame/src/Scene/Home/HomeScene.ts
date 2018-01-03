@@ -27,7 +27,9 @@ class HomeScene extends BaseScene {
 	}
 
 	private onBtnStart(e: egret.TouchEvent): void{
-		Application.changeScene(SceneType.Game);
+		let player: Player = PlayerUtils.getPlayer(1);
+		ButtonActionController.Click.ArcadeScene(player);
+		// Application.changeScene(SceneType.Game);
 	}
 
 	/**

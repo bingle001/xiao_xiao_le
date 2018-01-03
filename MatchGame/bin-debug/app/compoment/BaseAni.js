@@ -21,7 +21,7 @@ var BaseAni = (function (_super) {
         /** 是否循环播放 */
         _this.isRepeat = false;
         /** 帧率，表示多少帧动一次，数值越大越慢 */
-        _this.frameRate = 1;
+        _this.frameRate = 2;
         _this._count = 0;
         _this._curFrame = 0; //当前帧
         _this._pause = false;
@@ -50,8 +50,7 @@ var BaseAni = (function (_super) {
      * 停止
      */
     BaseAni.prototype.stop = function () {
-        Time.removeFrameCall(this);
-        this.onDestory();
+        Time.removeFrameCall(this.onEnterFrame, this);
     };
     /**
      * 暂停

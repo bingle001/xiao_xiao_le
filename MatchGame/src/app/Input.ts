@@ -13,13 +13,18 @@ class Input {
 		
 	}
 
+	public static _isMouseDown: boolean = false;
+	public static _localX: number = 0;
+	public static _localY: number = 0;
+
+
 	/**
 	 * 检测鼠标按键是否按下
 	 * @param type 0对应左键 ， 1对应右键 ， 2对应中键
 	 */
 	public static GetMouseButtonDown(type: number): boolean{
-
-		return false;
+		return this._isMouseDown;
+		// return false;
 	}
 
 	public static GetMouseButton(type: number): boolean{
@@ -29,6 +34,8 @@ class Input {
 	public static GetMouseButtonUp(type: number): boolean{
 		return false;
 	}
+
+
 
 
 

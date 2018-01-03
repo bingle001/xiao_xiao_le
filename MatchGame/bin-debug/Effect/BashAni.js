@@ -11,21 +11,29 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-// 游戏背景 组件（挂在Screen/Background 游戏对像下）
-var SetBackground = (function (_super) {
-    __extends(SetBackground, _super);
-    // public Background:string[];//Sprite[]     // array background
-    function SetBackground() {
+var BashAni = (function (_super) {
+    __extends(BashAni, _super);
+    function BashAni() {
         var _this = _super.call(this) || this;
-        _this.img = new eui.Image();
-        _this.addChild(_this.img);
+        _this.width = Global.BaseDistance;
+        _this.height = Global.BaseDistance;
+        _this._ani = new BaseAni();
+        _this._ani.horizontalCenter = 0;
+        _this._ani.verticalCenter = 0;
+        _this.addChild(_this._ani);
+        _this._ani.setAni(AniTypes.Bash);
+        _this.visible = false;
         return _this;
     }
-    SetBackground.prototype.Start = function () {
-        // GetComponent<SpriteRenderer>().sprite = Background[PLayerInfo.BACKGROUND];
-        this.img.source = ResUtils.getGameBg(PlayerInfo.BACKGROUND);
+    BashAni.prototype.play = function () {
+        this.visible = true;
+        this._ani.play(this.stop, this);
     };
-    return SetBackground;
-}(GameObject));
-__reflect(SetBackground.prototype, "SetBackground");
-//# sourceMappingURL=SetBackground.js.map
+    BashAni.prototype.stop = function () {
+        this._ani.stop();
+        this.visible = false;
+    };
+    return BashAni;
+}(eui.Group));
+__reflect(BashAni.prototype, "BashAni");
+//# sourceMappingURL=BashAni.js.map

@@ -11,21 +11,31 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-// 游戏背景 组件（挂在Screen/Background 游戏对像下）
-var SetBackground = (function (_super) {
-    __extends(SetBackground, _super);
-    // public Background:string[];//Sprite[]     // array background
-    function SetBackground() {
+/**
+ * 星星
+ */
+var Star = (function (_super) {
+    __extends(Star, _super);
+    function Star() {
         var _this = _super.call(this) || this;
-        _this.img = new eui.Image();
-        _this.addChild(_this.img);
+        _this.render.source = "Play_star_png";
+        _this._ani = new BaseAni();
+        _this._ani.setAni(AniTypes.JewelStar);
+        _this._ani.isRepeat = true;
+        _this.addChildAt(_this._ani, 0);
         return _this;
     }
-    SetBackground.prototype.Start = function () {
-        // GetComponent<SpriteRenderer>().sprite = Background[PLayerInfo.BACKGROUND];
-        this.img.source = ResUtils.getGameBg(PlayerInfo.BACKGROUND);
+    Star.prototype.play = function () {
+        this._ani.play();
     };
-    return SetBackground;
-}(GameObject));
-__reflect(SetBackground.prototype, "SetBackground");
-//# sourceMappingURL=SetBackground.js.map
+    Star.prototype.stop = function () {
+        this._ani.stop();
+    };
+    Star.prototype.Destroy = function () {
+        _super.prototype.Destroy.call(this);
+        this.stop();
+    };
+    return Star;
+}(JewelObj));
+__reflect(Star.prototype, "Star");
+//# sourceMappingURL=Star.js.map

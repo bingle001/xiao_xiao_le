@@ -17,6 +17,13 @@ __reflect(Player.prototype, "Player");
 var PlayerUtils = (function () {
     function PlayerUtils() {
     }
+    PlayerUtils.Awake = function () {
+        this.m_pDataMaps = this.Load();
+    };
+    /** 获取关卡数据 */
+    PlayerUtils.getPlayer = function (mapIndex) {
+        return this.m_pDataMaps[mapIndex];
+    };
     /**
      * 保存玩家数据,保存的过程有点类似于JSON
      */

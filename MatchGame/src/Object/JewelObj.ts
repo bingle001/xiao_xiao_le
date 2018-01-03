@@ -3,7 +3,6 @@
 class JewelObj extends GameObject {
 
     public render: eui.Image;
-
     private DELAY = 0.2;
 
     public jewel: Jewel;
@@ -16,6 +15,10 @@ class JewelObj extends GameObject {
         this.width = Global.CellWidth;
         this.height = Global.cellHeight;
 
+        this.jewel = new Jewel();
+        this.Checked = false;
+        this.isMove = false;
+
         this.render = new eui.Image();
         this.render.horizontalCenter = 0;
         this.render.verticalCenter = 0;
@@ -24,6 +27,10 @@ class JewelObj extends GameObject {
 
     //delete jewel
     public Destroy(): void {
+        if (this.jewel.JewelPosition == null) {
+            return;
+        }
+
         //从宝石数组中移除自身
         this.RemoveFromList(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
         this._Destroy(); //this.StartCoroutine(this._Destroy());
@@ -58,7 +65,7 @@ class JewelObj extends GameObject {
     private _ReGroup(pos: Vector2): void {	// IEnumerator
         this.RemoveFromList(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
         // yield return new WaitForSeconds(DELAY - 0.015f);
-        Ulti.MoveTo(this, pos, this.DELAY);
+        Utils.MoveTo(this, pos, this.DELAY);
 
         this._Destroy();//this.StartCoroutine(this._Destroy());
     }
@@ -72,31 +79,20 @@ class JewelObj extends GameObject {
         if (this.jewel.JewelPower > 0) {
             this.PowerProcess(this.jewel.JewelPower);
         }
-        GameController.action.drop.DELAY = GameController.DROP_DELAY;
+        GameController.action.drop.setDelay(GameController.DROP_DELAY);
         this.JewelCrash();
 
-        // yield return new WaitForEndOfFrame();
         EffectSpawner.effect.ScoreInc(new Vector2(this.x, this.y));// this.gameObject.transform.position);
 
-        // yield return new WaitForEndOfFrame();
         EffectSpawner.effect.ContinueCombo();
-
-        // yield return new WaitForEndOfFrame();
         Supporter.sp.RefreshTime();
-
-        // this.StopAllCoroutines();    //停止所有协程
-        //死循环！！！  // this.Destroy(gameObject);
     }
 
     // 根据当前宝石显示对象，播放销毁动画
     private JewelCrash(): void {
         let x: number = this.jewel.JewelPosition.x;
         let y: number = this.jewel.JewelPosition.y;
-
-        //TODO
-        // EffectSpawner.effect.JewelCrashArray[x][y].transform.position = new Vector3(transform.position.x, transform.position.y, -0.2f);
-        // EffectSpawner.effect.JewelCrashArray[x][y].SetActive(false);
-        // EffectSpawner.effect.JewelCrashArray[x][y].SetActive(true);
+        EffectSpawner.effect.JewelCrashArray[x][y].play();
     }
 
     // 重新调整JewelPosition的位置，并播放下落动画
@@ -109,20 +105,21 @@ class JewelObj extends GameObject {
         let oldpos = this.jewel.JewelPosition.y;
 
         for (let y = newpos - 1; y >= 0; y--) {
-            if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGribScript[x][y] == null)
+            if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGrib[x][y] == null) {
                 newpos = y;
+            }
             else if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
                 break;
             }
         }
-        JewelSpawner.spawn.JewelGribScript[x][this.jewel.JewelPosition.y] = null;
+        JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
         JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
 
         this.jewel.JewelPosition = new Vector2(x, newpos);
-        JewelSpawner.spawn.JewelGribScript[x][newpos] = this;
+        JewelSpawner.spawn.JewelGrib[x][newpos] = this;
         JewelSpawner.spawn.JewelGrib[x][newpos] = this;// this.gameObject;
         if (oldpos != newpos) {
-            Ulti.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED);//StartCoroutine(Ulti.IEDrop(this.gameObject, this.jewel.JewelPosition, GameController.DROP_SPEED));
+            Utils.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED);//StartCoroutine(Ulti.IEDrop(this.gameObject, this.jewel.JewelPosition, GameController.DROP_SPEED));
         }
     }
 
@@ -131,11 +128,11 @@ class JewelObj extends GameObject {
         let tmp1: JewelObj[] = this.GetLeft(Pos, type);
         let tmp2: JewelObj[] = this.GetRight(Pos, type);
         if (tmp1.length + tmp2.length > 1) {
-            return Ulti.ListPlus(tmp1, tmp2, bonus);
+            return Utils.ListPlus(tmp1, tmp2, bonus);
         }
 
         else
-            return new Array<JewelObj>();// new List<JewelObj>();
+            return [];
     }
 
     // 获取列消除List
@@ -143,63 +140,63 @@ class JewelObj extends GameObject {
         let tmp1: JewelObj[] = this.GetTop(Pos, type);
         let tmp2: JewelObj[] = this.GetBot(Pos, type);
         if (tmp1.length + tmp2.length > 1) {
-            return Ulti.ListPlus(tmp1, tmp2, bonus);
+            return Utils.ListPlus(tmp1, tmp2, bonus);
         }
         else
-            return new Array<JewelObj>();// new List<JewelObj>();
+            return [];
     }
 
     // 播放移动无效的动画
-    public SetBackAnimation(Obj: GameObject): void {
+    public SetBackAnimation(obj: JewelObj): void {
         if (!Supporter.sp.isNomove) {
-            //TODO 
-            debug("播放移动无效动画")
-            let ObjPos: Vector2 = (Obj as JewelObj).jewel.JewelPosition;// Obj.GetComponent<JewelObj>().jewel.JewelPosition;
-            // Animation anim = transform.GetChild(0).GetComponent<Animation>();
-            // anim.enabled = true;
+            debug("播放移动无效动画");
+            this.setActiveFalse();
 
-            // if (ObjPos.x == jewel.JewelPosition.x)
-            // {
-            //     if (ObjPos.y > jewel.JewelPosition.y)
-            //     {
-            //         anim.Play("MoveBack_Up");
-            //     }
-            //     else
-            //     {
-            //         anim.Play("MoveBack_Down");
-            //     }
-            // }
-            // else
-            // {
-            //     if (ObjPos.x > jewel.JewelPosition.x)
-            //     {
-            //         anim.Play("MoveBack_Right");
-            //     }
-            //     else
-            //     {
-            //         anim.Play("MoveBack_Left");
-            //     }
-            // }
+            let self = this;
+            let cx: number = this.x;
+            let cy: number = this.y;
+            let tx: number = obj.x;
+            let ty: number = obj.y;
+            egret.Tween.removeTweens(self);
+            egret.Tween.get(self).to({ x: tx, y: ty }, 200).call(function () {
+                egret.Tween.removeTweens(self);
+                egret.Tween.get(self).to({ x: cx, y: cy }, 200).call(self.setActiveTrue, self);
+            });
         }
     }
 
-    private GetLeft(Pos: Vector2, type: number): JewelObj[] {
-        let tmp: JewelObj[] = [];// new List<JewelObj>();
-        for (let x = Pos.x - 1; x >= 0; x--) {
+    private setActiveTrue(): void{
+        this.touchEnabled = true;
+    }
 
-            if (x != this.jewel.JewelPosition.x && JewelSpawner.spawn.JewelGribScript[x][Pos.y] != null && JewelSpawner.spawn.JewelGribScript[x][Pos.y].jewel.JewelType == type && GribManager.cell.GribCellObj[x][Pos.y].cell.CellEffect == 0)
-                // tmp.Add(JewelSpawner.spawn.JewelGribScript[x, (int)Pos.y]);
-                tmp.push(JewelSpawner.spawn.JewelGribScript[x][Pos.y]);
+    private setActiveFalse(): void{
+        this.touchEnabled = false;
+    }
+
+
+    private GetLeft(Pos: Vector2, type: number): JewelObj[] {
+        let tmp: JewelObj[] = [];
+        for (let x = Pos.x - 1; x >= 0; x--) {
+            if (x != this.jewel.JewelPosition.x
+                && JewelSpawner.spawn.JewelGrib[x][Pos.y] != null
+                && JewelSpawner.spawn.JewelGrib[x][Pos.y].jewel.JewelType == type
+                && GribManager.cell.GribCellObj[x][Pos.y].cell.CellEffect == 0) {
+                    tmp.push(JewelSpawner.spawn.JewelGrib[x][Pos.y]);
+                }
             else
                 return tmp;
         }
         return tmp;
     }
     private GetRight(Pos: Vector2, type: number): JewelObj[] {
-        let tmp: JewelObj[] = [];// new List<JewelObj>();
+        let tmp: JewelObj[] = [];
         for (let x = Pos.x + 1; x < 7; x++) {
-            if (x != this.jewel.JewelPosition.x && JewelSpawner.spawn.JewelGribScript[x][Pos.y] != null && JewelSpawner.spawn.JewelGribScript[x][Pos.y].jewel.JewelType == type && GribManager.cell.GribCellObj[x][Pos.y].cell.CellEffect == 0)
-                tmp.push(JewelSpawner.spawn.JewelGribScript[x][Pos.y]);
+            if (x != this.jewel.JewelPosition.x
+                && JewelSpawner.spawn.JewelGrib[x][Pos.y] != null
+                && JewelSpawner.spawn.JewelGrib[x][Pos.y].jewel.JewelType == type
+                && GribManager.cell.GribCellObj[x][Pos.y].cell.CellEffect == 0) {
+                    tmp.push(JewelSpawner.spawn.JewelGrib[x][Pos.y]);
+                }
             else
                 return tmp;
         }
@@ -208,26 +205,30 @@ class JewelObj extends GameObject {
 
     // 检测上方是否有相同的方块
     private GetTop(Pos: Vector2, type: number): JewelObj[] {
-        let tmp: JewelObj[] = [];// new List<JewelObj>();
+        let tmp: JewelObj[] = [];
         for (let y = Pos.y + 1; y < 9; y++) {
-            if (y != this.jewel.JewelPosition.y &&
-                JewelSpawner.spawn.JewelGribScript[Pos.x][y] != null &&
-                JewelSpawner.spawn.JewelGribScript[Pos.x][y].jewel.JewelType == type &&
-                GribManager.cell.GribCellObj[Pos.x][y].cell.CellEffect == 0)
-                tmp.push(JewelSpawner.spawn.JewelGribScript[Pos.x][y]);
+            if (y != this.jewel.JewelPosition.y
+                && JewelSpawner.spawn.JewelGrib[Pos.x][y] != null
+                && JewelSpawner.spawn.JewelGrib[Pos.x][y].jewel.JewelType == type
+                && GribManager.cell.GribCellObj[Pos.x][y].cell.CellEffect == 0) {
+                    tmp.push(JewelSpawner.spawn.JewelGrib[Pos.x][y]);
+                }
             else
                 return tmp;
         }
-
         return tmp;
     }
 
     // 检测下方是否有相同的方块
     private GetBot(Pos: Vector2, type: number): JewelObj[] {
-        let tmp: JewelObj[] = [];// new List<JewelObj>();
+        let tmp: JewelObj[] = [];
         for (let y = Pos.y - 1; y >= 0; y--) {
-            if (y != this.jewel.JewelPosition.y && JewelSpawner.spawn.JewelGribScript[Pos.x][y] != null && JewelSpawner.spawn.JewelGribScript[Pos.x][y].jewel.JewelType == type && GribManager.cell.GribCellObj[Pos.x][y].cell.CellEffect == 0)
-                tmp.push(JewelSpawner.spawn.JewelGribScript[Pos.x][y]);
+            if (y != this.jewel.JewelPosition.y
+                && JewelSpawner.spawn.JewelGrib[Pos.x][y] != null
+                && JewelSpawner.spawn.JewelGrib[Pos.x][y].jewel.JewelType == type
+                && GribManager.cell.GribCellObj[Pos.x][y].cell.CellEffect == 0) {
+                    tmp.push(JewelSpawner.spawn.JewelGrib[Pos.x][y]);
+                }
             else
                 return tmp;
         }
@@ -237,32 +238,29 @@ class JewelObj extends GameObject {
     // 从宝石数组中移除自身
     private RemoveFromList(x: number, y: number): void {
         //移除脚本
-        JewelSpawner.spawn.JewelGribScript[x][y] = null;
-        //移除显示对象
         JewelSpawner.spawn.JewelGrib[x][y] = null;
 
-        //碰撞器
-        // this.GetComponent<Collider2D>().enabled = false;
+        this.removeFromParent();
         this.visible = false;
     }
 
     public getListcount(): number {
-        let list: JewelObj[] = Ulti.ListPlus(this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
+        let list: JewelObj[] = Utils.ListPlus(this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
             this.GetCollumn(this.jewel.JewelPosition, this.jewel.JewelType, null),
             this);
         return list.length;
     }
     public getList(): JewelObj[] {
-        let list: JewelObj[] = Ulti.ListPlus(this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
+        let list: JewelObj[] = Utils.ListPlus(this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
             this.GetCollumn(this.jewel.JewelPosition, this.jewel.JewelType, null),
             this);
         return list;
     }
 
     public RuleChecker(): void {
-
         if (this.jewel.JewelType != 99) {
-            let list: JewelObj[] = Ulti.ListPlus(this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
+            let list: JewelObj[] = Utils.ListPlus(
+                this.GetRow(this.jewel.JewelPosition, this.jewel.JewelType, null),
                 this.GetCollumn(this.jewel.JewelPosition, this.jewel.JewelType, null),
                 this);
 
@@ -297,6 +295,9 @@ class JewelObj extends GameObject {
             // anim.Play("bounce");
             //TODO
             debug("JewelObj.Bounce()");
+            let ty: number = this.y;
+            egret.Tween.removeTweens(this);
+            egret.Tween.get(this).to({ y: ty - 5 }, 80).to({ y: ty }, 80).call(this.RuleChecker, this);
         }
     }
 
@@ -308,10 +309,7 @@ class JewelObj extends GameObject {
     }
 
     public JewelEnable(): void {
-        // Animation anim = render.GetComponent<Animation>();
-        // anim.enabled = true;
-        // anim.Play("Enable");
-        debug("JewelObj.JewelEnable()");
+        this.touchEnabled = true;
     }
 
     // 播放左右摇晃动画,用于提示玩家此方块可以消除
@@ -334,7 +332,14 @@ class JewelObj extends GameObject {
         debug("JewelObj.JewelStopSuggesttion");
     }
 
-
+    /** 播放出现特效 */
+    public playAppearEffect(): void{
+        egret.Tween.removeTweens(this.render);
+        this.render.scaleX = 0;
+        this.render.scaleY = 0;
+        this.render.rotation = 0;
+        egret.Tween.get(this.render).to({ scaleX: 1, scaleY: 1, rotation: 720 }, 500);
+    }
 
 
 }

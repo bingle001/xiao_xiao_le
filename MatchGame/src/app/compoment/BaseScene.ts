@@ -23,8 +23,8 @@ class BaseScene extends BaseCompoment{
 	protected onDestroy(): void{
 		super.onDestroy();
 
-		Time.removeFrameCall(this);
-		Time.removeSecondCall(this);
+		Time.removeFrameCall(this.onEnterFrame, this);
+		Time.removeSecondCall(this.onEnterSecond, this);
 	}
 
 	/**

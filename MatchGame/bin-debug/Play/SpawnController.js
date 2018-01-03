@@ -5,21 +5,29 @@ var __reflect = (this && this.__reflect) || function (p, c, t) {
 /// 此类主要用于计算消除后的滑落，并产生新的方块。属于控制器类
 var SpawnController = (function () {
     function SpawnController() {
+        // 滑落延迟
+        this._DELAY = 0;
+        this._enabled = false;
     }
+    SpawnController.prototype.setDelay = function (delay) {
+        this._DELAY = delay;
+        if (!this._enabled) {
+            this._enabled = true;
+            Time.addFrameCall(this.Update, this);
+        }
+    };
     /// 当enable=true后,则会重新启动Update
     SpawnController.prototype.Update = function () {
-        this.DELAY -= Time.deltaTime;
-        //到计时结束:则开始启动滑落检测 
-        if (this.DELAY <= 0) {
-            //启动 协程
-            // StartCoroutine(DropAndSpawn());
-            // this.enabled = false;
+        this._DELAY -= Time.deltaTime;
+        if (this._DELAY <= 0) {
             this.DropAndSpawn();
+            Time.removeFrameCall(this.Update, this);
+            this._enabled = false;
         }
     };
     SpawnController.prototype.DropAndSpawn = function () {
+        debug("开始掉落检测！");
         this.Drop();
-        // yield return new WaitForEndOfFrame();
         this.Spawn();
         this.BonusPower();
         this.ShowStar();
@@ -29,35 +37,37 @@ var SpawnController = (function () {
     SpawnController.prototype.Drop = function () {
         for (var y = 0; y < 9; y++) {
             for (var x = 0; x < 7; x++) {
-                if (JewelSpawner.spawn.JewelGribScript[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4)
-                    JewelSpawner.spawn.JewelGribScript[x][y].getNewPosition();
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4) {
+                    JewelSpawner.spawn.JewelGrib[x][y].getNewPosition();
+                }
             }
         }
     };
     /// 产生新方块,并播放下落动画
     SpawnController.prototype.Spawn = function () {
-        var h = []; // new int[7];
+        var h = Utils.initVector(7, 0); // new int[7];
         for (var x = 0; x < 7; x++) {
             var s = 0;
             for (var y = 0; y < 9; y++) {
-                if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4)
+                if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 4) {
                     s = y + 1;
+                }
             }
             for (var y = s; y < 9; y++) {
                 if (GameController.action.GameState == GameState.PLAYING)
-                    if (GribManager.cell.GribCellObj[x][y] != null && JewelSpawner.spawn.JewelGribScript[x, y] == null) {
-                        var temp = JewelSpawner.spawn.JewelGrib[x][y];
+                    if (GribManager.cell.GribCellObj[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] == null) {
+                        // let temp: any = JewelSpawner.spawn.JewelGrib[x][y];
                         var tmp = JewelSpawner.spawn.JewelInstantiate(x, y);
-                        if (PLayerInfo.MODE == 1 && Random.value > 0.99) {
+                        if (PlayerInfo.MODE == 1 && Random.value > 0.99) {
                             tmp.jewel.JewelPower = 4;
                             EffectSpawner.effect.Clock(tmp);
                         }
-                        tmp.localPosition = new Vector3(tmp.localPosition.x, 10 + h[x]);
+                        tmp.y = Global.posY(9 + h[x]); //设置到屏幕外掉落下来
                         h[x]++;
                         //播放滑落动画
-                        Ulti.IEDrop(tmp, new Vector2(x, y), GameController.DROP_SPEED); //StartCoroutine(Ulti.IEDrop(tmp, new Vector2(x, y), GameController.DROP_SPEED));
-                        var script = tmp;
-                        // script.render.enabled = true;
+                        Utils.IEDrop(tmp, new Vector2(x, y), GameController.DROP_SPEED);
+                        // let script: JewelObj = tmp as JewelObj;
+                        // script.render.enabled = true;	//掉落完了才能移动
                     }
             }
         }
@@ -65,9 +75,8 @@ var SpawnController = (function () {
     };
     /// check no more move
     SpawnController.prototype.checkNomoremove = function () {
-        // yield return new WaitForSeconds(0.5f);
         if (!Supporter.sp.isNoMoreMove()) {
-            if (PLayerInfo.MODE == 1) {
+            if (PlayerInfo.MODE == 1) {
                 // Timer.timer.NoSelect.SetActive(true);
                 // StartCoroutine(ReSpawnGrib());
                 Timer.timer.NoSelect.visible = true;
@@ -83,8 +92,8 @@ var SpawnController = (function () {
         Timer.timer.Nomove.visible = true; // SetActive(true);
         for (var x = 0; x < 7; x++) {
             for (var y = 0; y < 9; y++) {
-                if (JewelSpawner.spawn.JewelGribScript[x][y] != null && JewelSpawner.spawn.JewelGribScript[x][y].jewel.JewelType != 99)
-                    JewelSpawner.spawn.JewelGribScript[x][y].JewelDisable();
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99)
+                    JewelSpawner.spawn.JewelGrib[x][y].JewelDisable();
             }
         }
         // yield return new WaitForSeconds(0.7f);

@@ -20,6 +20,16 @@ class Player {
 class PlayerUtils {
 
 	private static KEY_DATA: string = "DATA";
+	private static m_pDataMaps: Player[];
+
+	public static Awake(): void{
+		this.m_pDataMaps = this.Load();
+	}
+
+	/** 获取关卡数据 */
+	public static getPlayer(mapIndex: number): Player{
+		return this.m_pDataMaps[mapIndex];
+	}
 
 	/**
 	 * 保存玩家数据,保存的过程有点类似于JSON
@@ -53,4 +63,7 @@ class PlayerUtils {
 		}
 		return list;
 	}
+
+
+
 }

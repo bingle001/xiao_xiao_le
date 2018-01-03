@@ -35,7 +35,9 @@ var HomeScene = (function (_super) {
         this.lbl_start.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onBtnStart, this);
     };
     HomeScene.prototype.onBtnStart = function (e) {
-        Application.changeScene(SceneType.Game);
+        var player = PlayerUtils.getPlayer(1);
+        ButtonActionController.Click.ArcadeScene(player);
+        // Application.changeScene(SceneType.Game);
     };
     /**
      * 每帧调用

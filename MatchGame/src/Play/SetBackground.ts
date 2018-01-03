@@ -14,6 +14,6 @@ class SetBackground extends GameObject {
 
 	private Start() {
 		// GetComponent<SpriteRenderer>().sprite = Background[PLayerInfo.BACKGROUND];
-		this.img.source = ResUtils.getGameBg(PLayerInfo.BACKGROUND);
+		this.img.source = ResUtils.getGameBg(PlayerInfo.BACKGROUND);
 	}
 }

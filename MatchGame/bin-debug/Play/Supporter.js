@@ -40,14 +40,14 @@ var Supporter = (function (_super) {
         this.AvaiableObj = []; // new JewelObj[2];
         for (var x = 0; x < 7; x++) {
             for (var y = 0; y < 9; y++) {
-                if (JewelSpawner.spawn.JewelGribScript[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
-                    this.obj = JewelSpawner.spawn.JewelGribScript[x][y];
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
+                    this.obj = JewelSpawner.spawn.JewelGrib[x][y];
                     var obj1 = this.MoveChecker(x, y, this.obj);
                     if (obj1 != null) {
                         this.AvaiableMove[0] = this.obj.jewel.JewelPosition;
-                        this.AvaiableObj[0] = JewelSpawner.spawn.JewelGribScript[this.AvaiableMove[0].x][this.AvaiableMove[0].y];
+                        this.AvaiableObj[0] = JewelSpawner.spawn.JewelGrib[this.AvaiableMove[0].x][this.AvaiableMove[0].y];
                         this.AvaiableMove[1] = obj1.jewel.JewelPosition;
-                        this.AvaiableObj[1] = JewelSpawner.spawn.JewelGribScript[this.AvaiableMove[1].x][this.AvaiableMove[1].y];
+                        this.AvaiableObj[1] = JewelSpawner.spawn.JewelGrib[this.AvaiableMove[1].x][this.AvaiableMove[1].y];
                         this.isNomove = false;
                         return true;
                     }
@@ -64,12 +64,12 @@ var Supporter = (function (_super) {
         this.vtmplist = this.getListPos(x, y);
         for (var i in this.vtmplist) {
             var item = this.vtmplist[i];
-            if (JewelSpawner.spawn.JewelGribScript[item.x][item.y] != null && JewelSpawner.spawn.JewelGribScript[item.x][item.y].jewel.JewelType == 8)
-                return JewelSpawner.spawn.JewelGribScript[item.x][item.y];
+            if (JewelSpawner.spawn.JewelGrib[item.x][item.y] != null && JewelSpawner.spawn.JewelGrib[item.x][item.y].jewel.JewelType == 8)
+                return JewelSpawner.spawn.JewelGrib[item.x][item.y];
             else {
-                var NeiObj1 = Ulti.ListPlus(obj.GetCollumn(item, obj.jewel.JewelType, null), obj.GetRow(item, obj.jewel.JewelType, null), obj);
+                var NeiObj1 = Utils.ListPlus(obj.GetCollumn(item, obj.jewel.JewelType, null), obj.GetRow(item, obj.jewel.JewelType, null), obj);
                 if (NeiObj1.length >= 3)
-                    return JewelSpawner.spawn.JewelGribScript[item.x][item.y];
+                    return JewelSpawner.spawn.JewelGrib[item.x][item.y];
             }
         }
         return null;

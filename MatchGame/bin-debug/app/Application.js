@@ -13,11 +13,21 @@ var Application = (function () {
     Application.start = function (stage) {
         this._stage = stage;
         debug("游戏启动");
+        AnimationData.initConfig();
         Time.Awake();
         DataLoader.Awake();
         GribManager.Awake();
         GameController.Awake();
         JewelSpawner.Awake();
+        Supporter.Awake();
+        Timer.Awake();
+        Time.Awake();
+        EffectSpawner.Awake();
+        SoundController.Awake();
+        PlayerInfo.Awake();
+        PlayerUtils.Awake();
+        ButtonActionController.Awake();
+        EffectSpawner.Awake();
         Application.changeScene(SceneType.Home);
     };
     Application.changeScene = function (sceneType) {

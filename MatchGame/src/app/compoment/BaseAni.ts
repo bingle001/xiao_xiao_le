@@ -7,7 +7,7 @@ class BaseAni extends eui.Image {
 	public isRepeat: boolean = false;
 
 	/** 帧率，表示多少帧动一次，数值越大越慢 */
-	public frameRate: number = 1;
+	public frameRate: number = 2;
 	private _count: number = 0;
 	private _curFrame: number = 0;//当前帧
 
@@ -45,8 +45,7 @@ class BaseAni extends eui.Image {
 	 * 停止
 	 */
 	public stop(): void {
-		Time.removeFrameCall(this);
-		this.onDestory();
+		Time.removeFrameCall(this.onEnterFrame, this);
 	}
 
 	/**

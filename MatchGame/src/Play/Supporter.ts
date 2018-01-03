@@ -37,14 +37,14 @@ class Supporter extends MonoBehaviour {
 
 		for (let x = 0; x < 7; x++) {
 			for (let y = 0; y < 9; y++) {
-				if (JewelSpawner.spawn.JewelGribScript[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
-					this.obj = JewelSpawner.spawn.JewelGribScript[x][y];
+				if (JewelSpawner.spawn.JewelGrib[x][y] != null && GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
+					this.obj = JewelSpawner.spawn.JewelGrib[x][y];
 					let obj1: JewelObj = this.MoveChecker(x, y, this.obj);
 					if (obj1 != null) {
 						this.AvaiableMove[0] = this.obj.jewel.JewelPosition;
-						this.AvaiableObj[0] = JewelSpawner.spawn.JewelGribScript[this.AvaiableMove[0].x][this.AvaiableMove[0].y];
+						this.AvaiableObj[0] = JewelSpawner.spawn.JewelGrib[this.AvaiableMove[0].x][this.AvaiableMove[0].y];
 						this.AvaiableMove[1] = obj1.jewel.JewelPosition;
-						this.AvaiableObj[1] = JewelSpawner.spawn.JewelGribScript[this.AvaiableMove[1].x][this.AvaiableMove[1].y];
+						this.AvaiableObj[1] = JewelSpawner.spawn.JewelGrib[this.AvaiableMove[1].x][this.AvaiableMove[1].y];
 						this.isNomove = false;
 						return true;
 					}
@@ -64,13 +64,13 @@ class Supporter extends MonoBehaviour {
 		this.vtmplist = this.getListPos(x, y);
 		for (let i in this.vtmplist) {
 			let item: Vector2 = this.vtmplist[i];
-			if (JewelSpawner.spawn.JewelGribScript[item.x][item.y] != null && JewelSpawner.spawn.JewelGribScript[item.x][item.y].jewel.JewelType == 8)
-				return JewelSpawner.spawn.JewelGribScript[item.x][item.y];
+			if (JewelSpawner.spawn.JewelGrib[item.x][item.y] != null && JewelSpawner.spawn.JewelGrib[item.x][item.y].jewel.JewelType == 8)
+				return JewelSpawner.spawn.JewelGrib[item.x][item.y];
 			else {
-				let NeiObj1: JewelObj[] = Ulti.ListPlus(obj.GetCollumn(item, obj.jewel.JewelType, null),
+				let NeiObj1: JewelObj[] = Utils.ListPlus(obj.GetCollumn(item, obj.jewel.JewelType, null),
 					obj.GetRow(item, obj.jewel.JewelType, null), obj);
 				if (NeiObj1.length >= 3)
-					return JewelSpawner.spawn.JewelGribScript[item.x][item.y];
+					return JewelSpawner.spawn.JewelGrib[item.x][item.y];
 			}
 		}
 

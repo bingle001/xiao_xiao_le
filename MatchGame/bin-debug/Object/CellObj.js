@@ -25,6 +25,8 @@ var CellObj = (function (_super) {
         _this.ani = new BaseAni();
         _this.ani.horizontalCenter = 0;
         _this.ani.verticalCenter = 0;
+        _this.cell = new Cell();
+        _this.CellCode = 0;
         return _this;
     }
     // change to sprite by index
@@ -73,8 +75,8 @@ var CellObj = (function (_super) {
                 SoundController.Sound.LockCrash();
             }
             this.cell.CellEffect = 0;
-            if (JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y] != null) {
-                JewelSpawner.spawn.JewelGribScript[this.cell.CellPosition.x][this.cell.CellPosition.y].RuleChecker();
+            if (JewelSpawner.spawn.JewelGrib[this.cell.CellPosition.x][this.cell.CellPosition.y] != null) {
+                JewelSpawner.spawn.JewelGrib[this.cell.CellPosition.x][this.cell.CellPosition.y].RuleChecker();
             }
         }
     };

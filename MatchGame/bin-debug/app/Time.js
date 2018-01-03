@@ -29,8 +29,8 @@ var Time = (function () {
         this._timeStamp = egret.getTimer();
         this._secondStamp = this._timeStamp;
         this._smoothDeltaTime = 1 / 30; //暂时30帧	//60帧
-        this._frameFuncMaps = {};
-        this._secondFuncMaps = {};
+        this._frameFuncMaps = [];
+        this._secondFuncMaps = [];
         egret.startTick(this.ticker, this);
     };
     Time.ticker = function (timeStamp) {
@@ -61,9 +61,9 @@ var Time = (function () {
     };
     Time.callBackMaps = function (maps, deltaTime) {
         for (var i in maps) {
-            var obj = maps;
+            var obj = maps[i];
             if (obj && obj.callback && obj.thisObj) {
-                if (obj.params) {
+                if (obj.params && obj.params.length > 0) {
                     obj.callback.call(obj.thisObj, deltaTime, obj.params);
                 }
                 else {
@@ -82,12 +82,15 @@ var Time = (function () {
             params[_i - 2] = arguments[_i];
         }
         if (callback && thisObj) {
-            var obj = {
-                callback: callback,
-                thisObj: thisObj,
-                params: params,
-            };
-            this._frameFuncMaps[thisObj.hashCode] = obj;
+            var index = this.checkIndex(callback, thisObj, this._frameFuncMaps);
+            if (index == -1) {
+                var obj = {
+                    callback: callback,
+                    thisObj: thisObj,
+                    params: params,
+                };
+                this._frameFuncMaps.push(obj);
+            }
         }
     };
     /**
@@ -100,35 +103,50 @@ var Time = (function () {
             params[_i - 2] = arguments[_i];
         }
         if (callback && thisObj) {
-            var obj = {
-                callback: callback,
-                thisObj: thisObj,
-                params: params,
-            };
-            this._frameFuncMaps[thisObj.hashCode] = obj;
+            var index = this.checkIndex(callback, thisObj, this._secondFuncMaps);
+            if (index == -1) {
+                var obj = {
+                    callback: callback,
+                    thisObj: thisObj,
+                    params: params,
+                };
+                this._frameFuncMaps.push(obj);
+            }
         }
     };
     /**
      * 移除每帧回调
      */
-    Time.removeFrameCall = function (thisObj) {
-        if (thisObj) {
-            if (this._frameFuncMaps[thisObj.hashCode]) {
-                this._frameFuncMaps[thisObj.hashCode] = null;
-                delete this._frameFuncMaps[thisObj.hashCode];
+    Time.removeFrameCall = function (callback, thisObj) {
+        if (callback && thisObj) {
+            var index = this.checkIndex(callback, thisObj, this._frameFuncMaps);
+            if (index >= 0) {
+                this._frameFuncMaps.splice(index, 1);
             }
         }
     };
     /**
      * 移除每秒回调
      */
-    Time.removeSecondCall = function (thisObj) {
-        if (thisObj) {
-            if (this._secondFuncMaps[thisObj.hashCode]) {
-                this._secondFuncMaps[thisObj.hashCode] = null;
-                delete this._secondFuncMaps[thisObj.hashCode];
+    Time.removeSecondCall = function (callback, thisObj) {
+        if (callback && thisObj) {
+            var index = this.checkIndex(callback, thisObj, this._secondFuncMaps);
+            if (index >= 0) {
+                this._secondFuncMaps.splice(index, 1);
             }
         }
+    };
+    /**
+     * 判断在列表中的第几项
+     */
+    Time.checkIndex = function (callback, thisObj, maps) {
+        for (var i = 0; i < maps.length; i++) {
+            var obj = maps[i];
+            if (obj.callback == callback && obj.thisObj == thisObj) {
+                return i;
+            }
+        }
+        return -1;
     };
     /**
      * 游戏运行速率

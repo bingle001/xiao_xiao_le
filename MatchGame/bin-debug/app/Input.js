@@ -15,7 +15,8 @@ var Input = (function () {
      * @param type 0对应左键 ， 1对应右键 ， 2对应中键
      */
     Input.GetMouseButtonDown = function (type) {
-        return false;
+        return this._isMouseDown;
+        // return false;
     };
     Input.GetMouseButton = function (type) {
         return false;
@@ -23,6 +24,9 @@ var Input = (function () {
     Input.GetMouseButtonUp = function (type) {
         return false;
     };
+    Input._isMouseDown = false;
+    Input._localX = 0;
+    Input._localY = 0;
     return Input;
 }());
 __reflect(Input.prototype, "Input");

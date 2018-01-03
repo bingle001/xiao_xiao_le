@@ -5,42 +5,35 @@ var ButtonActionController = (function () {
     function ButtonActionController() {
     }
     ButtonActionController.Awake = function () {
-        if (ButtonActionController.Click == null) {
-            // DontDestroyOnLoad(gameObject);	??
-            ButtonActionController.Click = new ButtonActionController();
-        }
-        // else if (Click != this)
-        // {
-        //     Destroy(gameObject);
-        // }
-        //??
+        ButtonActionController.Click = new ButtonActionController();
     };
-    // When select classic mode
     ButtonActionController.prototype.ClassicScene = function (level) {
         SoundController.Sound.Click();
         Time.timeScale = 1;
-        PLayerInfo.MODE = 0;
-        PLayerInfo.MapPlayer = new Player();
-        PLayerInfo.MapPlayer.Level = level;
-        PLayerInfo.MapPlayer.HightScore = level;
-        PLayerInfo.MapPlayer.HightScore = PlayerPrefs.GetInt(PLayerInfo.KEY_CLASSIC_HISCORE, 0);
-        Application.LoadLevel("PlayScene");
+        PlayerInfo.MODE = 0;
+        PlayerInfo.MapPlayer = new Player();
+        PlayerInfo.MapPlayer.Level = level;
+        PlayerInfo.MapPlayer.HightScore = level;
+        PlayerInfo.MapPlayer.HightScore = PlayerPrefs.GetInt(PlayerInfo.KEY_CLASSIC_HISCORE, 0);
+        Application.changeScene(SceneType.Game);
     };
-    // When select arcade mode
     ButtonActionController.prototype.ArcadeScene = function (player) {
         SoundController.Sound.Click();
         Time.timeScale = 1;
-        PLayerInfo.MODE = 1;
-        PLayerInfo.MapPlayer = player;
-        // this.StartCoroutine(GotoScreen("PlayScene"));
-        this.GotoScreen("PlayScene");
+        PlayerInfo.MODE = 1;
+        PlayerInfo.MapPlayer = player;
+        Application.changeScene(SceneType.Game);
     };
     ButtonActionController.prototype.SelectMap = function (mode) {
         SoundController.Sound.Click();
-        if (mode == 1)
-            Application.LoadLevel("MapScene");
-        else
-            this.HomeScene();
+        if (mode == 1) {
+            Application.changeScene(SceneType.Map);
+            // Application.LoadLevel("MapScene");
+        }
+        else {
+            Application.changeScene(SceneType.Home);
+            // this.HomeScene();
+        }
         CameraMovement.StarPointMoveIndex = -1;
     };
     // Go to a scene with name
@@ -61,10 +54,7 @@ var ButtonActionController = (function () {
             PlayerPrefs.SetInt("MUSIC", 0); // music on
         }
     };
-    /// <summary>
     /// Set and change state of sound background
-    /// </summary>
-    /// <param name="button">Image button</param>
     ButtonActionController.prototype.BSound = function (button) {
         if (PlayerPrefs.GetInt("SOUND", 0) != 1) {
             PlayerPrefs.SetInt("SOUND", 1);
