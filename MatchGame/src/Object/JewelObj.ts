@@ -113,13 +113,11 @@ class JewelObj extends GameObject {
             }
         }
         JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
-        JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
 
         this.jewel.JewelPosition = new Vector2(x, newpos);
         JewelSpawner.spawn.JewelGrib[x][newpos] = this;
-        JewelSpawner.spawn.JewelGrib[x][newpos] = this;// this.gameObject;
         if (oldpos != newpos) {
-            Utils.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED);//StartCoroutine(Ulti.IEDrop(this.gameObject, this.jewel.JewelPosition, GameController.DROP_SPEED));
+            Utils.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED);
         }
     }
 

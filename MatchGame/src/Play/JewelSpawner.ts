@@ -6,17 +6,7 @@ class JewelSpawner {
     public JewelSprite: string[];   //宝石素材集合
 
     public JewelGrib: JewelObj[][];
-    // public JewelGrib: Jewel[][];
     public JewelParent: egret.DisplayObjectContainer;
-
-    // 星星Prefab
-    public Star: GameObject;
-
-    // 星星特效
-    public StarEffect: GameObject;
-
-    // 五彩宝石Prefab
-    public JewelColor: GameObject;
 
     public NoSelect: GameObject;
 
@@ -255,20 +245,18 @@ class JewelSpawner {
         if (this.JewelGrib[pos.x][pos.y] != null)
             this.Destroy(this.JewelGrib[pos.x][pos.y]);
 
-        let tmp: JewelObj = this.Star as JewelObj;// (GameObject)Instantiate(Star);
+        let tmp: JewelStar = new JewelStar();
         tmp.name = "JewelStar";
 
         this.JewelParent.addChild(tmp);
-        tmp.x = x * Global.BaseDistance;
-        tmp.y = (8 - y) * Global.BaseDistance;
+        tmp.x = Global.posX(x);
+        tmp.y = Global.posY(y);
         tmp.visible = true;
         tmp.jewel.JewelPosition = pos;
         this.JewelGrib[pos.x][pos.y] = tmp;
-        // this.JewelGrib[pos.x][pos.y] = tmp.jewel;
         GameController.action.JewelStar = tmp;
 
-        this.StarEffect.visible = true;
-        //TODO 播放星星特效
+        tmp.play();
     }
 
 

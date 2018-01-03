@@ -199,18 +199,16 @@ var JewelSpawner = (function () {
         var y = pos.y;
         if (this.JewelGrib[pos.x][pos.y] != null)
             this.Destroy(this.JewelGrib[pos.x][pos.y]);
-        var tmp = this.Star; // (GameObject)Instantiate(Star);
+        var tmp = new JewelStar();
         tmp.name = "JewelStar";
         this.JewelParent.addChild(tmp);
-        tmp.x = x * Global.BaseDistance;
-        tmp.y = (8 - y) * Global.BaseDistance;
+        tmp.x = Global.posX(x);
+        tmp.y = Global.posY(y);
         tmp.visible = true;
         tmp.jewel.JewelPosition = pos;
         this.JewelGrib[pos.x][pos.y] = tmp;
-        // this.JewelGrib[pos.x][pos.y] = tmp.jewel;
         GameController.action.JewelStar = tmp;
-        this.StarEffect.visible = true;
-        //TODO 播放星星特效
+        tmp.play();
     };
     return JewelSpawner;
 }());

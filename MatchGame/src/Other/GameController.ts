@@ -32,8 +32,6 @@ class GameController {
 
     public isAddPower: boolean;
 
-    public StartAnim: Animation;
-
     private JewelScript: JewelObj;
     private JewelScript1: JewelObj;
 
@@ -400,7 +398,6 @@ class GameController {
                 else {
                     this.destroynotempty();
                 }
-
             }
             else {
                 let vtmp: Vector2 = this.posUnderStar();
@@ -414,7 +411,7 @@ class GameController {
         }
     }
     private getListCellEffect(): CellObj[] {
-        let tmp: CellObj[] = [];// new List<CellObj>();
+        let tmp: CellObj[] = [];
         for (let y = 0; y < 9; y++) {
             for (let x = 0; x < 7; x++) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0) {
@@ -425,7 +422,7 @@ class GameController {
         return tmp;
     }
     private getListNotEmpty(): CellObj[] {
-        let tmp: CellObj[] = [];// new List<CellObj>();
+        let tmp: CellObj[] = [];
         for (let y = 0; y < 9; y++) {
             for (let x = 0; x < 7; x++) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellType > 1) {
@@ -439,16 +436,20 @@ class GameController {
     }
 
     private posUnderStar(): Vector2 {
-        let under: Vector2[] = [];// new List<Vector2>();
+        let under: Vector2[] = [];
         let x = this.JewelStar.jewel.JewelPosition.x;
         let y = this.JewelStar.jewel.JewelPosition.y;
         for (let i = 0; i < y; i++) {
-            if (JewelSpawner.spawn.JewelGrib[x][i] != null)
+            if (JewelSpawner.spawn.JewelGrib[x][i] != null) {
                 under.push(JewelSpawner.spawn.JewelGrib[x][i].jewel.JewelPosition);
+            }
         }
-        if (under.length > 0)
+        if (under.length > 0) {
             return under[Utils.random(0, under.length - 1)];
-        else return new Vector2(x, y);
+        }
+        else {
+            return new Vector2(x, y);
+        }
     }
     private destroynotempty(): void {
         // try
@@ -469,8 +470,7 @@ class GameController {
     }
 
     //增加时间
-    private TimeInc()   //IEnumerator
-    {
+    private TimeInc(){
         let dem = 0;
         let t = 22;
         while (t > 0) {
@@ -508,15 +508,17 @@ class GameController {
     }
 
     public ShowStar(): void {
-        let listpos: Vector2[] = [];// new List<Vector2>();
+        let listpos: Vector2[] = [];
         let pos: Vector2;
         for (let y = 9 - 1; y >= 0; y--) {
             for (let x = 0; x < 7; x++) {
-                if (GribManager.cell.GribCellObj[x][y] != null)
+                if (GribManager.cell.GribCellObj[x][y] != null) {
                     listpos.push(new Vector2(x, y));
+                }
             }
-            if (listpos.length > 0)
+            if (listpos.length > 0) {
                 break;
+            }
         }
         pos = listpos[Utils.random(0, listpos.length - 1)];
         JewelSpawner.spawn.SpawnStar(pos);

@@ -45,7 +45,7 @@ var SpawnController = (function () {
     };
     /// 产生新方块,并播放下落动画
     SpawnController.prototype.Spawn = function () {
-        var h = Utils.initVector(7, 0); // new int[7];
+        var h = Utils.initVector(7, 0);
         for (var x = 0; x < 7; x++) {
             var s = 0;
             for (var y = 0; y < 9; y++) {
@@ -56,7 +56,6 @@ var SpawnController = (function () {
             for (var y = s; y < 9; y++) {
                 if (GameController.action.GameState == GameState.PLAYING)
                     if (GribManager.cell.GribCellObj[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] == null) {
-                        // let temp: any = JewelSpawner.spawn.JewelGrib[x][y];
                         var tmp = JewelSpawner.spawn.JewelInstantiate(x, y);
                         if (PlayerInfo.MODE == 1 && Random.value > 0.99) {
                             tmp.jewel.JewelPower = 4;

@@ -334,7 +334,7 @@ var GameController = (function () {
         }
     };
     GameController.prototype.getListCellEffect = function () {
-        var tmp = []; // new List<CellObj>();
+        var tmp = [];
         for (var y = 0; y < 9; y++) {
             for (var x = 0; x < 7; x++) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0) {
@@ -345,7 +345,7 @@ var GameController = (function () {
         return tmp;
     };
     GameController.prototype.getListNotEmpty = function () {
-        var tmp = []; // new List<CellObj>();
+        var tmp = [];
         for (var y = 0; y < 9; y++) {
             for (var x = 0; x < 7; x++) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellType > 1) {
@@ -358,17 +358,20 @@ var GameController = (function () {
         return tmp;
     };
     GameController.prototype.posUnderStar = function () {
-        var under = []; // new List<Vector2>();
+        var under = [];
         var x = this.JewelStar.jewel.JewelPosition.x;
         var y = this.JewelStar.jewel.JewelPosition.y;
         for (var i = 0; i < y; i++) {
-            if (JewelSpawner.spawn.JewelGrib[x][i] != null)
+            if (JewelSpawner.spawn.JewelGrib[x][i] != null) {
                 under.push(JewelSpawner.spawn.JewelGrib[x][i].jewel.JewelPosition);
+            }
         }
-        if (under.length > 0)
+        if (under.length > 0) {
             return under[Utils.random(0, under.length - 1)];
-        else
+        }
+        else {
             return new Vector2(x, y);
+        }
     };
     GameController.prototype.destroynotempty = function () {
         // try
@@ -424,15 +427,17 @@ var GameController = (function () {
         }
     };
     GameController.prototype.ShowStar = function () {
-        var listpos = []; // new List<Vector2>();
+        var listpos = [];
         var pos;
         for (var y = 9 - 1; y >= 0; y--) {
             for (var x = 0; x < 7; x++) {
-                if (GribManager.cell.GribCellObj[x][y] != null)
+                if (GribManager.cell.GribCellObj[x][y] != null) {
                     listpos.push(new Vector2(x, y));
+                }
             }
-            if (listpos.length > 0)
+            if (listpos.length > 0) {
                 break;
+            }
         }
         pos = listpos[Utils.random(0, listpos.length - 1)];
         JewelSpawner.spawn.SpawnStar(pos);

@@ -51,7 +51,7 @@ class SpawnController {
 
 	/// 产生新方块,并播放下落动画
 	private Spawn(): void {
-		let h: number[] = Utils.initVector(7, 0);// new int[7];
+		let h: number[] = Utils.initVector(7, 0);
 		for (let x = 0; x < 7; x++) {
 			let s = 0;
 			for (let y = 0; y < 9; y++) {
@@ -62,7 +62,6 @@ class SpawnController {
 			for (let y = s; y < 9; y++) {
 				if (GameController.action.GameState == GameState.PLAYING)
 					if (GribManager.cell.GribCellObj[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] == null) {
-						// let temp: any = JewelSpawner.spawn.JewelGrib[x][y];
 						let tmp: JewelObj = JewelSpawner.spawn.JewelInstantiate(x, y);
 						if (PlayerInfo.MODE == 1 && Random.value > 0.99) {
 							(tmp as JewelObj).jewel.JewelPower = 4;

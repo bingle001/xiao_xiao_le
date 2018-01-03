@@ -144,7 +144,7 @@ var Utils = (function () {
         egret.Tween.get(obj).to({ y: dy }, time).call(function () {
             obj.Bounce();
         }, this);
-        debug("IEDrop : 物体下落 (%s→%s), 时间：%sms", obj.y, dy, time);
+        debug("IEDrop : 物体下落 ((%s,%s)→(%s,%s)), 时间：%sms", NewPos.x, Math.floor(obj.y / 100), NewPos.x, NewPos.y, time);
     };
     return Utils;
 }());

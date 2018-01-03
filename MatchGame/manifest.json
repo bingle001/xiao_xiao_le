@@ -41,15 +41,15 @@
 		"bin-debug/Effect/IceCrashAni.js",
 		"bin-debug/Effect/LockCrashAni.js",
 		"bin-debug/Map/CameraMovement.js",
-		"bin-debug/app/Application.js",
+		"bin-debug/Scene/Map/MapScene.js",
 		"bin-debug/Map/Map.js",
 		"bin-debug/Object/Cell.js",
 		"bin-debug/Object/CellObj.js",
 		"bin-debug/Object/Jewel.js",
 		"bin-debug/app/Time.js",
+		"bin-debug/Object/JewelStar.js",
 		"bin-debug/Object/Player.js",
 		"bin-debug/Object/PlayerInfo.js",
-		"bin-debug/Object/Star.js",
 		"bin-debug/Other/ButtonActionController.js",
 		"bin-debug/Other/GameController.js",
 		"bin-debug/Other/MusicController.js",
@@ -71,6 +71,6 @@
 		"bin-debug/Resolution/Resolution.js",
 		"bin-debug/Scene/Game/GameScene.js",
 		"bin-debug/Scene/Home/HomeScene.js",
-		"bin-debug/Scene/Map/MapScene.js"
+		"bin-debug/app/Application.js"
 	]
 }
