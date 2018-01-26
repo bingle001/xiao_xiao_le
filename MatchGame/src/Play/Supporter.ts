@@ -46,6 +46,7 @@ class Supporter extends MonoBehaviour {
 						this.AvaiableMove[1] = obj1.jewel.JewelPosition;
 						this.AvaiableObj[1] = JewelSpawner.spawn.JewelGrib[this.AvaiableMove[1].x][this.AvaiableMove[1].y];
 						this.isNomove = false;
+						debug("检测：是否还有可移动的：", true);
 						return true;
 					}
 
@@ -53,6 +54,7 @@ class Supporter extends MonoBehaviour {
 			}
 		}
 		this.isNomove = true;
+		debug("检测：是否还有可移动的：", false);
 		return false;
 	}
 

@@ -16,6 +16,21 @@ var SpawnController = (function () {
             Time.addFrameCall(this.Update, this);
         }
     };
+    /**
+     * 设置掉落时间，只会取最大值，最后个掉落完毕后，才进行继续检测
+     * @param dropTime 掉落时间，秒！
+     */
+    SpawnController.prototype.setLastDelay = function (dropTime) {
+        if (dropTime > this._DELAY) {
+            this._DELAY = dropTime;
+        }
+        if (this._DELAY > 0) {
+            if (!this._enabled) {
+                this._enabled = true;
+                Time.addFrameCall(this.Update, this);
+            }
+        }
+    };
     /// 当enable=true后,则会重新启动Update
     SpawnController.prototype.Update = function () {
         this._DELAY -= Time.deltaTime;
@@ -45,6 +60,7 @@ var SpawnController = (function () {
     };
     /// 产生新方块,并播放下落动画
     SpawnController.prototype.Spawn = function () {
+        var count = 0;
         var h = Utils.initVector(7, 0);
         for (var x = 0; x < 7; x++) {
             var s = 0;
@@ -54,7 +70,7 @@ var SpawnController = (function () {
                 }
             }
             for (var y = s; y < 9; y++) {
-                if (GameController.action.GameState == GameState.PLAYING)
+                if (GameController.action.GameState == GameState.PLAYING) {
                     if (GribManager.cell.GribCellObj[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y] == null) {
                         var tmp = JewelSpawner.spawn.JewelInstantiate(x, y);
                         if (PlayerInfo.MODE == 1 && Random.value > 0.99) {
@@ -67,10 +83,15 @@ var SpawnController = (function () {
                         Utils.IEDrop(tmp, new Vector2(x, y), GameController.DROP_SPEED);
                         // let script: JewelObj = tmp as JewelObj;
                         // script.render.enabled = true;	//掉落完了才能移动
+                        count++;
                     }
+                }
             }
         }
-        this.checkNomoremove(); //StartCoroutine(checkNomoremove());
+        debug("往下掉的宝石个数：", count);
+        if (this._DELAY <= 0) {
+            this.checkNomoremove(); //StartCoroutine(checkNomoremove());
+        }
     };
     /// check no more move
     SpawnController.prototype.checkNomoremove = function () {

@@ -82,7 +82,7 @@ class EffectSpawner {
 		}
 		else {
 			if (GameController.action.GameState == GameState.PLAYING)
-			PlayerInfo.Info.Score += scorebonus;
+				PlayerInfo.Info.Score += scorebonus;
 			this.BonusEffect();
 			this.MiniStar(pos);
 		}
@@ -97,6 +97,7 @@ class EffectSpawner {
 		this.EnergyStack += 1 / 21;
 		this.EnergyInc();
 		if (this.ThunderCount >= 21) {
+			debug("分数满21分！");
 			GameController.action.DestroyRandom();
 			this.ThunderCount = 0;
 			// this.Energy.fillAmount = 0;
@@ -320,6 +321,7 @@ class EffectSpawner {
 
 	// 播放积分特效
 	public glass(): void {
+		debug("缺少：播放积分特效");
 		// if (PLayerInfo.MODE == 1)
 		//     redglass.enabled = true;
 		// //redglass.Play("glass");

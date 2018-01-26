@@ -137,15 +137,9 @@ class JewelSpawner {
         else {
             r = Utils.random(1, 7);
         }
-        ObjTmp.render.source = this.JewelSprite[r];
-        ObjTmp.jewel.JewelPosition = new Vector2(x, y);
-        ObjTmp.jewel.JewelType = r;
-        ObjTmp.jewel.JewelPower = 0;
+        ObjTmp.initJewel(x, y, r, 0);
 
-        ObjTmp.x = x * Global.BaseDistance;
-        ObjTmp.y = (8 - y) * Global.BaseDistance;
         this.JewelGrib[x][y] = ObjTmp;
-        // this.JewelGrib[x][y] = ObjTmp.jewel;
         this.JewelParent.addChild(ObjTmp);
 
         return ObjTmp;
@@ -219,21 +213,12 @@ class JewelSpawner {
         }
 
         let tmp = new JewelObj();
+        tmp.initJewel(x, y, type, power);
         this.JewelParent.addChild(tmp);
-        tmp.x = x * Global.BaseDistance;
-        tmp.y = (8 - y) * Global.BaseDistance;
         this.JewelGrib[x][y] = tmp;
-        // this.JewelGrib[x][y] = tmp.jewel;
-        if (type != 8) {
-            tmp.render.source = this.JewelSprite[type - 1];
-        }
-
-        tmp.jewel.JewelPosition = new Vector2(x, y);
-        tmp.jewel.JewelType = type;
-        tmp.jewel.JewelPower = power;
-        if (power == Power.BOOM) {
-            EffectSpawner.effect.Enchant(tmp);
-        }
+        // if (power == Power.BOOM) {
+        //     EffectSpawner.effect.Enchant(tmp);
+        // }
         return tmp;
     }
 

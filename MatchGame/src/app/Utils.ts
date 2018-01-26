@@ -156,7 +156,8 @@ class Utils{
             obj.Bounce();
         }, this);
 
-        debug("IEDrop : 物体下落 ((%s,%s)→(%s,%s)), 时间：%sms", NewPos.x, Math.floor(obj.y/100), NewPos.x, NewPos.y, time);
+        GameController.action.drop.setLastDelay(time / 1000);
+        // debug("IEDrop : 物体下落 ((%s,%s)→(%s,%s)), 时间：%sms", NewPos.x, Math.floor(obj.y/100), NewPos.x, NewPos.y, time);
     }
     
 

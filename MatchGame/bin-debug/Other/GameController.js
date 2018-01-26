@@ -74,8 +74,6 @@ var GameController = (function () {
     GameController.prototype.RuleChecker = function (jewel1, jewel2) {
         Debug.Log("Pointer:" + jewel1.jewel.JewelPosition.x + "," + jewel1.jewel.JewelPosition.y);
         Debug.Log("Selected:" + jewel2.jewel.JewelPosition.x + "," + jewel2.jewel.JewelPosition.y);
-        var NeiObj1 = Utils.ListPlus(jewel1.GetCollumn(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1.GetRow(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1);
-        var NeiObj2 = Utils.ListPlus(jewel2.GetCollumn(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2.GetRow(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2);
         if (jewel1.jewel.JewelType == 99 || jewel2.jewel.JewelType == 99) {
             if (jewel1.jewel.JewelType == 8 || jewel2.jewel.JewelType == 8) {
                 jewel1.SetBackAnimation(jewel2);
@@ -83,6 +81,8 @@ var GameController = (function () {
                 return;
             }
         }
+        var NeiObj1 = Utils.ListPlus(jewel1.GetCollumn(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1.GetRow(jewel2.jewel.JewelPosition, jewel1.jewel.JewelType, null), jewel1);
+        var NeiObj2 = Utils.ListPlus(jewel2.GetCollumn(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2.GetRow(jewel1.jewel.JewelPosition, jewel2.jewel.JewelType, null), jewel2);
         if (NeiObj1.length >= 3 || NeiObj2.length >= 3 || jewel1.jewel.JewelType == 8 || jewel2.jewel.JewelType == 8) {
             Utils.MoveTo(jewel1, jewel2.jewel.JewelPosition, 0.2);
             Utils.MoveTo(jewel2, jewel1.jewel.JewelPosition, 0.2);
@@ -124,6 +124,7 @@ var GameController = (function () {
         }
     };
     GameController.prototype.ListProcess = function (list, obj, obj1, type) {
+        debug("消除组：", list);
         var v;
         if (obj1 != null) {
             v = obj1.jewel.JewelPosition;
@@ -155,7 +156,8 @@ var GameController = (function () {
     };
     // 开启滑落检测
     GameController.prototype.dropjewel = function () {
-        this.drop.setDelay(GameController.DROP_DELAY);
+        // this.drop.setDelay(GameController.DROP_DELAY);
+        this.drop.setLastDelay(GameController.DROP_DELAY);
     };
     GameController.prototype.DestroyJewel = function (list) {
         SoundController.Sound.JewelCrash();
@@ -191,22 +193,13 @@ var GameController = (function () {
         }
         return null;
     };
-    //swap map jewel position
     GameController.prototype.SwapJewelPosition = function (jewel1, jewel2) {
-        // let tmp1: JewelObj = jewel1 as JewelObj;// .GetComponent<JewelObj>();
-        // let tmp2: JewelObj = jewel2 as JewelObj;// .GetComponent<JewelObj>();
-        //交换对象
-        // let Objtmp: JewelObj = JewelSpawner.spawn.JewelGrib[jewel1.jewel.JewelPosition.x][jewel1.jewel.JewelPosition.y];
         JewelSpawner.spawn.JewelGrib[jewel1.jewel.JewelPosition.x][jewel1.jewel.JewelPosition.y] = jewel2;
         JewelSpawner.spawn.JewelGrib[jewel2.jewel.JewelPosition.x][jewel2.jewel.JewelPosition.y] = jewel1;
         //交互宝时对象在Map中的位置
         var tmp = jewel1.jewel.JewelPosition;
         jewel1.jewel.JewelPosition = jewel2.jewel.JewelPosition;
         jewel2.jewel.JewelPosition = tmp;
-        //交换脚本
-        // let scripttmp: JewelObj = tmp1;
-        // JewelSpawner.spawn.JewelGrib[tmp2.jewel.JewelPosition.x][tmp2.jewel.JewelPosition.y] = tmp2.jewel;
-        // JewelSpawner.spawn.JewelGrib[tmp1.jewel.JewelPosition.x][tmp1.jewel.JewelPosition.y] = scripttmp.jewel;
         if (jewel1.jewel.JewelType == 99 || jewel2.jewel.JewelType == 99) {
             this.WinChecker();
         }
@@ -214,6 +207,7 @@ var GameController = (function () {
     GameController.prototype.SpawnJewelPower = function (type, power, pos) {
         // yield return new WaitForSeconds(0.4f);
         var tmp = JewelSpawner.spawn.SpawnJewelPower(type, power, pos);
+        debug("重新产生一个特效宝石：", tmp);
         // yield return new WaitForSeconds(0.2f);
         // tmp.GetComponent<Collider2D>().enabled = true;
     };
@@ -238,7 +232,7 @@ var GameController = (function () {
             if (_x != x) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0)
                     celleffect.push(GribManager.cell.GribCellObj[x][y]);
-                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
                     jeweldes.push(JewelSpawner.spawn.JewelGrib[x][y]);
             }
         }
@@ -261,7 +255,7 @@ var GameController = (function () {
             if (_y != y) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0)
                     celleffect.push(GribManager.cell.GribCellObj[x][y]);
-                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
                     jeweldes.push(JewelSpawner.spawn.JewelGrib[x][y]);
             }
         }
@@ -307,31 +301,32 @@ var GameController = (function () {
         this.TimeInc(); //StartCoroutine(TimeInc());
     };
     GameController.prototype.DestroyRandom = function () {
+        debug("随机销毁一个宝石！");
         //uu tien destroy ganh
-        this.dropjewel();
-        if (PlayerInfo.MODE == 1) {
-            if (!this.isStar) {
-                var listeff = this.getListCellEffect();
-                if (listeff.length > 0) {
-                    var tmp = listeff[Utils.random(0, listeff.length - 1)];
-                    tmp.RemoveEffect();
-                    //TODO
-                    // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.cell.CellPosition.x, tmp.cell.CellPosition.y].position);
-                }
-                else {
-                    this.destroynotempty();
-                }
-            }
-            else {
-                var vtmp = this.posUnderStar();
-                var tmp = JewelSpawner.spawn.JewelGrib[vtmp.x][vtmp.y];
-                if (tmp != null && tmp != this.JewelStar) {
-                    tmp.Destroy();
-                    //TODO
-                    // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.jewel.JewelPosition.x][tmp.jewel.JewelPosition.y].position);
-                }
-            }
-        }
+        // this.dropjewel();
+        // if (PlayerInfo.MODE == 1) {
+        //     if (!this.isStar) {
+        //         let listeff: CellObj[] = this.getListCellEffect();
+        //         if (listeff.length > 0) {
+        //             let tmp: CellObj = listeff[Utils.random(0, listeff.length - 1)];
+        //             tmp.RemoveEffect();
+        //             //TODO
+        //             // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.cell.CellPosition.x, tmp.cell.CellPosition.y].position);
+        //         }
+        //         else {
+        //             this.destroynotempty();
+        //         }
+        //     }
+        //     else {
+        //         let vtmp: Vector2 = this.posUnderStar();
+        //         let tmp: JewelObj = JewelSpawner.spawn.JewelGrib[vtmp.x][vtmp.y];
+        //         if (tmp != null && tmp != this.JewelStar) {
+        //             tmp.Destroy();
+        //             //TODO
+        //             // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.jewel.JewelPosition.x][tmp.jewel.JewelPosition.y].position);
+        //         }
+        //     }
+        // }
     };
     GameController.prototype.getListCellEffect = function () {
         var tmp = [];
@@ -381,6 +376,7 @@ var GameController = (function () {
             var tmp = listnotempty[Utils.random(0, listnotempty.length - 1)].cell.CellPosition;
             if (JewelSpawner.spawn.JewelGrib[tmp.x][tmp.y] != null) {
                 JewelSpawner.spawn.JewelGrib[tmp.x][tmp.y].Destroy();
+                debug("随机销毁宝石：(%d,%d)", tmp.x, tmp.y);
                 //TODO
                 // EffectSpawner.effect.Thunder(GribManager.cell.GribCell[tmp.x][tmp.y].position);
             }
@@ -417,7 +413,7 @@ var GameController = (function () {
             var x = Utils.random(0, 6); // (0, 7);
             var y = Utils.random(0, 8); // (0, 9);
             var tmp = JewelSpawner.spawn.JewelGrib[x][y];
-            if (tmp != null && tmp.jewel.JewelType != 8 && tmp.jewel.JewelPower == 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
+            if (tmp != null && tmp.jewel.JewelType != 8 && tmp.jewel.JewelPower == 0 && GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0) {
                 //随机1种技能
                 var r = Utils.random(2, 4);
                 tmp.jewel.JewelPower = r;

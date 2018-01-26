@@ -23,12 +23,76 @@ var JewelObj = (function (_super) {
         _this.jewel = new Jewel();
         _this.Checked = false;
         _this.isMove = false;
+        _this.rowArrowAni = new BaseAni();
+        _this.rowArrowAni.setAni(AniTypes.Arrow);
+        _this.rowArrowAni.horizontalCenter = 0;
+        _this.rowArrowAni.verticalCenter = 0;
+        _this.rowArrowAni.visible = false;
+        _this.addChild(_this.rowArrowAni);
+        _this.colArrowAni = new BaseAni();
+        _this.colArrowAni.setAni(AniTypes.Arrow);
+        _this.colArrowAni.rotation = 90;
+        _this.colArrowAni.horizontalCenter = 0;
+        _this.colArrowAni.verticalCenter = 0;
+        _this.colArrowAni.visible = false;
+        _this.addChild(_this.colArrowAni);
         _this.render = new eui.Image();
         _this.render.horizontalCenter = 0;
         _this.render.verticalCenter = 0;
         _this.addChild(_this.render);
+        _this.enchantAni = new EnchantAni();
+        _this.enchantAni.visible = false;
+        _this.enchantAni.x = 70;
+        _this.enchantAni.y = 30;
+        _this.addChild(_this.enchantAni);
         return _this;
     }
+    /**
+     * 初始化宝石显示
+     */
+    JewelObj.prototype.initJewel = function (x, y, type, power) {
+        this.jewel.JewelPosition = new Vector2(x, y);
+        this.jewel.JewelType = type;
+        this.jewel.JewelPower = power;
+        this.x = Global.posX(x);
+        this.y = Global.posY(y);
+        this.render.source = JewelSpawner.spawn.JewelSprite[type];
+        this.colArrowAni.stop();
+        this.colArrowAni.visible = false;
+        this.rowArrowAni.stop();
+        this.rowArrowAni.visible = false;
+        this.enchantAni.stop();
+        this.enchantAni.visible = false;
+        egret.Tween.removeTweens(this);
+        if (power > 0) {
+            if (power == Power.BOOM) {
+                this.enchantAni.visible = true;
+                this.enchantAni.play();
+            }
+            else if (power == Power.ROW_LIGHTING) {
+                this.rowArrowAni.visible = true;
+                this.rowArrowAni.play();
+            }
+            else if (power == Power.COLLUMN_LIGHTING) {
+                this.colArrowAni.visible = true;
+                this.colArrowAni.play();
+            }
+            else if (power == Power.MAGIC) {
+                this.startMagicEffect();
+            }
+            else if (power == Power.TIME) {
+                this.startTimerEffect();
+            }
+        }
+    };
+    JewelObj.prototype.startMagicEffect = function () {
+        egret.Tween.removeTweens(this.render);
+        this.rotation = 0;
+        egret.Tween.get(this.render).to({ rotation: 360 }, 2000).call(this.startMagicEffect, this);
+    };
+    JewelObj.prototype.startTimerEffect = function () {
+        debug("追加时间特殊宝石！");
+    };
     //delete jewel
     JewelObj.prototype.Destroy = function () {
         if (this.jewel.JewelPosition == null) {
@@ -66,21 +130,22 @@ var JewelObj = (function (_super) {
         this.RemoveFromList(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
         // yield return new WaitForSeconds(DELAY - 0.015f);
         Utils.MoveTo(this, pos, this.DELAY);
-        this._Destroy(); //this.StartCoroutine(this._Destroy());
+        egret.setTimeout(this._Destroy, this, this.DELAY); //this._Destroy();//this.StartCoroutine(this._Destroy());
     };
     // 销毁自身
     JewelObj.prototype._Destroy = function () {
         GribManager.cell.GribCellObj[this.jewel.JewelPosition.x][this.jewel.JewelPosition.y].CelltypeProcess();
         GameController.action.CellRemoveEffect(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
         // yield return new WaitForSeconds(DELAY);
-        if (this.jewel.JewelPower > 0) {
-            this.PowerProcess(this.jewel.JewelPower);
-        }
-        GameController.action.drop.setDelay(GameController.DROP_DELAY);
+        this.PowerProcess(this.jewel.JewelPower);
+        GameController.action.drop.setLastDelay(GameController.DROP_DELAY);
         this.JewelCrash();
-        EffectSpawner.effect.ScoreInc(new Vector2(this.x, this.y)); // this.gameObject.transform.position);
         EffectSpawner.effect.ContinueCombo();
         Supporter.sp.RefreshTime();
+        egret.setTimeout(this._Destroy1, this, this.DELAY * 1000);
+    };
+    JewelObj.prototype._Destroy1 = function () {
+        EffectSpawner.effect.ScoreInc(new Vector2(this.x, this.y)); // this.gameObject.transform.position);
     };
     // 根据当前宝石显示对象，播放销毁动画
     JewelObj.prototype.JewelCrash = function () {
@@ -93,9 +158,9 @@ var JewelObj = (function (_super) {
     // （说白了就是冒泡排序，地图中消失的方块移动到后面）
     // 将数组中Y轴的往下移动。全部移动完后，所有地图中空的位置均为后面的值，例如6、7、8这几个位置是空的）
     JewelObj.prototype.getNewPosition = function () {
-        var newpos = this.jewel.JewelPosition.y;
         var x = this.jewel.JewelPosition.x;
         var oldpos = this.jewel.JewelPosition.y;
+        var newpos = this.jewel.JewelPosition.y;
         for (var y = newpos - 1; y >= 0; y--) {
             if (GribManager.cell.mapData[x][y] != 0 && GribManager.cell.GribCellObj[x][y].cell.CellEffect != 4 && JewelSpawner.spawn.JewelGrib[x][y] == null) {
                 newpos = y;
@@ -104,10 +169,10 @@ var JewelObj = (function (_super) {
                 break;
             }
         }
-        JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
-        this.jewel.JewelPosition = new Vector2(x, newpos);
-        JewelSpawner.spawn.JewelGrib[x][newpos] = this;
         if (oldpos != newpos) {
+            JewelSpawner.spawn.JewelGrib[x][this.jewel.JewelPosition.y] = null;
+            this.jewel.JewelPosition = new Vector2(x, newpos);
+            JewelSpawner.spawn.JewelGrib[x][newpos] = this;
             Utils.IEDrop(this, this.jewel.JewelPosition, GameController.DROP_SPEED);
         }
     };
@@ -258,7 +323,7 @@ var JewelObj = (function (_super) {
             // anim.enabled = true;
             // anim.Play("bounce");
             //TODO
-            debug("JewelObj.Bounce()");
+            // debug("JewelObj.Bounce()");
             var ty = this.y;
             egret.Tween.removeTweens(this);
             egret.Tween.get(this).to({ y: ty - 5 }, 80).to({ y: ty }, 80).call(this.RuleChecker, this);
@@ -298,6 +363,17 @@ var JewelObj = (function (_super) {
         this.render.scaleY = 0;
         this.render.rotation = 0;
         egret.Tween.get(this.render).to({ scaleX: 1, scaleY: 1, rotation: 720 }, 500);
+    };
+    JewelObj.prototype.toString = function () {
+        var hash = this.hashCode;
+        var jewel = this.jewel;
+        var pos = this.jewel.JewelPosition;
+        var obj = {
+            hash: hash,
+            jewel: jewel,
+            pos: pos,
+        };
+        return JSON.stringify(obj);
     };
     return JewelObj;
 }(GameObject));
