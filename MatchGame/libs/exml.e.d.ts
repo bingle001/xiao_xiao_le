@@ -1,3 +1,5 @@
+declare class EnergySkin extends eui.Skin{
+}
 declare class GameSceneSkin extends eui.Skin{
 }
 declare class testCell extends eui.Skin{

@@ -8,11 +8,19 @@ class GameScene extends BaseScene{
 	public group_borderParent: eui.Group;
 	public group_cornerParent: eui.Group;
 	public group_jewelParent: eui.Group;
-	public group_effectParent:eui.Group;
+	public group_effectParent: eui.Group;
+	public group_topEffect:eui.Group;
+
 
 	public group_otherParent:eui.Group;
 	public group_selector:eui.Group;
-	public group_noSelector:eui.Group;
+	public group_noSelector: eui.Group;
+	
+	public group_top:eui.Group;
+	public energy:Energy;
+	public img_time:eui.Image;
+	public btn_pause:eui.Button;
+
 
 
 
@@ -44,6 +52,10 @@ class GameScene extends BaseScene{
 		PlayerInfo.Info.Start();
 		GameController.action.Start(this.group_selector, this.group_noSelector);
 		EffectSpawner.effect.start(this.group_effectParent);
+
+		let pos = this.energy.localToGlobal(this.energy.width / 2, this.energy.height / 2);
+		let pos1: egret.Point = this.group_topEffect.globalToLocal(pos.x, pos.y);
+		ScoreAni.start(pos1.x, pos1.y, this.group_topEffect);
 	}
 
 	private onTouchBegin(e: egret.TouchEvent): void{

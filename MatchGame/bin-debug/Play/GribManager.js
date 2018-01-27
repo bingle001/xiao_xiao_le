@@ -20,7 +20,7 @@ var GribManager = (function () {
     };
     // Create Grid map
     GribManager.prototype.GribMapCreate = function (mapName, cellParent, borderParent, cornerParent) {
-        mapName = "7"; //test
+        mapName = "1"; //test
         this.mapName = mapName;
         this.GribParent = cellParent;
         this.BorderParent = borderParent;

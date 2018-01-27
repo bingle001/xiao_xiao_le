@@ -174,6 +174,7 @@ var JewelSpawner = (function () {
         tmp.initJewel(x, y, type, power);
         this.JewelParent.addChild(tmp);
         this.JewelGrib[x][y] = tmp;
+        debug("重新产生一个特效宝石：", tmp);
         // if (power == Power.BOOM) {
         //     EffectSpawner.effect.Enchant(tmp);
         // }

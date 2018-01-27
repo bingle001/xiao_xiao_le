@@ -39,6 +39,9 @@ var GameScene = (function (_super) {
         PlayerInfo.Info.Start();
         GameController.action.Start(this.group_selector, this.group_noSelector);
         EffectSpawner.effect.start(this.group_effectParent);
+        var pos = this.energy.localToGlobal(this.energy.width / 2, this.energy.height / 2);
+        var pos1 = this.group_topEffect.globalToLocal(pos.x, pos.y);
+        ScoreAni.start(pos1.x, pos1.y, this.group_topEffect);
     };
     GameScene.prototype.onTouchBegin = function (e) {
         this.group_jewelParent.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouchBegin, this);

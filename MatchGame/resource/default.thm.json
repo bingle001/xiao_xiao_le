@@ -1,6 +1,7 @@
 {
   "autoGenerateExmlsList": true,
   "exmls": [
+    "resource/skins/game/EnergySkin.exml",
     "resource/skins/game/GameSceneSkin.exml",
     "resource/skins/game/testCell.exml",
     "resource/skins/home/HomeSceneSkin.exml",

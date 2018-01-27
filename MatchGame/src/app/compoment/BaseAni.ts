@@ -5,6 +5,8 @@ class BaseAni extends eui.Image {
 
 	/** 是否循环播放 */
 	public isRepeat: boolean = false;
+	/** 播放完成后是否销毁 */
+	public isPlayOverDestroy: boolean = false;
 
 	/** 帧率，表示多少帧动一次，数值越大越慢 */
 	public frameRate: number = 2;
@@ -28,6 +30,10 @@ class BaseAni extends eui.Image {
 		this._pause = null;
 		this._callback = null;
 		this._thisObj = null;
+		
+		if (this.parent) {
+			this.parent.removeChild(this);
+		}
 	}
 
 	/**
@@ -106,6 +112,9 @@ class BaseAni extends eui.Image {
 					this._callback.call(this._thisObj);
 				}
 				this.stop();
+				if (this.isPlayOverDestroy) {
+					this.onDestory();
+				}
 			}
 		}
 	}

@@ -42,6 +42,7 @@ var EffectSpawner = (function () {
     EffectSpawner.prototype.ContinueCombo = function () {
         this.ComboCountdown = this.REFRESH_COMBO_TIME;
     };
+    //连击，连击数越高，分数越高
     EffectSpawner.prototype.ComBoInc = function () {
         this.ComboCount++;
     };
@@ -143,11 +144,18 @@ var EffectSpawner = (function () {
     };
     EffectSpawner.prototype.boom = function (pos) {
         //TODO 应该是爆炸特效
-        // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[1]);
-        // SoundController.Sound.Boom();
-        // tmp.transform.SetParent(parent.transform, false);   //播放在特效层中
-        // tmp.transform.position = pos;
-        // this.Destroy(tmp, BOOM_TIME);    //延时销毁
+        var ani = new BaseAni();
+        ani.setAni(AniTypes.Boom);
+        ani.width = 210;
+        ani.height = 210;
+        ani.anchorOffsetX = ani.width / 2;
+        ani.anchorOffsetY = ani.height / 2;
+        ani.isRepeat = false;
+        ani.isPlayOverDestroy = true;
+        ani.play();
+        ani.x = pos.x;
+        ani.y = pos.y;
+        this.parent.addChild(ani);
     };
     // (buff效果)
     // 播放爆炸动画
@@ -262,16 +270,15 @@ var EffectSpawner = (function () {
     // 播放积分特效
     EffectSpawner.prototype.glass = function () {
         debug("缺少：播放积分特效");
+        //这里应该是能量槽闪烁一下红色遮罩
         // if (PLayerInfo.MODE == 1)
         //     redglass.enabled = true;
         // //redglass.Play("glass");
         // //Debug.Log("bla");
     };
+    //得分的小星星
     EffectSpawner.prototype.MiniStar = function (startpos) {
-        // GameObject tmp = (GameObject)Instantiate(EffectPrefabs[12]);
-        // tmp.transform.SetParent(parent.transform, false);
-        // Ulti.MoveTo(tmp, startpos, new Vector2(-2.485f, 4.418f), 1.2f, -2.2f);
-        // Destroy(tmp, 1.2f);
+        ScoreAni.playGetScore(startpos.x, startpos.y);
     };
     return EffectSpawner;
 }());

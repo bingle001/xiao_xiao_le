@@ -34,7 +34,7 @@ class GribManager {
 
     // Create Grid map
     public GribMapCreate(mapName: string, cellParent: egret.DisplayObjectContainer, borderParent: egret.DisplayObjectContainer, cornerParent: egret.DisplayObjectContainer): void {
-        mapName = "7";  //test
+        mapName = "1";  //test
         this.mapName = mapName;
         this.GribParent = cellParent;
         this.BorderParent = borderParent;

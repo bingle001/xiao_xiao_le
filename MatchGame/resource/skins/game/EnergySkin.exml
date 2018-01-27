@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="EnergySkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" width="100" height="100">
+	<e:Image id="img_bar" source="Play_top_energy-3_png" y="8" x="8"/>
+	<e:Image source="Play_top_energy-4_png" x="8" y="8"/>
+	<e:Image id="img_eff" source="Play_top_energy-eff_png" horizontalCenter="0" verticalCenter="0" visible="false"/>
+	<e:Image source="Play_top_energy-1_png" y="0" x="0"/>
+</e:Skin>

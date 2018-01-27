@@ -264,14 +264,10 @@ class GameController {
         }
     }
 
-    private SpawnJewelPower(type: number, power: number, pos: Vector2)   //IEnumerator
-    {
-
-        // yield return new WaitForSeconds(0.4f);
-        let tmp: GameObject = JewelSpawner.spawn.SpawnJewelPower(type, power, pos);
-        debug("重新产生一个特效宝石：", tmp);
-        // yield return new WaitForSeconds(0.2f);
-        // tmp.GetComponent<Collider2D>().enabled = true;
+    private SpawnJewelPower(type: number, power: number, pos: Vector2) {
+        egret.setTimeout(function () {
+            JewelSpawner.spawn.SpawnJewelPower(type, power, pos);
+        }, this, 0.2 * 1000);
     }
 
 
@@ -324,7 +320,7 @@ class GameController {
             if (_y != y) {
                 if (GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect > 0)
                     celleffect.push(GribManager.cell.GribCellObj[x][y]);
-                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y].cell != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
+                if (JewelSpawner.spawn.JewelGrib[x][y] != null && JewelSpawner.spawn.JewelGrib[x][y].jewel.JewelType != 99 && GribManager.cell.GribCellObj[x][y] != null && GribManager.cell.GribCellObj[x][y].cell.CellEffect == 0)
                     jeweldes.push(JewelSpawner.spawn.JewelGrib[x][y]);
             }
         }
@@ -465,7 +461,7 @@ class GameController {
     }
 
     //增加时间
-    private TimeInc(){
+    private TimeInc() {
         let dem = 0;
         let t = 22;
         while (t > 0) {

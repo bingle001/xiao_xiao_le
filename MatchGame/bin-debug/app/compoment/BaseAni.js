@@ -20,6 +20,8 @@ var BaseAni = (function (_super) {
         var _this = _super.call(this) || this;
         /** 是否循环播放 */
         _this.isRepeat = false;
+        /** 播放完成后是否销毁 */
+        _this.isPlayOverDestroy = false;
         /** 帧率，表示多少帧动一次，数值越大越慢 */
         _this.frameRate = 2;
         _this._count = 0;
@@ -33,6 +35,9 @@ var BaseAni = (function (_super) {
         this._pause = null;
         this._callback = null;
         this._thisObj = null;
+        if (this.parent) {
+            this.parent.removeChild(this);
+        }
     };
     /**
      * 播放
@@ -105,6 +110,9 @@ var BaseAni = (function (_super) {
                     this._callback.call(this._thisObj);
                 }
                 this.stop();
+                if (this.isPlayOverDestroy) {
+                    this.onDestory();
+                }
             }
         }
     };

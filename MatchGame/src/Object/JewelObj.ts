@@ -120,7 +120,7 @@ class JewelObj extends GameObject {
         switch (power) {
             case 1:
                 GameController.action.PBoom(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
-                EffectSpawner.effect.boom(new Vector2(this.x, this.y));	// this.gameObject.transform.position
+                EffectSpawner.effect.boom(new Vector2(this.x + this.width / 2, this.y + this.height / 2));	// this.gameObject.transform.position
                 break;
             case 2:
                 EffectSpawner.effect.FireArrow(new Vector2(this.x, this.y), false);// transform.position, false);
@@ -146,7 +146,7 @@ class JewelObj extends GameObject {
         // yield return new WaitForSeconds(DELAY - 0.015f);
         Utils.MoveTo(this, pos, this.DELAY);
 
-        egret.setTimeout(this._Destroy, this, this.DELAY);//this._Destroy();//this.StartCoroutine(this._Destroy());
+        egret.setTimeout(this.Destroy, this, this.DELAY * 1000);//this._Destroy();//this.StartCoroutine(this._Destroy());
     }
 
     // 销毁自身
@@ -155,17 +155,32 @@ class JewelObj extends GameObject {
         GameController.action.CellRemoveEffect(this.jewel.JewelPosition.x, this.jewel.JewelPosition.y);
 
         // yield return new WaitForSeconds(DELAY);
-        this.PowerProcess(this.jewel.JewelPower);
+
+        if (this.jewel.JewelPower > 0) {
+            this.PowerProcess(this.jewel.JewelPower);    
+            egret.setTimeout(this._Destroy1, this, this.DELAY * 1000);
+        }
+        else {
+            this._Destroy1();
+         }
+
+        
+    }
+
+    private _Destroy1(): void{
         GameController.action.drop.setLastDelay(GameController.DROP_DELAY);
         this.JewelCrash();
         EffectSpawner.effect.ContinueCombo();
         Supporter.sp.RefreshTime();
 
-        egret.setTimeout(this._Destroy1, this, this.DELAY * 1000);
+        this.removeFromParent();
+        this.visible = false;
+        
+        egret.setTimeout(this._Destroy2, this, 100);
     }
 
-    private _Destroy1(): void{
-        EffectSpawner.effect.ScoreInc(new Vector2(this.x, this.y));// this.gameObject.transform.position);
+    private _Destroy2(): void{
+        EffectSpawner.effect.ScoreInc(new Vector2(this.x + this.width / 2, this.y + this.height / 2));        
     }
 
     // 根据当前宝石显示对象，播放销毁动画
@@ -319,8 +334,9 @@ class JewelObj extends GameObject {
         //移除脚本
         JewelSpawner.spawn.JewelGrib[x][y] = null;
 
-        this.removeFromParent();
-        this.visible = false;
+        // 下面代码移动到_destroy()中
+        // this.removeFromParent();
+        // this.visible = false;
     }
 
     public getListcount(): number {

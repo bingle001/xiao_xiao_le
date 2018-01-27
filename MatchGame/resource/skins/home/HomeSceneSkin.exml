@@ -1,4 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <e:Skin class="HomeSceneSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
-	<e:Label id="lbl_start" text="开始" x="323" y="153"/>
+
+
+
+
+
+
+
+	<e:Group x="0" y="0" width="100%" height="100%" locked="true">
+		<e:Image source="home_background_png" width="100%" height="100%" x="0" y="0"/>
+		<e:Image source="home_do_png" x="277" y="224"/>
+		<e:Image source="home_tim_png" x="556" y="129"/>
+		<e:Image source="home_xanh_png" x="67" y="129"/>
+		<e:Button id="btn_start" label="" y="516" x="178">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_arcade_png" source.down="home_arcade_click_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Button id="btn_music" label="" x="24" y="1120">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_music-on_png" source.disabled="home_music-off_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Button id="btn_sound" label="" x="131" y="1120">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_sound-on_png" source.disabled="home_sound-off_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Button id="btn_home" label="" x="237" y="1120">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_rate_png" source.down="home_rate_click_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Button id="btn_more" label="" x="522.5" y="1127.5">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_more_png" source.down="home_more_click_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Button id="btn_classic" label="" y="744" x="178">
+			<e:skinName>
+			<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="home_classic_png" source.down="home_classic_click_png"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+			</e:Skin>
+			</e:skinName>
+		</e:Button>
+	</e:Group>
+	<e:Label id="lbl_start" text="开始" x="330" y="463" stroke="1"/>
 </e:Skin>
