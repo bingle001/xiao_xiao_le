@@ -28,6 +28,7 @@ var Application = (function () {
         PlayerUtils.Awake();
         ButtonActionController.Awake();
         EffectSpawner.Awake();
+        DataLoader.Awake();
         Application.changeScene(SceneType.Home);
     };
     Application.changeScene = function (sceneType) {

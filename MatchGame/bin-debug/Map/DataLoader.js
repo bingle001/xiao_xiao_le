@@ -64,6 +64,7 @@ var DataLoader = (function () {
     }
     DataLoader.Awake = function () {
         DataLoader.Data = new DataLoader();
+        DataLoader.Data.Start();
     };
     DataLoader.prototype.Start = function () {
         if (PlayerPrefs.GetInt(this.KEY_FRISTTIME, 0) == 0) {

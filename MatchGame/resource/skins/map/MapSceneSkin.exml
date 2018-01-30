@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e:Skin class="MapSceneSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui">
+<e:Skin class="MapSceneSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="group_map" width="720" height="1280">
+		<e:Image source="map_1_png" width="720" height="1200" visible="false"/>
+		<ns1:MapPoint x="360" y="1116" skinName="MapPointSkin" anchorOffsetX="34" anchorOffsetY="54" visible="false"/>
+	</e:Group>
 </e:Skin>

@@ -37,13 +37,14 @@
 		"bin-debug/app/PlayerPrefs.js",
 		"bin-debug/app/ResUtils.js",
 		"bin-debug/app/compoment/BaseView.js",
+		"bin-debug/app/effect/MapAcceAction.js",
 		"bin-debug/Effect/ArrowAni.js",
 		"bin-debug/Effect/BashAni.js",
 		"bin-debug/Effect/EnchantAni.js",
 		"bin-debug/Effect/IceCrashAni.js",
 		"bin-debug/Effect/LockCrashAni.js",
 		"bin-debug/Effect/ScoreAni.js",
-		"bin-debug/Scene/Map/MapScene.js",
+		"bin-debug/app/Application.js",
 		"bin-debug/Map/DataLoader.js",
 		"bin-debug/Map/Map.js",
 		"bin-debug/Object/Cell.js",
@@ -75,6 +76,8 @@
 		"bin-debug/Scene/Game/Energy.js",
 		"bin-debug/Scene/Game/GameScene.js",
 		"bin-debug/Scene/Home/HomeScene.js",
-		"bin-debug/app/Application.js"
+		"bin-debug/Scene/Map/MapPage.js",
+		"bin-debug/Scene/Map/MapPoint.js",
+		"bin-debug/Scene/Map/MapScene.js"
 	]
 }

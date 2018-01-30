@@ -13,6 +13,7 @@ class DataLoader {
 
     public static Awake() {
         DataLoader.Data = new DataLoader();
+        DataLoader.Data.Start();
     }
 
     public Start() {

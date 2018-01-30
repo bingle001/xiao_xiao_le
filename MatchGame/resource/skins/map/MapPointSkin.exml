@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e:Skin class="MapPointSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+<e:Skin class="MapPointSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" height="98">
 	<e:Group id="group_star" horizontalCenter="0">
 		<e:Image id="star0" source="SelectMap_starmap1_png" x="0" y="0"/>
 		<e:Image id="star1" source="SelectMap_starmap1_png" x="15" y="0"/>
